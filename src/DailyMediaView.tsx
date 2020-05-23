@@ -35,15 +35,28 @@ export default function DailyMediaView(props: Props) {
     }
   }, [props.videoTrack, props.audioTrack]);
 
-  return stream ? (
+  const rtcView = stream ? (
     <RTCView
       streamURL={stream.toURL()}
       mirror={props.mirror}
       zOrder={props.zOrder}
       objectFit={props.objectFit}
-      style={props.style}
+      // hide if no video track (still plays audio).
+      // hiding is important since otherwise it shows a frozen frame.
+      style={props.videoTrack ? props.style : { display: 'none' }}
     />
-  ) : (
+  ) : null;
+
+  // provide empty placeholder when no video is playing, to try to avoid
+  // messing with any layout that depends on this DailyMediaView's style
+  const placeholderView = props.videoTrack ? (
     <View style={props.style} />
+  ) : null;
+
+  return (
+    <>
+      {rtcView}
+      {placeholderView}
+    </>
   );
 }
