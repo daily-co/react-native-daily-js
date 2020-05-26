@@ -49,9 +49,9 @@ export default function DailyMediaView(props: Props) {
 
   // provide empty placeholder when no video is playing, to try to avoid
   // messing with any layout that depends on this DailyMediaView's style
-  const placeholderView = props.videoTrack ? (
+  const placeholderView = props.videoTrack ? null : (
     <View style={props.style} />
-  ) : null;
+  );
 
   return (
     <>
