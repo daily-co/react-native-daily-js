@@ -6,6 +6,10 @@
     "outDir": "./dist",
     "lib": ["es6"],
     "strict": true,
-    "jsx": "react-native"
+    "jsx": "react-native",
+    "baseUrl": ".",
+    "paths": {
+      "@daily-co/daily-js": ["typings/@daily-co/daily-js"]
+    }
   }
 }
