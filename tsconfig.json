@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "declaration": true,
     "outDir": "./dist",
     "lib": ["es6"],
     "strict": true,
     "jsx": "react-native",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@daily-co/daily-js": ["typings/@daily-co/daily-js"]
+      "@daily-co/daily-js": ["type-overrides/@daily-co/daily-js"]
     }
   }
 }

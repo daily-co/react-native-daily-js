@@ -1,4 +1,4 @@
-import DailyIframe = require('@daily-co/daily-js');
+import DailyIframe from '@daily-co/daily-js';
 import { registerGlobals } from 'react-native-webrtc';
 
 // Register globals:
@@ -12,5 +12,6 @@ declare const global: any;
 global.window.addEventListener = () => {};
 
 export default DailyIframe;
+export * from '@daily-co/daily-js';
 export { DailyMediaView };
 export * from 'react-native-webrtc';
