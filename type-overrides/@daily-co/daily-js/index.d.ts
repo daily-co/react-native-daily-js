@@ -90,11 +90,23 @@ export interface DailyCallOptions {
   customLayout?: boolean;
   cssFile?: string;
   cssText?: string;
-  dailyConfig?: object;
+  dailyConfig?: DailyAdvancedConfig;
   subscribeToTracksAutomatically?: boolean;
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
 }
+
+export type DailyAdvancedConfig = {
+  experimentalChromeVideoMuteLightOff: boolean;
+  fastConnect: boolean;
+  preferH264ForCam?: boolean;
+  preferH264ForScreenSharing?: boolean;
+  preferH264?: boolean;
+  disableSimulcast?: boolean;
+  h264Profile?: string;
+  camSimulcastEncodings?: any[];
+  screenSimulcastEncodings?: any[];
+};
 
 export interface DailyParticipant {
   // audio/video info
@@ -304,6 +316,9 @@ export interface DailyCall {
     event: DailyEvent,
     handler: (event?: DailyEventObject) => void
   ): DailyCall;
+  properties: {
+    dailyConfig?: DailyAdvancedConfig;
+  };
 }
 
 declare const DailyIframe: DailyCallFactory & DailyCallStaticUtils;
