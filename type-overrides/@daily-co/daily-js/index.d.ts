@@ -88,6 +88,7 @@ export interface DailyCallOptions {
   showFullscreenButton?: boolean;
   iframeStyle?: object;
   customLayout?: boolean;
+  bodyClass?: string;
   cssFile?: string;
   cssText?: string;
   dailyConfig?: DailyAdvancedConfig;
@@ -253,6 +254,11 @@ export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipant[] | void>;
   leave(): Promise<void>;
   destroy(): Promise<void>;
+  loadCss(properties: {
+    bodyClass?: string;
+    cssFile?: string;
+    cssText?: string;
+  }): DailyCall;
   meetingState(): DailyMeetingState;
   participants(): {
     local: DailyParticipant;
