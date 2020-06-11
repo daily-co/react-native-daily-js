@@ -16,7 +16,7 @@ function setupGlobals() {
 
   // A workaround for iOS HTTP cache not caching call object bundle due to size
   if (Platform.OS === 'ios') {
-    global.window.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
+    global.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
   }
 }
 

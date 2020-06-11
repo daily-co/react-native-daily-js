@@ -4,6 +4,12 @@
  */
 export default class iOSCallObjectBundleCache {
   static get(url: string): Promise<string> {
+    // console.log("[iOSCallObjectBundleCache] get", url);
+    return Promise.reject();
+  }
+
+  static set(url: string, bundle: string): Promise<void> {
+    // console.log("[iOSCallObjectBundleCache] set", url);
     return Promise.reject();
   }
 }
