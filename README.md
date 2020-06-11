@@ -23,6 +23,7 @@ If you're using Cocoapods, update your `Podfile` with the following:
 
 ```ruby
 pod 'react-native-webrtc', :path => '../node_modules/react-native-webrtc'
+pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 ```
 
 You also may have to update your `platform`, since `react-native-webrtc` only works on iOS 10 and above:
