@@ -1,15 +1,26 @@
 import DailyIframe from '@daily-co/daily-js';
 import { registerGlobals } from 'react-native-webrtc';
-
-// Register globals:
-// * A URL polyfill
-import 'react-native-url-polyfill/auto';
 import DailyMediaView from './DailyMediaView';
-// * WebRTC APIs (note that this also sets up the global `window` object)
-registerGlobals();
-// * A shim to prevent errors (not ideal)
+import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
+import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
+import { Platform } from 'react-native';
+
 declare const global: any;
-global.window.addEventListener = () => {};
+
+function setupGlobals() {
+  // WebRTC APIs + global `window` object
+  registerGlobals();
+
+  // A shim to prevent errors in call machine bundle (not ideal)
+  global.window.addEventListener = () => {};
+
+  // A workaround for iOS HTTP cache not caching call object bundle due to size
+  if (Platform.OS === 'ios') {
+    global.window.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
+  }
+}
+
+setupGlobals();
 
 export default DailyIframe;
 export * from '@daily-co/daily-js';
