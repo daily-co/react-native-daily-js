@@ -104,9 +104,9 @@ export default class iOSCallObjectBundleCache {
     let expiry = DEFAULT_EXPIRY_MS;
     const cacheControlHeader = headers.get('cache-control');
     if (cacheControlHeader) {
-      const expiryString = cacheControlHeader.match(/max-age=([0-9]+)/i);
-      if (expiryString && expiryString[1] && Number(expiryString[1])) {
-        expiry = Date.now() + Number(expiryString[1]) * 1000;
+      const expiryMatch = cacheControlHeader.match(/max-age=([0-9]+)/i);
+      if (expiryMatch && expiryMatch[1] && !isNaN(Number(expiryMatch[1]))) {
+        expiry = Date.now() + Number(expiryMatch[1]) * 1000;
       }
     }
 
