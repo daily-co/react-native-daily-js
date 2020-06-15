@@ -56,6 +56,8 @@ export default class iOSCallObjectBundleCache {
       if (!ignoreExpiry && now > cacheItem[FIELD_CACHE_EXPIRY]) {
         // console.log("[iOSCallObjectBundleCache] cache item expired");
         let headers: { [key: string]: string } = {};
+        // Only set headers for validators (ETag, Last-Modified) that exist in
+        // the cache item
         cacheItem[FIELD_BUNDLE_ETAG] &&
           (headers['if-none-match'] = cacheItem[FIELD_BUNDLE_ETAG]);
         cacheItem[FIELD_BUNDLE_LAST_MODIFIED] &&
