@@ -16,13 +16,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@daily-co/daily-js": "0.9.992-beta.4",
-    "@react-native-community/async-storage": "^1.11.0",
+    "@daily-co/daily-js": "0.9.992-beta.5",
     "@types/react-native-webrtc": "^1.75.1",
-    "react-native-url-polyfill": "^1.1.2",
-    "react-native-webrtc": "^1.75.3"
+    "react-native-url-polyfill": "^1.1.2"
+  },
+  "peerDependencies": {
+    "react-native-webrtc": "^1.75.3",
+    "@react-native-community/async-storage": "^1.11.0"
   },
   "devDependencies": {
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "react-native-webrtc": "^1.75.3",
+    "@react-native-community/async-storage": "^1.11.0"
   }
 }
