@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { ViewStyle, View, Platform } from 'react-native';
+import { ViewStyle, View, Platform, NativeModules } from 'react-native';
 import {
   MediaStreamTrack,
   RTCView,
   MediaStream,
   RTCViewProps,
 } from 'react-native-webrtc';
+
+const { DailyNativeUtils } = NativeModules;
 
 type Props = {
   videoTrack: MediaStreamTrack | null;
@@ -36,6 +38,13 @@ export default function DailyMediaView(props: Props) {
       setStream(stream);
     }
   }, [props.videoTrack, props.audioTrack]);
+
+  // TODO: remove after testing
+  React.useEffect(() => {
+    DailyNativeUtils.sampleMethod('Testing', 123, (message: any) => {
+      console.log('native callback received', message);
+    });
+  }, []);
 
   const rtcView = stream ? (
     <RTCView

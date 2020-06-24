@@ -1,13 +1,16 @@
 {
   "name": "@daily-co/react-native-daily-js",
   "version": "0.0.1",
-  "description": "",
+  "description": "React Native library for making video calls using Daily.co",
   "main": "dist/index.js",
   "types": "index.d.ts",
   "files": [
     "dist",
     "type-overrides",
-    "index.d.ts"
+    "index.d.ts",
+    "android",
+    "ios",
+    "react-native-daily-js.podspec"
   ],
   "scripts": {
     "build": "tsc",

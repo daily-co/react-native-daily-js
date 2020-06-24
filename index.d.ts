@@ -10,6 +10,7 @@
 import DailyIframe from './type-overrides/@daily-co/daily-js';
 import 'react-native-url-polyfill/auto';
 import DailyMediaView from './src/DailyMediaView';
+
 export default DailyIframe;
 export * from './type-overrides/@daily-co/daily-js';
 export { DailyMediaView };
