@@ -16,8 +16,16 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "author": "",
+  "author": {
+    "name": "Paul Kompfner",
+    "email": "paul@daily.co"
+  },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daily-co/react-native-daily-js.git",
+    "baseUrl": "https://github.com/daily-co/react-native-daily-js"
+  },
   "dependencies": {
     "@daily-co/daily-js": "0.9.992-beta.5",
     "@types/react-native-webrtc": "^1.75.1",
