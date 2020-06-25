@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { ViewStyle, View, Platform, NativeModules } from 'react-native';
 import {
   MediaStreamTrack,
@@ -11,7 +12,7 @@ const { DailyNativeUtils } = NativeModules;
 const ANDROID_NEW_STREAM_READY_DELAY_MS = 250;
 
 function useMediaPlayRegistration(track: MediaStreamTrack | null) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!track) {
       return;
     }
@@ -32,11 +33,11 @@ type Props = {
 };
 
 export default function DailyMediaView(props: Props) {
-  const [stream, setStream] = React.useState<MediaStream | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
   useMediaPlayRegistration(props.videoTrack);
   useMediaPlayRegistration(props.audioTrack);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const tracks = [props.videoTrack, props.audioTrack].filter((t) => t);
     const stream = tracks.length > 0 ? new MediaStream(tracks) : null;
     // Temporary workaround for an Android react-native-webrtc threading bug
