@@ -8,6 +8,19 @@ import {
 } from 'react-native-webrtc';
 
 const { DailyNativeUtils } = NativeModules;
+const ANDROID_NEW_STREAM_READY_DELAY_MS = 250;
+
+function useMediaPlayRegistration(track: MediaStreamTrack | null) {
+  React.useEffect(() => {
+    if (!track) {
+      return;
+    }
+    DailyNativeUtils.registerStartedPlayingMedia(track.id);
+    return () => {
+      DailyNativeUtils.registerStoppedPlayingMedia(track.id);
+    };
+  }, [track]);
+}
 
 type Props = {
   videoTrack: MediaStreamTrack | null;
@@ -18,10 +31,10 @@ type Props = {
   style?: ViewStyle;
 };
 
-const ANDROID_NEW_STREAM_READY_DELAY_MS = 250;
-
 export default function DailyMediaView(props: Props) {
   const [stream, setStream] = React.useState<MediaStream | null>(null);
+  useMediaPlayRegistration(props.videoTrack);
+  useMediaPlayRegistration(props.audioTrack);
 
   React.useEffect(() => {
     const tracks = [props.videoTrack, props.audioTrack].filter((t) => t);
@@ -38,13 +51,6 @@ export default function DailyMediaView(props: Props) {
       setStream(stream);
     }
   }, [props.videoTrack, props.audioTrack]);
-
-  // TODO: remove after testing
-  React.useEffect(() => {
-    DailyNativeUtils.sampleMethod('Testing', 123, (message: any) => {
-      console.log('native callback received', message);
-    });
-  }, []);
 
   const rtcView = stream ? (
     <RTCView
