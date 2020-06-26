@@ -93,7 +93,7 @@ def configureReactNativePom(def pom) {
         licenses {
             license {
                 name packageJson.license
-                url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
+                url packageJson.repository.baseUrl + '/blob/main/' + packageJson.licenseFilename
                 distribution 'repo'
             }
         }
@@ -142,12 +142,23 @@ afterEvaluate { project ->
         archives androidJavadocJar
     }
 
-    task installArchives(type: Upload) {
-        configuration = configurations.archives
-        repositories.mavenDeployer {
-            // Deploy to react-native-event-bridge/maven, ready to publish to npm
-            repository url: "file://${projectDir}/../android/maven"
-            configureReactNativePom pom
-        }
-    }
+    // Disable Maven deploy for now (only support Gradle builds).
+    // 
+    // When this is enabled, configureReactNativePom and/or package.json will
+    // have to be updated so they align to configure a valid POM (not sure what
+    // fields are required or how to test this yet).
+    //
+    // Current misalignment:
+    // - license
+    // - author.username
+    // - the fact of requiring a sole author (we'll want multiple contributors)
+    //
+    // task installArchives(type: Upload) {
+    //     configuration = configurations.archives
+    //     repositories.mavenDeployer {
+    //         // Deploy to react-native-event-bridge/maven, ready to publish to npm
+    //         repository url: "file://${projectDir}/../android/maven"
+    //         configureReactNativePom pom
+    //     }
+    // }
 }

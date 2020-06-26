@@ -17,10 +17,6 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "author": {
-    "name": "Paul Kompfner",
-    "email": "paul@daily.co"
-  },
   "license": "ISC",
   "repository": {
     "type": "git",
