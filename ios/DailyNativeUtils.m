@@ -42,13 +42,7 @@ RCT_EXPORT_METHOD(registerStoppedPlayingMedia:(nonnull NSString *)mediaId)
 // Expects to be invoked only from main thread
 - (void)updateIdleTimer
 {
-  BOOL disableIdleTimer =_mediaIdsPlaying.count > 0;
-  // TODO: remove
-  if (disableIdleTimer) {
-    NSLog(@"disabling idle timer!");
-  } else {
-    NSLog(@"re-enabling idle timer!");
-  }
+  BOOL disableIdleTimer = _mediaIdsPlaying.count > 0;
   [[UIApplication sharedApplication] setIdleTimerDisabled:disableIdleTimer];
 }
 
