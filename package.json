@@ -10,7 +10,8 @@
     "index.d.ts",
     "android",
     "ios",
-    "react-native-daily-js.podspec"
+    "react-native-daily-js.podspec",
+    "react-native.config.js"
   ],
   "scripts": {
     "build": "tsc",
