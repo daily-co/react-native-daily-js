@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "description": "React Native library for making video calls using Daily.co",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "type-overrides",
-    "index.d.ts",
     "android",
     "ios",
     "react-native-daily-js.podspec",
@@ -15,6 +14,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "postbuild": "sed -E -i.bak 's|@daily-co/daily-js|../type-overrides/@daily-co/daily-js|g' ./dist/index.d.ts && rm ./dist/index.d.ts.bak",
     "prepare": "npm run build"
   },
   "license": "ISC",
