@@ -11,10 +11,10 @@ This package introduces some constraints on what OS/SDK versions your project ca
 
 ## Installation
 
-`react-native-daily-js` has a couple of peer dependencies you'll have to install:
+Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
-npm i react-native-webrtc @react-native-community/async-storage
+npm i @daily-co/react-native-daily-js react-native-webrtc @react-native-community/async-storage
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
@@ -38,7 +38,7 @@ Finally, open Xcode, and in your project's `Info.plist` file add two new rows wi
 - `NSCameraUsageDescription`
 - `NSMicrophoneUsageDescription`
 
-For their values, provide user-facing strings explaining why your app is asking for camera and microphone access. Without these, the app will simply crash silently.
+For their values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that, without these, the app will simply crash silently.**
 
 ### Android
 
@@ -62,7 +62,7 @@ Update your `minSdkVersion` in your top-level `build.gradle` file:
 minSdkVersion = 21
 ```
 
-(You _may_ run into other issues, even though they appear to be resolved in a vanilla modern RN CLI-based setup. If you do, refer to [issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a significantly more complicated process.)
+(If you run into any issues, refer to [Github issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a more complicated process. The simpler process laid out above seems to work in a vanilla modern React Native CLI-based setup).
 
 ## Usage
 
