@@ -118,37 +118,3 @@ import { DailyMediaView } from '@daily-co/react-native-daily-js';
 ```
 
 [See this blog post for a more thorough walkthrough of structuring a React video-chat app powered by Daily.co](https://www.daily.co/blog/building-a-custom-video-chat-app-with-react). It's focused on React web, but most of it should also apply to your React Native app.
-
-## Notes for developers working on `react-native-daily-js`
-
-### TypeScript configuration
-
-We have a slightly unusual/complex TypeScript setup since we have the following constraints:
-
-- The `daily-js` package is meant for usage in the browser. As part of its type declarations, it should reference browser versions of WebRTC primitives (like `MediaStreamTrack`).
-- The `react-native-daily-js` package is meant for usage in React Native, with the aid of the `react-native-webrtc` library. As part of its type declarations, it should reference `react-native-webrtc` versions of those same WebRTC primitives.
-
-To do this, the `react-native-daily-js` package must:
-
-1. Override the types provided by `daily-js` during its compilation step.
-2. Expose those overridden types rather than `daily-js`'s original types when consumed by another project.
-
-The following lines in `tsconfig.json` achieves step 1, causing the compiler not to attempt to pull in the web-specific `@daily-co/daily-js` types:
-
-```json
-"paths": {
-  "@daily-co/daily-js": ["type-overrides/@daily-co/daily-js"]
-}
-```
-
-But this isn't enough. If we stopped there, the generated `index.d.ts` would include lines like:
-
-```js
-import DailyIframe from '@daily-co/daily-js';
-```
-
-In the project consuming `react-native-daily-js`, then, we'd still pull in types from `@daily-co/daily-js`'s standard install location in `node_modules`, which would be the web-specific types! To resolve this, we have the following postbuild step in `package.json` that modifies `index.d.ts` to point to the React Native-specific overrides:
-
-```json
-"postbuild": "sed -E -i.bak 's|@daily-co/daily-js|../type-overrides/@daily-co/daily-js|g' ./dist/index.d.ts && rm ./dist/index.d.ts.bak",
-```
