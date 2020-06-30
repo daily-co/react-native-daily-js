@@ -8,40 +8,40 @@ This package introduces some constraints on what OS/SDK versions your project ca
 
 - **iOS**: Deployment target >= 10.0
 - **Android**:
+
   - `minSdkVersion` >= 21 (if you downgrade to gradle 3.3.2)
   - `minSdkVersion` >= 24 (if you're depending on a newer version of gradle)
 
-The above can be specified in your Xcode project settings and your Android project-level `build.gradle` file, respectively.
+## Installation
 
-## React Native WebRTC Installation
+`react-native-daily-js` has a couple of peer dependencies you'll have to install:
 
-Under the hood, `react-native-daily-js` depends on `react-native-webrtc`, the popular implementation of WebRTC for React Native. While this package is bundled with `react-native-daily-js`, it does require a bit of configuration in your app.
+```bash
+npm i react-native-webrtc @react-native-community/async-storage
+```
+
+Then, follow the below steps to set up your native project on each platform. Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).
 
 ### iOS
 
-If you're using Cocoapods, update your `Podfile` with the following:
-
-```ruby
-pod 'react-native-webrtc', :path => '../node_modules/react-native-webrtc'
-pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
-```
-
-You also may have to update your `platform`, since `react-native-webrtc` only works on iOS 10 and above:
+Update the `platform` in your `Podfile`, since `react-native-webrtc` only works on iOS 10 and above:
 
 ```ruby
 platform :ios, '10.0'
 ```
 
-Then run `npx pod-install` as usual to generate a new `xcworkspace`.
+Then run:
 
-If you're not using Cocoapods, see [react-native-webrtc's manual installation instructions](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/iOSInstallation.md).
+```bash
+npx pod-install
+```
 
-Finally, in your Xcode project's `Info.plist`, provide user-facing strings explaining why your app is asking for camera and microphone access, under the following keys:
+Finally, open Xcode, and in your project's `Info.plist` file add two new rows with the following keys:
 
 - `NSCameraUsageDescription`
 - `NSMicrophoneUsageDescription`
 
-Note that your app will not be able to even prompt for access if these strings aren't specified.
+For their values, provide user-facing strings explaining why your app is asking for camera and microphone access. Without these, the app will simply crash silently.
 
 ### Android
 
