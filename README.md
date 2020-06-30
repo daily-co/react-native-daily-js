@@ -7,10 +7,7 @@ The Daily.co JavaScript library for React Native.
 This package introduces some constraints on what OS/SDK versions your project can support:
 
 - **iOS**: Deployment target >= 10.0
-- **Android**:
-
-  - `minSdkVersion` >= 21 (if you downgrade to gradle 3.3.2)
-  - `minSdkVersion` >= 24 (if you're depending on a newer version of gradle)
+- **Android**: `minSdkVersion` >= 21
 
 ## Installation
 
@@ -20,7 +17,7 @@ This package introduces some constraints on what OS/SDK versions your project ca
 npm i react-native-webrtc @react-native-community/async-storage
 ```
 
-Then, follow the below steps to set up your native project on each platform. Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).
+Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
 
 ### iOS
 
@@ -45,9 +42,7 @@ For their values, provide user-facing strings explaining why your app is asking 
 
 ### Android
 
-For a new project, you'll likely have to follow a subset of the steps laid out in [react-native-webrtc's installation instructions](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md). **If the below steps don't work for you, please refer to the full instructions.**
-
-First, you'll need to add the following permissions to `AndroidManifest.xml`:
+Add the following permissions to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
@@ -61,49 +56,13 @@ First, you'll need to add the following permissions to `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
 
-You'll also need to update your `settings.gradle` to include `':WebRTCModule'`:
+Update your `minSdkVersion` in your top-level `build.gradle` file:
 
-```xml
-include ':WebRTCModule', ':app'
-project(':WebRTCModule').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webrtc/android')
+```groovy
+minSdkVersion = 21
 ```
 
-And declare it a dependency in your app-level `build.gradle`:
-
-```
-dependencies {
-  // ...
-  compile project(':WebRTCModule')
-}
-```
-
-You'll want to downgrade your gradle version to 3.3.2 if necessary in your app-level `build.gradle`. This will allow you to specify a `minSdkVersion` of 21. See https://github.com/react-native-webrtc/react-native-webrtc/issues/720 for context, where the workaround is suggested.
-
-```
-classpath("com.android.tools.build:gradle:3.3.2")
-```
-
-And in your `gradle-wrapper.properties`, downgrade the `distributionUrl` if needed:
-
-```
-distributionUrl=https\://services.gradle.org/distributions/gradle-4.10.1-all.zip
-```
-
-Finally, you'll add the WebRTC package in `MainApplication.java`:
-
-```java
-import com.oney.WebRTCModule.WebRTCModulePackage;  // <--- Add this line
-...
-    @Override
-    protected List<ReactPackage> getPackages() {
-      @SuppressWarnings("UnnecessaryLocalVariable")
-      List<ReactPackage> packages = new PackageList(this).getPackages();
-      // Packages that cannot be autolinked yet can be added manually here, for example:
-      // packages.add(new MyReactNativePackage());
-      packages.add(new WebRTCModulePackage()); // <-- Add this line
-      return packages;
-    }
-```
+(You _may_ run into other issues, even though they appear to be resolved in a vanilla modern RN CLI-based setup. If you do, refer to [issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a significantly more complicated process.)
 
 ## Notes for developers working on `react-native-daily-js`
 
