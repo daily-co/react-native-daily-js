@@ -29,7 +29,7 @@ declare interface MediaDeviceInfo {
  * --- SECTION DUPLICATED WITH DAILY-JS ---
  */
 
-export type DailyLanguage = 'de' | 'en' | 'fi' | 'fr' | 'nl' | 'pt';
+export type DailyLanguage = 'de' | 'en' | 'fi' | 'fr' | 'nl' | 'pt' | 'pl';
 
 export type DailyEvent =
   | 'loading'
