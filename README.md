@@ -64,6 +64,61 @@ minSdkVersion = 21
 
 (You _may_ run into other issues, even though they appear to be resolved in a vanilla modern RN CLI-based setup. If you do, refer to [issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a significantly more complicated process.)
 
+## Usage
+
+`react-native-daily-js` is the React Native counterpart to `daily-js`, and can be used in pretty much the same way to add video calls to your apps. [Complete documentation for `daily-js` can be found here](https://docs.daily.co/reference#using-the-dailyco-front-end-library).
+
+```ts
+import Daily from '@daily-co/react-native-daily-js';
+
+// ...
+
+// Start joining a call
+const call = Daily.createCallObject();
+call.join({ url: 'https://mycompany.daily.co/allhands' });
+
+// Listen for events signaling changes to participants or their audio or video.
+// This includes the local participant.
+const events: DailyEvent[] = [
+  'participant-joined',
+  'participant-updated',
+  'participant-left',
+];
+for (const event of events) {
+  callObject.on(event, () => {
+    for (const participant of Object.values(callObject.participants())) {
+      console.log('---');
+      console.log(`participant ${participant.user_id}:`);
+      if (participant.local) {
+        console.log('is local');
+      }
+      if (participant.audio) {
+        console.log('audio enabled', participant.audioTrack);
+      }
+      if (participant.video) {
+        console.log('video enabled', participant.videoTrack);
+      }
+    }
+  });
+}
+```
+
+```tsx
+import { DailyMediaView } from '@daily-co/react-native-daily-js';
+
+// ...
+
+<DailyMediaView
+  videoTrack={participant.videoTrack}
+  audioTrack={participant.audioTrack}
+  mirror={participant.local}
+  zOrder={participant.local ? 1 : 0}
+  style={someStyle}
+/>;
+```
+
+[See this blog post for a more thorough walkthrough of structuring a React video-chat app powered by Daily.co](https://www.daily.co/blog/building-a-custom-video-chat-app-with-react). It's focused on React web, but most of it should also apply to your React Native app.
+
 ## Notes for developers working on `react-native-daily-js`
 
 ### TypeScript configuration
