@@ -32,7 +32,7 @@ You also may have to update your `platform`, since `react-native-webrtc` only wo
 platform :ios, '10.0'
 ```
 
-Then run `pod install` as usual to generate a new `xcworkspace`.
+Then run `npx pod-install` as usual to generate a new `xcworkspace`.
 
 If you're not using Cocoapods, see [react-native-webrtc's manual installation instructions](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/iOSInstallation.md).
 
@@ -77,7 +77,7 @@ dependencies {
 }
 ```
 
-You'll want to downgrade your gradle version to 3.3.2 if necessary in your app-level `build.gradle`. This will allow you to specify a `minSdkVersion` of 21. See [this discussion](https://www.notion.so/dailyco/RN-call-object-engineering-scratchpad-5e22adf3e9ef497d978ade9dd45187d9#dc842cd474b84bf0b5455c096feb61fb) for a bit of context.
+You'll want to downgrade your gradle version to 3.3.2 if necessary in your app-level `build.gradle`. This will allow you to specify a `minSdkVersion` of 21. See https://github.com/react-native-webrtc/react-native-webrtc/issues/720 for context, where the workaround is suggested.
 
 ```
 classpath("com.android.tools.build:gradle:3.3.2")
