@@ -75,7 +75,7 @@ import Daily from '@daily-co/react-native-daily-js';
 
 // Start joining a call
 const call = Daily.createCallObject();
-call.join({ url: 'https://mycompany.daily.co/allhands' });
+call.join({ url: 'https://your-team.daily.co/allhands' });
 
 // Listen for events signaling changes to participants or their audio or video.
 // This includes the local participant.
