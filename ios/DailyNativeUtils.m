@@ -19,6 +19,11 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 #pragma mark Public
 
 RCT_EXPORT_METHOD(registerStartedPlayingMedia:(nonnull NSString *)mediaId)
