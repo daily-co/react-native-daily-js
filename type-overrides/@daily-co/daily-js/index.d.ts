@@ -12,9 +12,9 @@ import {
   MediaTrackConstraints,
 } from 'react-native-webrtc';
 
-type MediaDeviceKind = 'audioinput' | 'audiooutput' | 'videoinput';
+export type MediaDeviceKind = 'audioinput' | 'audiooutput' | 'videoinput';
 
-declare interface MediaDeviceInfo {
+export interface MediaDeviceInfo {
   readonly deviceId: string;
   readonly groupId: string;
   readonly kind: MediaDeviceKind;
