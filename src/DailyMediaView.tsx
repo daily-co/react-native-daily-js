@@ -9,7 +9,6 @@ import {
 } from 'react-native-webrtc';
 
 const { DailyNativeUtils } = NativeModules;
-const ANDROID_NEW_STREAM_READY_DELAY_MS = 250;
 
 function useMediaPlayRegistration(track: MediaStreamTrack | null) {
   useEffect(() => {
@@ -40,17 +39,7 @@ export default function DailyMediaView(props: Props) {
   useEffect(() => {
     const tracks = [props.videoTrack, props.audioTrack].filter((t) => t);
     const stream = tracks.length > 0 ? new MediaStream(tracks) : null;
-    // Temporary workaround for an Android react-native-webrtc threading bug
-    // where a newly-created stream is sometimes not yet ready for use
-    // immediately in the JS thread. Waiting a little is not necessarily
-    // foolproof, but I haven't seen an issue with this during local testing.
-    if (Platform.OS === 'android') {
-      setTimeout(() => {
-        setStream(stream);
-      }, ANDROID_NEW_STREAM_READY_DELAY_MS);
-    } else {
-      setStream(stream);
-    }
+    setStream(stream);
   }, [props.videoTrack, props.audioTrack]);
 
   const rtcView = stream ? (
