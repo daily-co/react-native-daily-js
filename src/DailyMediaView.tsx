@@ -8,7 +8,7 @@ import {
   RTCViewProps,
 } from 'react-native-webrtc';
 
-const { DailyNativeUtils } = NativeModules;
+const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
 function useMediaPlayRegistration(track: MediaStreamTrack | null) {
   useEffect(() => {
@@ -16,6 +16,7 @@ function useMediaPlayRegistration(track: MediaStreamTrack | null) {
       return;
     }
     DailyNativeUtils.registerStartedPlayingMedia(track.id);
+    WebRTCModule.setDailyDefaultAudioMode();
     return () => {
       DailyNativeUtils.registerStoppedPlayingMedia(track.id);
     };
