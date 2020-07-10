@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { ViewStyle, View, Platform, NativeModules } from 'react-native';
+import { ViewStyle, View, NativeModules } from 'react-native';
 import {
   MediaStreamTrack,
   RTCView,
