@@ -14,14 +14,14 @@ This package introduces some constraints on what OS/SDK versions your project ca
 Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
-npm i @daily-co/react-native-daily-js react-native-webrtc @react-native-community/async-storage
+npm i @daily-co/react-native-daily-js @daily-co/react-native-webrtc @react-native-community/async-storage
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
 
 ### iOS
 
-Update the `platform` in your `Podfile`, since `react-native-webrtc` only works on iOS 10 and above:
+Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 10 and above:
 
 ```ruby
 platform :ios, '10.0'
