@@ -1,6 +1,6 @@
 {
   "name": "@daily-co/react-native-daily-js",
-  "version": "0.0.1-alpha.5",
+  "version": "0.0.1-alpha.6",
   "description": "React Native library for making video calls using Daily.co",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
