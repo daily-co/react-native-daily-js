@@ -10,7 +10,7 @@ import {
   MediaStream,
   MediaStreamTrack,
   MediaTrackConstraints,
-} from 'react-native-webrtc';
+} from '@daily-co/react-native-webrtc';
 
 export type MediaDeviceKind = 'audioinput' | 'audiooutput' | 'videoinput';
 

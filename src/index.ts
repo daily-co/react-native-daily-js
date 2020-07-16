@@ -1,5 +1,5 @@
 import DailyIframe from '@daily-co/daily-js';
-import { registerGlobals } from 'react-native-webrtc';
+import { registerGlobals } from '@daily-co/react-native-webrtc';
 import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
@@ -25,4 +25,4 @@ setupGlobals();
 export default DailyIframe;
 export * from '@daily-co/daily-js';
 export { DailyMediaView };
-export * from 'react-native-webrtc';
+export * from '@daily-co/react-native-webrtc';

@@ -6,7 +6,7 @@ import {
   RTCView,
   MediaStream,
   RTCViewProps,
-} from 'react-native-webrtc';
+} from '@daily-co/react-native-webrtc';
 
 const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
