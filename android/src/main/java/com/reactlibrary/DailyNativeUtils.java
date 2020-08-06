@@ -17,7 +17,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
     private static final String TAG = DailyNativeUtils.class.getName();
 
     private final ReactApplicationContext reactContext;
-    private Set<String> mediaIdsPlaying = new HashSet<>();
+    private Set<String> requestersKeepingDeviceAwake = new HashSet<>();
 
     public DailyNativeUtils(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -30,22 +30,16 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public  void registerStartedPlayingMedia(String mediaId) {
+    public  void setKeepDeviceAwake(boolean keepDeviceAwake, String requesterId) {
         Activity activity = getCurrentActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
-                mediaIdsPlaying.add(mediaId);
-                updateKeepScreenOnFlag(activity);
-            });
-        }
-    }
-
-    @ReactMethod
-    public  void registerStoppedPlayingMedia(String mediaId) {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            activity.runOnUiThread(() -> {
-                mediaIdsPlaying.remove(mediaId);
+                if (keepDeviceAwake) {
+                    requestersKeepingDeviceAwake.add(requesterId);
+                }
+                else {
+                    requestersKeepingDeviceAwake.remove(requesterId);
+                }
                 updateKeepScreenOnFlag(activity);
             });
         }
@@ -53,7 +47,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
 
     private  void updateKeepScreenOnFlag(Activity activity) {
         Window window = activity.getWindow();
-        if (mediaIdsPlaying.size() > 0) {
+        if (requestersKeepingDeviceAwake.size() > 0) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

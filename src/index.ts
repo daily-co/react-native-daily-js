@@ -3,7 +3,8 @@ import { registerGlobals } from '@daily-co/react-native-webrtc';
 import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
+const { DailyNativeUtils } = NativeModules;
 
 declare const global: any;
 
@@ -18,6 +19,8 @@ function setupGlobals() {
   if (Platform.OS === 'ios') {
     global.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
   }
+
+  global.DailyNativeUtils = DailyNativeUtils;
 }
 
 setupGlobals();

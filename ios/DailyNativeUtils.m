@@ -3,7 +3,7 @@
 @interface DailyNativeUtils()
 
 // State expects to only be accessed on main thread, for thread safety
-@property (nonatomic, strong) NSMutableSet *mediaIdsPlaying;
+@property (nonatomic, strong) NSMutableSet *requestersKeepingDeviceAwake;
 
 @end
 
@@ -14,7 +14,7 @@ RCT_EXPORT_MODULE()
 - (instancetype)init
 {
   if (self = [super init]) {
-    _mediaIdsPlaying = [NSMutableSet set];
+    _requestersKeepingDeviceAwake = [NSMutableSet set];
   }
   return self;
 }
@@ -26,18 +26,15 @@ RCT_EXPORT_MODULE()
 
 #pragma mark Public
 
-RCT_EXPORT_METHOD(registerStartedPlayingMedia:(nonnull NSString *)mediaId)
+RCT_EXPORT_METHOD(setKeepDeviceAwake:(BOOL)keepDeviceAwake onBehalfOfRequester:(nonnull NSString *)requesterId)
 {
   [DailyNativeUtils dispatchSyncOnMain:^{
-    [self.mediaIdsPlaying addObject:mediaId];
-    [self updateIdleTimer];
-  }];
-}
-
-RCT_EXPORT_METHOD(registerStoppedPlayingMedia:(nonnull NSString *)mediaId)
-{
-  [DailyNativeUtils dispatchSyncOnMain:^{
-    [self.mediaIdsPlaying removeObject:mediaId];
+    if (keepDeviceAwake) {
+      [self.requestersKeepingDeviceAwake addObject:requesterId];
+    }
+    else {
+      [self.requestersKeepingDeviceAwake removeObject:requesterId];
+    }
     [self updateIdleTimer];
   }];
 }
@@ -47,7 +44,7 @@ RCT_EXPORT_METHOD(registerStoppedPlayingMedia:(nonnull NSString *)mediaId)
 // Expects to be invoked only from main thread
 - (void)updateIdleTimer
 {
-  BOOL disableIdleTimer = _mediaIdsPlaying.count > 0;
+  BOOL disableIdleTimer = _requestersKeepingDeviceAwake.count > 0;
   [[UIApplication sharedApplication] setIdleTimerDisabled:disableIdleTimer];
 }
 
