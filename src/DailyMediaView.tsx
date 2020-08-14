@@ -8,17 +8,6 @@ import {
   RTCViewProps,
 } from '@daily-co/react-native-webrtc';
 
-const { WebRTCModule } = NativeModules;
-
-function useMediaPlayRegistration(track: MediaStreamTrack | null) {
-  useEffect(() => {
-    if (!track) {
-      return;
-    }
-    WebRTCModule.setDailyDefaultAudioMode();
-  }, [track]);
-}
-
 type Props = {
   videoTrack: MediaStreamTrack | null;
   audioTrack: MediaStreamTrack | null;
@@ -30,8 +19,6 @@ type Props = {
 
 export default function DailyMediaView(props: Props) {
   const [stream, setStream] = useState<MediaStream | null>(null);
-  useMediaPlayRegistration(props.videoTrack);
-  useMediaPlayRegistration(props.audioTrack);
 
   useEffect(() => {
     const tracks = [props.videoTrack, props.audioTrack].filter((t) => t);

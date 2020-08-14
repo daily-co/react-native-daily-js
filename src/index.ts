@@ -4,7 +4,7 @@ import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import { Platform, NativeModules } from 'react-native';
-const { DailyNativeUtils } = NativeModules;
+const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
 declare const global: any;
 
@@ -20,7 +20,10 @@ function setupGlobals() {
     global.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
   }
 
-  global.DailyNativeUtils = DailyNativeUtils;
+  global.DailyNativeUtils = {
+    ...DailyNativeUtils,
+    setInCallAudioMode: WebRTCModule.setDailyInCallAudioMode,
+  };
 }
 
 setupGlobals();
