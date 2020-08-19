@@ -22,7 +22,7 @@ function setupGlobals() {
 
   global.DailyNativeUtils = {
     ...DailyNativeUtils,
-    setInCallAudioMode: WebRTCModule.setDailyInCallAudioMode,
+    setAudioMode: WebRTCModule.setDailyAudioMode,
   };
 }
 
