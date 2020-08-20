@@ -26,11 +26,11 @@
     "baseUrl": "https://github.com/daily-co/react-native-daily-js"
   },
   "dependencies": {
-    "@daily-co/daily-js": "0.9.993-beta.1",
+    "@daily-co/daily-js": "0.9.993-beta.4",
     "react-native-url-polyfill": "^1.1.2"
   },
   "peerDependencies": {
-    "@daily-co/react-native-webrtc": "1.75.4",
+    "@daily-co/react-native-webrtc": "1.75.5",
     "@react-native-community/async-storage": "^1.11.0"
   },
   "devDependencies": {
