@@ -393,6 +393,8 @@ export interface DailyFaceInfo {
   };
 }
 
+export type DailyNativeInCallAudioMode = 'video' | 'voice';
+
 export interface DailyCallFactory {
   createCallObject(properties?: DailyCallOptions): DailyCall;
   wrap(iframe: HTMLIFrameElement, properties?: DailyCallOptions): DailyCall;
@@ -447,8 +449,10 @@ export interface DailyCall {
   }): DailyCall;
   setOutputDevice(audioDevice: { outputDeviceId?: string }): DailyCall;
   getInputDevices(): Promise<DailyDeviceInfos>;
-  nativeInCallAudioMode(): string;
-  setNativeInCallAudioMode(inCallAudioMode: 'video' | 'voice'): DailyCall;
+  nativeInCallAudioMode(): DailyNativeInCallAudioMode;
+  setNativeInCallAudioMode(
+    inCallAudioMode: DailyNativeInCallAudioMode
+  ): DailyCall;
   load(properties?: DailyLoadOptions): Promise<void>;
   startScreenShare(captureOptions?: DailyScreenCaptureOptions): void;
   stopScreenShare(): void;
