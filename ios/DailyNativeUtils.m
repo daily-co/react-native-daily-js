@@ -39,6 +39,12 @@ RCT_EXPORT_METHOD(setKeepDeviceAwake:(BOOL)keepDeviceAwake onBehalfOfRequester:(
   }];
 }
 
+RCT_EXPORT_METHOD(setKeepMeetingRunningInBackground:(BOOL)keepMeetingRunningInBackground
+                  onBehalfOfRequester:(nonnull NSString *)requesterId)
+{
+  // Nothing to do for this method on iOS at the moment
+}
+
 #pragma mark Private
 
 // Expects to be invoked only from main thread

@@ -18,6 +18,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Set<String> requestersKeepingDeviceAwake = new HashSet<>();
+    private Set<String> requestersKeepingMeetingRunningInBackground = new HashSet<>();
 
     public DailyNativeUtils(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -30,14 +31,13 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public  void setKeepDeviceAwake(boolean keepDeviceAwake, String requesterId) {
+    public void setKeepDeviceAwake(boolean keepDeviceAwake, String requesterId) {
         Activity activity = getCurrentActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
                 if (keepDeviceAwake) {
                     requestersKeepingDeviceAwake.add(requesterId);
-                }
-                else {
+                } else {
                     requestersKeepingDeviceAwake.remove(requesterId);
                 }
                 updateKeepScreenOnFlag(activity);
@@ -45,12 +45,39 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
         }
     }
 
-    private  void updateKeepScreenOnFlag(Activity activity) {
+    @ReactMethod
+    public void setKeepMeetingRunningInBackground(boolean keepMeetingRunningInBackground, String requesterId) {
+        Activity activity = getCurrentActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                if (keepMeetingRunningInBackground) {
+                    requestersKeepingMeetingRunningInBackground.add(requesterId);
+                } else {
+                    requestersKeepingMeetingRunningInBackground.remove(requesterId);
+                }
+                updateDailyMeetingForegroundService(activity);
+            });
+        }
+    }
+
+    private void updateKeepScreenOnFlag(Activity activity) {
         Window window = activity.getWindow();
         if (requestersKeepingDeviceAwake.size() > 0) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    private void updateDailyMeetingForegroundService(Activity activity) {
+        if (requestersKeepingMeetingRunningInBackground.size() > 0) {
+            // TODO: remove
+            Log.d(TAG, "updateDailyMeetingForegroundService: START");
+            DailyOngoingMeetingForegroundService.start(activity);
+        } else {
+            // TODO: remove
+            Log.d(TAG, "updateDailyMeetingForegroundService: STOP");
+            DailyOngoingMeetingForegroundService.stop(activity);
         }
     }
 }
