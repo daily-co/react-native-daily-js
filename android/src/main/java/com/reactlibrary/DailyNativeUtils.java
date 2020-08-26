@@ -18,7 +18,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Set<String> requestersKeepingDeviceAwake = new HashSet<>();
-    private Set<String> requestersKeepingMeetingRunningInBackground = new HashSet<>();
+    private Set<String> requestersShowingOngoingMeetingNotification = new HashSet<>();
 
     public DailyNativeUtils(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -46,16 +46,16 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setKeepMeetingRunningInBackground(boolean keepMeetingRunningInBackground, String requesterId) {
+    public void setShowOngoingMeetingNotification(boolean showOngoingMeetingNotification, String requesterId) {
         Activity activity = getCurrentActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
-                if (keepMeetingRunningInBackground) {
-                    requestersKeepingMeetingRunningInBackground.add(requesterId);
+                if (showOngoingMeetingNotification) {
+                    requestersShowingOngoingMeetingNotification.add(requesterId);
                 } else {
-                    requestersKeepingMeetingRunningInBackground.remove(requesterId);
+                    requestersShowingOngoingMeetingNotification.remove(requesterId);
                 }
-                updateDailyMeetingForegroundService(activity);
+                updateOngoingMeetingForegroundService(activity);
             });
         }
     }
@@ -69,14 +69,14 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
         }
     }
 
-    private void updateDailyMeetingForegroundService(Activity activity) {
-        if (requestersKeepingMeetingRunningInBackground.size() > 0) {
+    private void updateOngoingMeetingForegroundService(Activity activity) {
+        if (requestersShowingOngoingMeetingNotification.size() > 0) {
             // TODO: remove
-            Log.d(TAG, "updateDailyMeetingForegroundService: START");
+            Log.d(TAG, "updateOngoingMeetingForegroundService: START");
             DailyOngoingMeetingForegroundService.start(activity);
         } else {
             // TODO: remove
-            Log.d(TAG, "updateDailyMeetingForegroundService: STOP");
+            Log.d(TAG, "updateOngoingMeetingForegroundService: STOP");
             DailyOngoingMeetingForegroundService.stop(activity);
         }
     }
