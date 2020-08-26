@@ -16,6 +16,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+// In addition to showing a notification, this helps keep the app alive in the background when
+// there's an ongoing meeting.
 public class DailyOngoingMeetingForegroundService extends Service {
 
     private static final String TAG = DailyOngoingMeetingForegroundService.class.getName();
@@ -66,12 +68,16 @@ public class DailyOngoingMeetingForegroundService extends Service {
         return START_NOT_STICKY;
     }
 
+    // This is safe to call multiple times. It will no-op if the channel already exists.
     @RequiresApi(Build.VERSION_CODES.O)
     private static void createNotificationChannel(Context context) {
         NotificationChannel serviceChannel = new NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 "Daily Ongoing Meeting Notification Channel",
                 NotificationManager.IMPORTANCE_DEFAULT);
+        serviceChannel.setShowBadge(false);
+        serviceChannel.enableLights(false);
+        serviceChannel.setVibrationPattern(new long[]{0});
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         manager.createNotificationChannel(serviceChannel);
     }
