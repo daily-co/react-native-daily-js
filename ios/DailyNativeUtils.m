@@ -39,12 +39,6 @@ RCT_EXPORT_METHOD(setKeepDeviceAwake:(BOOL)keepDeviceAwake onBehalfOfRequester:(
   }];
 }
 
-RCT_EXPORT_METHOD(setShowOngoingMeetingNotification:(BOOL)showOngoingMeetingNotification
-                  onBehalfOfRequester:(nonnull NSString *)requesterId)
-{
-  // Only applicable on Android
-}
-
 #pragma mark Private
 
 // Expects to be invoked only from main thread

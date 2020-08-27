@@ -65,8 +65,9 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
         }
     }
 
+    // Note: notification properties (e.g. title) can't be changed while it is ongoing.
     @ReactMethod
-    public void setShowOngoingMeetingNotification(boolean showOngoingMeetingNotification, String requesterId) {
+    public void setShowOngoingMeetingNotification(boolean showOngoingMeetingNotification, String title, String subtitle, String requesterId) {
         Activity activity = getCurrentActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
@@ -75,7 +76,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
                 } else {
                     requestersShowingOngoingMeetingNotification.remove(requesterId);
                 }
-                updateOngoingMeetingForegroundService(activity);
+                updateOngoingMeetingForegroundService(activity, title, subtitle);
             });
         }
     }
@@ -89,9 +90,9 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
         }
     }
 
-    private void updateOngoingMeetingForegroundService(Activity activity) {
+    private void updateOngoingMeetingForegroundService(Activity activity, String title, String subtitle) {
         if (requestersShowingOngoingMeetingNotification.size() > 0) {
-            DailyOngoingMeetingForegroundService.start(activity.getClass(), reactContext);
+            DailyOngoingMeetingForegroundService.start(activity.getClass(), title, subtitle, reactContext);
         } else {
             DailyOngoingMeetingForegroundService.stop(reactContext);
         }

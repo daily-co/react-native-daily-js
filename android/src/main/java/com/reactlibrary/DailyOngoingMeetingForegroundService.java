@@ -23,15 +23,19 @@ public class DailyOngoingMeetingForegroundService extends Service {
     private static final String TAG = DailyOngoingMeetingForegroundService.class.getName();
     private static final String NOTIFICATION_CHANNEL_ID = "dailyOngoingMeetingNotificationChannel";
     private static final int NOTIFICATION_ID = 1;
+    private static final String EXTRA_TITLE = "title";
+    private static final String EXTRA_SUBTITLE = "subtitle";
 
     public static Class<? extends Activity> activityClassToOpenFromNotification;
 
-    public static void start(Class<? extends Activity> activityClass, Context context) {
+    public static void start(Class<? extends Activity> activityClass, String title, String subtitle, Context context) {
         activityClassToOpenFromNotification = activityClass;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context);
         }
         Intent intent = new Intent(context, DailyOngoingMeetingForegroundService.class);
+        intent.putExtra(EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_SUBTITLE, subtitle);
         ContextCompat.startForegroundService(context, intent);
     }
 
@@ -48,12 +52,21 @@ public class DailyOngoingMeetingForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String title = intent.getStringExtra(EXTRA_TITLE);
+        if (title == null) {
+            title = "In a call";
+        }
+        String subtitle = intent.getStringExtra(EXTRA_SUBTITLE);
+        if (subtitle == null) {
+            subtitle = "You're in a call. Tap to open it.";
+        }
+
         Intent notificationIntent = new Intent(this, activityClassToOpenFromNotification);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("In a call")
-                .setContentText("In a call")
+                .setContentTitle(title)
+                .setContentText(subtitle)
                 .setSmallIcon(R.drawable.redbox_top_border_background)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
