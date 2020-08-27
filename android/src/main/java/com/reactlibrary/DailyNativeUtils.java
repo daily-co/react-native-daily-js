@@ -1,10 +1,13 @@
 package com.reactlibrary;
 
 import android.app.Activity;
+import android.os.Process;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -23,6 +26,23 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
     public DailyNativeUtils(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        reactContext.addLifecycleEventListener(new LifecycleEventListener() {
+            @Override
+            public void onHostResume() {
+            }
+
+            @Override
+            public void onHostPause() {
+            }
+
+            @Override
+            public void onHostDestroy() {
+                DailyOngoingMeetingForegroundService.stop(reactContext);
+                // This seems extreme, but the process won't otherwise immediately stop sending
+                // audio and video
+                Process.killProcess(Process.myPid());
+            }
+        });
     }
 
     @Override
@@ -71,13 +91,9 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule {
 
     private void updateOngoingMeetingForegroundService(Activity activity) {
         if (requestersShowingOngoingMeetingNotification.size() > 0) {
-            // TODO: remove
-            Log.d(TAG, "updateOngoingMeetingForegroundService: START");
-            DailyOngoingMeetingForegroundService.start(activity);
+            DailyOngoingMeetingForegroundService.start(activity.getClass(), reactContext);
         } else {
-            // TODO: remove
-            Log.d(TAG, "updateOngoingMeetingForegroundService: STOP");
-            DailyOngoingMeetingForegroundService.stop(activity);
+            DailyOngoingMeetingForegroundService.stop(reactContext);
         }
     }
 }

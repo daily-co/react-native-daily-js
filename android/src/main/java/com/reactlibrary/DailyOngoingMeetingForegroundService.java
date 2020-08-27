@@ -24,10 +24,10 @@ public class DailyOngoingMeetingForegroundService extends Service {
     private static final String NOTIFICATION_CHANNEL_ID = "dailyOngoingMeetingNotificationChannel";
     private static final int NOTIFICATION_ID = 1;
 
-    public static Activity activityToOpenFromNotification;
+    public static Class<? extends Activity> activityClassToOpenFromNotification;
 
-    public static void start(Activity context) {
-        activityToOpenFromNotification = context;
+    public static void start(Class<? extends Activity> activityClass, Context context) {
+        activityClassToOpenFromNotification = activityClass;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context);
         }
@@ -48,7 +48,7 @@ public class DailyOngoingMeetingForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(this, activityToOpenFromNotification.getClass());
+        Intent notificationIntent = new Intent(this, activityClassToOpenFromNotification);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
