@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -25,10 +26,11 @@ public class DailyOngoingMeetingForegroundService extends Service {
     private static final int NOTIFICATION_ID = 1;
     private static final String EXTRA_TITLE = "title";
     private static final String EXTRA_SUBTITLE = "subtitle";
+    private static final String EXTRA_ICON_NAME = "icon_name";
 
     public static Class<? extends Activity> activityClassToOpenFromNotification;
 
-    public static void start(Class<? extends Activity> activityClass, String title, String subtitle, Context context) {
+    public static void start(Class<? extends Activity> activityClass, String title, String subtitle, String iconName, Context context) {
         activityClassToOpenFromNotification = activityClass;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context);
@@ -36,6 +38,7 @@ public class DailyOngoingMeetingForegroundService extends Service {
         Intent intent = new Intent(context, DailyOngoingMeetingForegroundService.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_SUBTITLE, subtitle);
+        intent.putExtra(EXTRA_ICON_NAME, iconName);
         ContextCompat.startForegroundService(context, intent);
     }
 
@@ -60,6 +63,14 @@ public class DailyOngoingMeetingForegroundService extends Service {
         if (subtitle == null) {
             subtitle = "You're in a call. Tap to open it.";
         }
+        String iconName = intent.getStringExtra(EXTRA_ICON_NAME);
+        if (iconName == null) {
+            iconName = "ic_daily_videocam_24dp";
+        }
+        int icon =  getResources().getIdentifier(
+                iconName,
+                "drawable",
+                getPackageName());
 
         Intent notificationIntent = new Intent(this, activityClassToOpenFromNotification);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -67,7 +78,7 @@ public class DailyOngoingMeetingForegroundService extends Service {
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(subtitle)
-                .setSmallIcon(R.drawable.redbox_top_border_background)
+                .setSmallIcon(icon)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
                 .setCategory(NotificationCompat.CATEGORY_CALL)

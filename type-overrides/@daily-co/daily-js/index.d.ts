@@ -133,6 +133,7 @@ export interface DailyReactNativeConfig {
   androidInCallNotification?: {
     title?: string;
     subtitle?: string;
+    iconName?: string;
     disableForCustomOverride?: boolean;
   };
 }
