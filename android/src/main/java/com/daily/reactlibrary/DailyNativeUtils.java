@@ -1,12 +1,10 @@
-package com.reactlibrary;
+package com.daily.reactlibrary;
 
 import android.app.Activity;
 import android.os.Process;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;

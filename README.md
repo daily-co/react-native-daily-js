@@ -60,7 +60,7 @@ Add the following permissions to `AndroidManifest.xml`:
 
 <application>
 // ...
-  <service android:name="com.reactlibrary.DailyOngoingMeetingForegroundService"/>
+  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService"/>
 </application>
 ```
 
