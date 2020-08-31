@@ -107,6 +107,7 @@ export interface DailyCallOptions {
   cssFile?: string;
   cssText?: string;
   dailyConfig?: DailyAdvancedConfig;
+  reactNativeConfig?: DailyReactNativeConfig;
   subscribeToTracksAutomatically?: boolean;
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
@@ -126,6 +127,15 @@ export interface DailyAdvancedConfig {
   h264Profile?: string;
   camSimulcastEncodings?: any[];
   screenSimulcastEncodings?: any[];
+}
+
+export interface DailyReactNativeConfig {
+  androidInCallNotification?: {
+    title?: string;
+    subtitle?: string;
+    iconName?: string;
+    disableForCustomOverride?: boolean;
+  };
 }
 
 export interface DailyParticipant {

@@ -14,7 +14,7 @@ This package introduces some constraints on what OS/SDK versions your project ca
 Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
-npm i @daily-co/react-native-daily-js @daily-co/react-native-webrtc @react-native-community/async-storage
+npm i @daily-co/react-native-daily-js @daily-co/react-native-webrtc @react-native-community/async-storage react-native-background-timer
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
@@ -56,6 +56,12 @@ Add the following permissions to `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+<application>
+// ...
+  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService"/>
+</application>
 ```
 
 Update your `minSdkVersion` in your top-level `build.gradle` file:
@@ -87,8 +93,8 @@ const events: DailyEvent[] = [
   'participant-left',
 ];
 for (const event of events) {
-  callObject.on(event, () => {
-    for (const participant of Object.values(callObject.participants())) {
+  call.on(event, () => {
+    for (const participant of Object.values(call.participants())) {
       console.log('---');
       console.log(`participant ${participant.user_id}:`);
       if (participant.local) {
