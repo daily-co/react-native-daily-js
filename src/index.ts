@@ -4,12 +4,30 @@ import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
-import { Platform, NativeModules } from 'react-native';
+import { Platform, NativeModules, NativeEventEmitter } from 'react-native';
 const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
 declare const global: any;
 
-function setupGlobals() {
+const webRTCEventEmitter = new NativeEventEmitter(WebRTCModule);
+
+let hasAudioFocus = true;
+let audioFocusChangeListeners: Set<(hasFocus: boolean) => void> = new Set();
+
+function setupEventListeners() {
+  webRTCEventEmitter.addListener('EventAudioFocusChange', (event) => {
+    if (!event || typeof event.hasFocus !== 'boolean') {
+      console.error('invalid EventAudioFocusChange event');
+    }
+    const hadAudioFocus = hasAudioFocus;
+    hasAudioFocus = event.hasFocus;
+    if (hadAudioFocus !== hasAudioFocus) {
+      audioFocusChangeListeners.forEach((listener) => listener(hasAudioFocus));
+    }
+  });
+}
+
+function setupGlobals(): void {
   // WebRTC APIs + global `window` object
   registerGlobals();
 
@@ -38,9 +56,16 @@ function setupGlobals() {
   global.DailyNativeUtils = {
     ...DailyNativeUtils,
     setAudioMode: WebRTCModule.setDailyAudioMode,
+    addAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
+      audioFocusChangeListeners.add(listener);
+    },
+    removeAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
+      audioFocusChangeListeners.delete(listener);
+    },
   };
 }
 
+setupEventListeners();
 setupGlobals();
 
 export default DailyIframe;
