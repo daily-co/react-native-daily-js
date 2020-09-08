@@ -26,17 +26,21 @@ const appActiveStateChangeListeners: Set<(
 
 function setupEventListeners() {
   // audio focus: used by daily-js to auto-mute mic, for instance
-  hasAudioFocus = true; // safe assumption, hopefully
-  webRTCEventEmitter.addListener('EventAudioFocusChange', (event) => {
-    if (!event || typeof event.hasFocus !== 'boolean') {
-      console.error('invalid EventAudioFocusChange event');
-    }
-    const hadAudioFocus = hasAudioFocus;
-    hasAudioFocus = event.hasFocus;
-    if (hadAudioFocus !== hasAudioFocus) {
-      audioFocusChangeListeners.forEach((listener) => listener(hasAudioFocus));
-    }
-  });
+  if (Platform.OS === 'android') {
+    hasAudioFocus = true; // safe assumption, hopefully
+    webRTCEventEmitter.addListener('EventAudioFocusChange', (event) => {
+      if (!event || typeof event.hasFocus !== 'boolean') {
+        console.error('invalid EventAudioFocusChange event');
+      }
+      const hadAudioFocus = hasAudioFocus;
+      hasAudioFocus = event.hasFocus;
+      if (hadAudioFocus !== hasAudioFocus) {
+        audioFocusChangeListeners.forEach((listener) =>
+          listener(hasAudioFocus)
+        );
+      }
+    });
+  }
 
   // app active state: used by daily-js to auto-mute cam, for instance
   appState = AppState.currentState;
