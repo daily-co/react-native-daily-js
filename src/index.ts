@@ -4,17 +4,29 @@ import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
-import { Platform, NativeModules, NativeEventEmitter } from 'react-native';
+import {
+  Platform,
+  NativeModules,
+  NativeEventEmitter,
+  AppState,
+  AppStateStatus,
+} from 'react-native';
 const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
 declare const global: any;
 
 const webRTCEventEmitter = new NativeEventEmitter(WebRTCModule);
 
-let hasAudioFocus = true;
-let audioFocusChangeListeners: Set<(hasFocus: boolean) => void> = new Set();
+let hasAudioFocus: boolean;
+let appState: AppStateStatus;
+const audioFocusChangeListeners: Set<(hasFocus: boolean) => void> = new Set();
+const appActiveStateChangeListeners: Set<(
+  isActive: boolean
+) => void> = new Set();
 
 function setupEventListeners() {
+  // audio focus: used by daily-js to auto-mute mic, for instance
+  hasAudioFocus = true; // safe assumption, hopefully
   webRTCEventEmitter.addListener('EventAudioFocusChange', (event) => {
     if (!event || typeof event.hasFocus !== 'boolean') {
       console.error('invalid EventAudioFocusChange event');
@@ -23,6 +35,18 @@ function setupEventListeners() {
     hasAudioFocus = event.hasFocus;
     if (hadAudioFocus !== hasAudioFocus) {
       audioFocusChangeListeners.forEach((listener) => listener(hasAudioFocus));
+    }
+  });
+
+  // app active state: used by daily-js to auto-mute cam, for instance
+  appState = AppState.currentState;
+  AppState.addEventListener('change', (nextState) => {
+    const previousState = appState;
+    appState = nextState;
+    const wasActive = previousState === 'active';
+    const isActive = appState === 'active';
+    if (wasActive !== isActive) {
+      appActiveStateChangeListeners.forEach((listener) => listener(isActive));
     }
   });
 }
@@ -61,6 +85,16 @@ function setupGlobals(): void {
     },
     removeAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
       audioFocusChangeListeners.delete(listener);
+    },
+    addAppActiveStateChangeListener: (
+      listener: (isActive: boolean) => void
+    ) => {
+      appActiveStateChangeListeners.add(listener);
+    },
+    removeAppActiveStateChangeListener: (
+      listener: (isActive: boolean) => void
+    ) => {
+      appActiveStateChangeListeners.delete(listener);
     },
   };
 }
