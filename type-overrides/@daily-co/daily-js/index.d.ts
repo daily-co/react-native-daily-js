@@ -149,6 +149,10 @@ export interface DailyReactNativeConfig {
     iconName?: string;
     disableForCustomOverride?: boolean;
   };
+  disableAutoDeviceManagement?: {
+    audio?: boolean;
+    video?: boolean;
+  };
 }
 
 export interface DailyParticipant {
