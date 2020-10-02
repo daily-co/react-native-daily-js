@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { ViewStyle, View, NativeModules } from 'react-native';
+import { ViewStyle, View, Platform } from 'react-native';
 import {
   MediaStreamTrack,
   RTCView,
@@ -32,9 +32,16 @@ export default function DailyMediaView(props: Props) {
       mirror={props.mirror}
       zOrder={props.zOrder}
       objectFit={props.objectFit}
-      // hide if no video track (still plays audio).
-      // hiding is important since otherwise it shows a frozen frame.
-      style={props.videoTrack ? props.style : { display: 'none' }}
+      // on iOS, hide if there's no video track in order to prevent a frozen
+      // frame from being displayed. audio playback is unaffected.
+      // on Android, hiding is unnecessary since no frozen frame is displayed,
+      // and in fact triggers a bug where if it's hidden while in the background
+      // it gets "stuck" in the hidden state.
+      style={
+        props.videoTrack || Platform.OS === 'android'
+          ? props.style
+          : { display: 'none' }
+      }
     />
   ) : null;
 
