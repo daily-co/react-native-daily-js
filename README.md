@@ -41,7 +41,7 @@ Next, you will need to update your project's `Info.plist`. Open your `Info.plist
 - `NSMicrophoneUsageDescription`
 - `UIBackgroundModes`
 
-For the first two values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that the app will simply crash silently without these.**
+For the first two key's values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that the app will simply crash silently without these.**
 
 `UIBackgroundModes` is handled slightly differently and will resolve to an array. For its first item, specify the value `voip`. This ensures that audio will continue uninterrupted when your app is sent to the background.
 
