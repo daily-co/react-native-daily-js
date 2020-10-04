@@ -35,13 +35,13 @@ Then run:
 npx pod-install
 ```
 
-Next, you will need to update your project's `Info.plist`. Open Xcode, and in your project's `Info.plist` file add three new rows with the following keys:
+Next, you will need to update your project's `Info.plist`. Open your `Info.plist` file in Xcode and add three new rows with the following keys:
 
 - `NSCameraUsageDescription`
 - `NSMicrophoneUsageDescription`
 - `UIBackgroundModes`
 
-For the first two values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that, without these, the app will simply crash silently.**
+For the first two values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that the app will simply crash silently without these.**
 
 `UIBackgroundModes` is handled slightly differently and will resolve to an array. For its first item, specify the value `voip`. This ensures that audio will continue uninterrupted when your app is sent to the background.
 
