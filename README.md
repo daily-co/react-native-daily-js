@@ -35,7 +35,7 @@ Then run:
 npx pod-install
 ```
 
-Next, you will need to update your project's `Info.plist`. Open your `Info.plist` file in Xcode and add three new rows with the following keys:
+Next, you will need to update your project's `Info.plist` to add three new rows with the following keys:
 
 - `NSCameraUsageDescription`
 - `NSMicrophoneUsageDescription`
@@ -45,7 +45,17 @@ For the first two key's values, provide user-facing strings explaining why your 
 
 `UIBackgroundModes` is handled slightly differently and will resolve to an array. For its first item, specify the value `voip`. This ensures that audio will continue uninterrupted when your app is sent to the background.
 
-It should look like this:
+To add the new rows through Xcode, open the `Info.plist` and add the following three rows:
+
+| Key                                    | Type   | Value                                               |
+|----------------------------------------|--------|-----------------------------------------------------|
+| Privacy - Camera Usage Description     | String | "Daily Playground needs camera access to work"      |
+| Privacy - Microphone Usage Description | String | "Daily Playground needs mircrophone access to work" |
+| Required background modes              | Array  | 1 item                                              |
+| ---> Item 0                         | String | "App provides Voice over IP services"               |
+
+
+If you view the raw file contents of `Info.plist`, it should look like this:
 
 ```
 <dict>
