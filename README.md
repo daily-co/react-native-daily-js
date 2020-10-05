@@ -52,7 +52,7 @@ To add the new rows through Xcode, open the `Info.plist` and add the following t
 | Privacy - Camera Usage Description     | String | "Daily Playground needs camera access to work"      |
 | Privacy - Microphone Usage Description | String | "Daily Playground needs mircrophone access to work" |
 | Required background modes              | Array  | 1 item                                              |
-| ---> Item 0                         | String | "App provides Voice over IP services"               |
+| ---> Item 0                            | String | "App provides Voice over IP services"               |
 
 
 If you view the raw file contents of `Info.plist`, it should look like this:
