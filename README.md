@@ -35,14 +35,42 @@ Then run:
 npx pod-install
 ```
 
-Open Xcode, and in your project's `Info.plist` file add two new rows with the following keys:
+Next, you will need to update your project's `Info.plist` to add three new rows with the following keys:
 
 - `NSCameraUsageDescription`
 - `NSMicrophoneUsageDescription`
+- `UIBackgroundModes`
 
-For their values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that, without these, the app will simply crash silently.**
+For the first two key's values, provide user-facing strings explaining why your app is asking for camera and microphone access. **Note that the app will simply crash silently without these.**
 
-Also in `Info.plist`, add a row with the key `UIBackgroundModes`. This will resolve to an array. For the first item, specify the value `voip`. This ensures that audio will continue uninterrupted when your app is sent to the background.
+`UIBackgroundModes` is handled slightly differently and will resolve to an array. For its first item, specify the value `voip`. This ensures that audio will continue uninterrupted when your app is sent to the background.
+
+To add the new rows through Xcode, open the `Info.plist` and add the following three rows:
+
+| Key                                    | Type   | Value                                               |
+|----------------------------------------|--------|-----------------------------------------------------|
+| Privacy - Camera Usage Description     | String | "Daily Playground needs camera access to work"      |
+| Privacy - Microphone Usage Description | String | "Daily Playground needs mircrophone access to work" |
+| Required background modes              | Array  | 1 item                                              |
+| ---> Item 0                            | String | "App provides Voice over IP services"               |
+
+
+If you view the raw file contents of `Info.plist`, it should look like this:
+
+```
+<dict>
+    ...
+    <key>NSCameraUsageDescription</key>
+    <string>"Daily Playground needs camera access to work"</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>"Daily Playground needs microphone access to work"</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>voip</string>
+    </array>
+    ...
+</dict>
+```
 
 ### Android
 
