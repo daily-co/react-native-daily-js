@@ -54,30 +54,11 @@ export type DailyEvent =
   | 'participant-left'
   | 'track-started'
   | 'track-stopped'
-  | 'recording-started'
-  | 'recording-stopped'
-  | 'recording-stats'
-  | 'recording-error'
-  | 'recording-upload-completed'
-  | 'recording-data'
   | 'app-message'
-  | 'local-screen-share-started'
-  | 'local-screen-share-stopped'
   | 'active-speaker-change'
-  | 'active-speaker-mode-change'
   | 'network-quality-change'
   | 'network-connection'
-  | 'fullscreen'
-  | 'exited-fullscreen'
   | 'error'
-  | 'click'
-  | 'mousedown'
-  | 'mouseup'
-  | 'mouseover'
-  | 'mousemove'
-  | 'touchstart'
-  | 'touchmove'
-  | 'touchend'
   | 'live-streaming-started'
   | 'live-streaming-stopped'
   | 'live-streaming-error';
@@ -244,13 +225,6 @@ export interface DailyEventObjectNoPayload {
     | 'loaded'
     | 'joining-meeting'
     | 'left-meeting'
-    | 'recording-started'
-    | 'recording-stopped'
-    | 'recording-stats'
-    | 'recording-error'
-    | 'recording-upload-completed'
-    | 'fullscreen'
-    | 'exited-fullscreen'
     | 'live-streaming-started'
     | 'live-streaming-stopped'
     | 'track-started'
@@ -279,42 +253,6 @@ export interface DailyEventObjectParticipant {
   participant: DailyParticipant;
 }
 
-export interface DailyEventObjectMouseEvent {
-  action: Extract<
-    DailyEvent,
-    'click' | 'mousedown' | 'mouseup' | 'mouseover' | 'mousemove'
-  >;
-  event: {
-    type: string;
-    button: number;
-    x: number;
-    y: number;
-    pageX: number;
-    pageY: number;
-    screenX: number;
-    screenY: number;
-    offsetX: number;
-    offsetY: number;
-    altKey: boolean;
-    ctrlKey: boolean;
-    metaKey: boolean;
-    shiftKey: boolean;
-  };
-  participant: DailyParticipant;
-}
-
-export interface DailyEventObjectTouchEvent {
-  action: Extract<DailyEvent, 'touchstart' | 'touchmove' | 'touchend'>;
-  event: {
-    type: string;
-    altKey: boolean;
-    ctrlKey: boolean;
-    metaKey: boolean;
-    shiftKey: boolean;
-  };
-  participant: DailyParticipant;
-}
-
 export interface DailyEventObjectNetworkQualityEvent {
   action: Extract<DailyEvent, 'network-quality-change'>;
   threshold: string;
@@ -338,11 +276,6 @@ export interface DailyEventObjectActiveSpeakerChange {
   };
 }
 
-export interface DailyEventObjectActiveSpeakerModeChange {
-  action: Extract<DailyEvent, 'active-speaker-mode-change'>;
-  enabled: boolean;
-}
-
 export interface DailyEventObjectAppMessage {
   action: Extract<DailyEvent, 'app-message'>;
   data: any;
@@ -361,18 +294,12 @@ export type DailyEventObject<
   ? DailyEventObjectParticipants
   : T extends DailyEventObjectParticipant['action']
   ? DailyEventObjectParticipant
-  : T extends DailyEventObjectMouseEvent['action']
-  ? DailyEventObjectMouseEvent
-  : T extends DailyEventObjectTouchEvent['action']
-  ? DailyEventObjectTouchEvent
   : T extends DailyEventObjectNetworkQualityEvent['action']
   ? DailyEventObjectNetworkQualityEvent
   : T extends DailyEventObjectNetworkConnectionEvent['action']
   ? DailyEventObjectNetworkConnectionEvent
   : T extends DailyEventObjectActiveSpeakerChange['action']
   ? DailyEventObjectActiveSpeakerChange
-  : T extends DailyEventObjectActiveSpeakerModeChange['action']
-  ? DailyEventObjectActiveSpeakerModeChange
   : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
