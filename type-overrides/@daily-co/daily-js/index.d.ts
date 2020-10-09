@@ -18,8 +18,6 @@ export interface MediaDeviceInfo {
   toJSON(): any;
 }
 
-type CSSStyleDeclaration = object;
-
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
  */
@@ -89,17 +87,8 @@ export interface DailyBrowserInfo {
 export interface DailyCallOptions {
   url?: string;
   token?: string;
-  lang?: DailyLanguage;
-  showLeaveButton?: boolean;
-  showFullscreenButton?: boolean;
-  iframeStyle?: CSSStyleDeclaration;
-  customLayout?: boolean;
-  bodyClass?: string;
-  cssFile?: string;
-  cssText?: string;
   dailyConfig?: DailyAdvancedConfig;
   reactNativeConfig?: DailyReactNativeConfig;
-  subscribeToTracksAutomatically?: boolean;
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
 }
@@ -109,16 +98,9 @@ export interface DailyLoadOptions extends DailyCallOptions {
 }
 
 export interface DailyAdvancedConfig {
-  experimentalChromeVideoMuteLightOff?: boolean;
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
-  fastConnect?: boolean;
   preferH264ForCam?: boolean;
-  preferH264ForScreenSharing?: boolean;
-  preferH264?: boolean;
-  disableSimulcast?: boolean;
   h264Profile?: string;
-  camSimulcastEncodings?: any[];
-  screenSimulcastEncodings?: any[];
 }
 
 export interface DailyReactNativeConfig {
