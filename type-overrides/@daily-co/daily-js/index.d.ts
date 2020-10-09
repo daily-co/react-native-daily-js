@@ -1,16 +1,12 @@
-// Type definitions for daily-js 0.9.992
-// Project: https://github.com/daily-co/daily-js
+// Type definitions for react-native-daily-js
+// Project: https://github.com/daily-co/react-native-daily-js
 // Definitions by: Paul Kompfner <https://github.com/kompfner>
 
 /**
- * --- REACT-NATIVE-SPECIFIC SECTION ---
+ * --- REACT-NATIVE-SPECIFIC TYPES ---
  */
 
-import {
-  MediaStream,
-  MediaStreamTrack,
-  MediaTrackConstraints,
-} from '@daily-co/react-native-webrtc';
+import { MediaStream, MediaStreamTrack } from '@daily-co/react-native-webrtc';
 
 export type MediaDeviceKind = 'audioinput' | 'audiooutput' | 'videoinput';
 
@@ -25,22 +21,23 @@ export interface MediaDeviceInfo {
 type CSSStyleDeclaration = object;
 
 /**
- * --- SECTION DUPLICATED WITH DAILY-JS ---
+ * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
  */
 
 export type DailyLanguage =
   | 'de'
   | 'en'
-  | 'es'
   | 'fi'
   | 'fr'
-  | 'ka'
-  | 'it'
   | 'nl'
   | 'pt'
   | 'pl'
   | 'sv'
+  | 'es'
   | 'tr'
+  | 'it'
+  | 'ka'
+  | 'jp'
   | 'user';
 
 export type DailyEvent =
@@ -180,30 +177,6 @@ export interface DailyParticipant {
   screen_info: {} | DailyVideoElementInfo;
 }
 
-export type DailyTrackSubscriptionOptions =
-  | boolean
-  | 'avatar'
-  | { audio?: boolean; video?: boolean; screenVideo?: boolean };
-
-export interface DailyParticipantUpdateOptions {
-  setAudio?: boolean;
-  setVideo?: boolean;
-  setSubscribedTracks?: DailyTrackSubscriptionOptions;
-  eject?: true;
-  styles?: DailyParticipantCss;
-}
-
-export interface DailyParticipantCss {
-  cam?: DailyParticipantStreamCss;
-  screen?: DailyParticipantStreamCss;
-}
-
-export interface DailyParticipantStreamCss {
-  div?: CSSStyleDeclaration;
-  overlay?: CSSStyleDeclaration;
-  video?: CSSStyleDeclaration;
-}
-
 export interface DailyVideoElementInfo {
   width: number;
   height: number;
@@ -213,18 +186,11 @@ export interface DailyVideoElementInfo {
   video_height: number;
 }
 
+// Admittedly not terribly useful (yet)
 export interface DailyDeviceInfos {
-  camera: {} | MediaDeviceInfo;
-  mic: {} | MediaDeviceInfo;
-  speaker: {} | MediaDeviceInfo;
-}
-
-export interface DailyScreenCaptureOptions {
-  audio?: boolean;
-  maxWidth?: number;
-  maxHeight?: number;
-  chromeMediaSourceId?: string;
-  mediaStream?: MediaStream;
+  camera: {};
+  mic: {};
+  speaker: {};
 }
 
 export interface DailyNetworkStats {
@@ -409,29 +375,10 @@ export type DailyEventObject<
   ? DailyEventObjectActiveSpeakerModeChange
   : any;
 
-export interface DailyFaceInfo {
-  score: number;
-  viewportBox: {
-    width: number;
-    height: number;
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  };
-}
-
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
 export interface DailyCallFactory {
   createCallObject(properties?: DailyCallOptions): DailyCall;
-  wrap(iframe: HTMLIFrameElement, properties?: DailyCallOptions): DailyCall;
-  createFrame(
-    parentElement: HTMLElement,
-    properties?: DailyCallOptions
-  ): DailyCall;
-  createFrame(properties?: DailyCallOptions): DailyCall;
-  createTransparentFrame(properties?: DailyCallOptions): DailyCall;
 }
 
 export interface DailyCallStaticUtils {
@@ -439,74 +386,26 @@ export interface DailyCallStaticUtils {
 }
 
 export interface DailyCall {
-  iframe(): HTMLIFrameElement | null;
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
   destroy(): Promise<void>;
-  loadCss(properties: {
-    bodyClass?: string;
-    cssFile?: string;
-    cssText?: string;
-  }): DailyCall;
   meetingState(): DailyMeetingState;
   participants(): DailyParticipantsObject;
-  updateParticipant(
-    sessionId: string,
-    updates: DailyParticipantUpdateOptions
-  ): DailyCall;
-  updateParticipants(updates: {
-    [sessionId: string]: DailyParticipantUpdateOptions;
-  }): DailyCall;
   localAudio(): boolean;
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
   setLocalVideo(enabled: boolean): DailyCall;
-  setBandwidth(bw: {
-    kbs?: number | 'NO_CAP' | null;
-    trackConstraints?: MediaTrackConstraints;
-  }): DailyCall;
-  setDailyLang(lang: DailyLanguage): DailyCall;
   startCamera(properties?: DailyCallOptions): Promise<DailyDeviceInfos>;
-  cycleCamera(): Promise<{ device?: MediaDeviceInfo | null }>;
-  cycleMic(): Promise<{ device?: MediaDeviceInfo | null }>;
-  setInputDevices(devices: {
-    audioDeviceId?: string;
-    audioSource?: MediaStreamTrack;
-    videoDeviceId?: string;
-    videoSource?: MediaStreamTrack;
-  }): DailyCall;
-  setOutputDevice(audioDevice: { outputDeviceId?: string }): DailyCall;
-  getInputDevices(): Promise<DailyDeviceInfos>;
+  cycleCamera(): Promise<void>;
   nativeInCallAudioMode(): DailyNativeInCallAudioMode;
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
   load(properties?: DailyLoadOptions): Promise<void>;
-  startScreenShare(captureOptions?: DailyScreenCaptureOptions): void;
-  stopScreenShare(): void;
-  startRecording(): void;
-  stopRecording(): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
-  getActiveSpeaker(): { peerId?: string };
-  setActiveSpeakerMode(enabled: boolean): DailyCall;
-  activeSpeakerMode(): boolean;
-  subscribeToTracksAutomatically(): boolean;
-  setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
-  enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
-  addFakeParticipant(details?: { aspectRatio: number }): DailyCall;
-  setShowNamesMode(mode: false | 'always' | 'never'): DailyCall;
-  detectAllFaces(): Promise<{
-    faces?: { [id: string]: DailyFaceInfo[] };
-  }>;
-  requestFullscreen(): Promise<void>;
-  exitFullscreen(): void;
   room(): Promise<DailyPendingRoomInfo | DailyRoomInfo | null>;
   geo(): Promise<{ current: string }>;
-  setNetworkTopology(options: {
-    topology: 'sfu' | 'peer';
-  }): Promise<{ workerId?: string; error?: string }>;
-  setPlayNewParticipantSound(sound: boolean | number): void;
   on<T extends DailyEvent>(
     event: T,
     handler: (event?: DailyEventObject<T>) => void
