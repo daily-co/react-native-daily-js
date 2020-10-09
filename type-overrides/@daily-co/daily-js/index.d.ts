@@ -149,13 +149,6 @@ export interface DailyVideoElementInfo {
   video_height: number;
 }
 
-// Admittedly not terribly useful (yet)
-export interface DailyDeviceInfos {
-  camera: {};
-  mic: {};
-  speaker: {};
-}
-
 export interface DailyNetworkStats {
   quality: number;
   stats: {
@@ -304,7 +297,7 @@ export interface DailyCall {
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
   setLocalVideo(enabled: boolean): DailyCall;
-  startCamera(properties?: DailyCallOptions): Promise<DailyDeviceInfos>;
+  startCamera(properties?: DailyCallOptions): Promise<void>;
   cycleCamera(): Promise<void>;
   nativeInCallAudioMode(): DailyNativeInCallAudioMode;
   setNativeInCallAudioMode(
