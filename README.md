@@ -47,13 +47,12 @@ For the first two key's values, provide user-facing strings explaining why your 
 
 To add the new rows through Xcode, open the `Info.plist` and add the following three rows:
 
-| Key                                    | Type   | Value                                               |
-|----------------------------------------|--------|-----------------------------------------------------|
-| Privacy - Camera Usage Description     | String | "Daily Playground needs camera access to work"      |
-| Privacy - Microphone Usage Description | String | "Daily Playground needs mircrophone access to work" |
-| Required background modes              | Array  | 1 item                                              |
-| ---> Item 0                            | String | "App provides Voice over IP services"               |
-
+| Key                                    | Type   | Value                                              |
+| -------------------------------------- | ------ | -------------------------------------------------- |
+| Privacy - Camera Usage Description     | String | "Daily Playground needs camera access to work"     |
+| Privacy - Microphone Usage Description | String | "Daily Playground needs microphone access to work" |
+| Required background modes              | Array  | 1 item                                             |
+| ---> Item 0                            | String | "App provides Voice over IP services"              |
 
 If you view the raw file contents of `Info.plist`, it should look like this:
 
