@@ -1,6 +1,6 @@
 # react-native-daily-js
 
-The Daily.co JavaScript library for React Native.
+The Daily JavaScript library for React Native.
 
 ## Minimum OS/SDK versions
 
@@ -101,7 +101,7 @@ minSdkVersion = 23
 
 ## Room configuration
 
-Your Daily.co room must be configured in a particular way in order for a `react-native-daily-js` client to be able to connect to it: it must specify the property `signaling_impl: ws`.
+Your Daily room must be configured in a particular way in order for a `react-native-daily-js` client to be able to connect to it: it must specify the property `signaling_impl: ws`.
 
 To create a room with the `signaling_impl` property set appropriately, run the following (replacing `<your-api-key>` with your actual API key):
 
@@ -113,7 +113,7 @@ curl --request POST \
   --data '{"properties":{"signaling_impl":"ws"}}'
 ```
 
-Of course, you may also want to specify a name as well as other properties. See the [Daily.co REST API docs](https://docs.daily.co/reference#rooms) for general guidance on how to create a new room or update an existing room.
+Of course, you may also want to specify a name as well as other properties. See the [Daily REST API docs](https://docs.daily.co/reference#rooms) for general guidance on how to create a new room or update an existing room.
 
 ## Usage
 
@@ -168,4 +168,4 @@ import { DailyMediaView } from '@daily-co/react-native-daily-js';
 />;
 ```
 
-[See this blog post for a more thorough walkthrough of structuring a React video-chat app powered by Daily.co](https://www.daily.co/blog/building-a-custom-video-chat-app-with-react). It's focused on React web, but most of it should also apply to your React Native app.
+[See this blog post for a more thorough walkthrough of structuring a React video-chat app powered by Daily](https://www.daily.co/blog/building-a-custom-video-chat-app-with-react). It's focused on React web, but most of it should also apply to your React Native app.
