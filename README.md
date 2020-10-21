@@ -2,8 +2,6 @@
 
 The Daily.co JavaScript library for React Native.
 
-> ⚠️ WARNING: `react-native-daily-js` is pre-release software under active development. Expect quirks and breaking changes.
-
 ## Minimum OS/SDK versions
 
 This package introduces some constraints on what OS/SDK versions your project can support:
