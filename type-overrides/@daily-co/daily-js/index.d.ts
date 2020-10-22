@@ -6,17 +6,7 @@
  * --- REACT-NATIVE-SPECIFIC TYPES ---
  */
 
-import { MediaStream, MediaStreamTrack } from '@daily-co/react-native-webrtc';
-
-export type MediaDeviceKind = 'audioinput' | 'audiooutput' | 'videoinput';
-
-export interface MediaDeviceInfo {
-  readonly deviceId: string;
-  readonly groupId: string;
-  readonly kind: MediaDeviceKind;
-  readonly label: string;
-  toJSON(): any;
-}
+import { MediaStreamTrack } from '@daily-co/react-native-webrtc';
 
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
@@ -234,11 +224,11 @@ export interface DailyEventObjectNetworkQualityEvent {
   quality: number;
 }
 
-export type NetworkConnectionType = 'signaling' | 'peer-to-peer' | 'sfu';
+export type DailyNetworkConnectionType = 'signaling' | 'peer-to-peer' | 'sfu';
 
 export interface DailyEventObjectNetworkConnectionEvent {
   action: Extract<DailyEvent, 'network-connection'>;
-  type: NetworkConnectionType;
+  type: DailyNetworkConnectionType;
   event: string;
   session_id?: string;
   sfu_id?: string;
@@ -287,6 +277,8 @@ export interface DailyCallStaticUtils {
   supportedBrowser(): DailyBrowserInfo;
 }
 
+export type DailyCameraFacingMode = 'user' | 'environment';
+
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
@@ -298,7 +290,10 @@ export interface DailyCall {
   setLocalAudio(enabled: boolean): DailyCall;
   setLocalVideo(enabled: boolean): DailyCall;
   startCamera(properties?: DailyCallOptions): Promise<void>;
-  cycleCamera(): Promise<void>;
+  cycleCamera(): Promise<{
+    device: { facingMode: DailyCameraFacingMode } | null;
+  }>;
+  getCameraFacingMode(): Promise<DailyCameraFacingMode | null>;
   nativeInCallAudioMode(): DailyNativeInCallAudioMode;
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
