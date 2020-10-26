@@ -117,7 +117,7 @@ Of course, you may also want to specify a name as well as other properties. See 
 
 ## Usage
 
-`react-native-daily-js` is the React Native counterpart to `daily-js`, and can be used in pretty much the same way to add video calls to your apps. [Complete documentation for `daily-js` can be found here](https://docs.daily.co/reference#using-the-dailyco-front-end-library).
+`react-native-daily-js` is the React Native counterpart to `daily-js`, and can be used in pretty much the same way to add video calls to your apps. [Complete documentation for `react-native-daily-js` (as well as `daily-js`) can be found here](https://docs.daily.co/reference#using-the-react-native-daily-js-library).
 
 ```ts
 import Daily from '@daily-co/react-native-daily-js';
