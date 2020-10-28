@@ -174,7 +174,7 @@ import { DailyMediaView } from '@daily-co/react-native-daily-js';
 
 ### Participant count
 
-Keep in mind that simultaneously displaying videos for numerous participants can use up a lot of your phone's resources. This can make the app run more slowly and use up more of your battery, especially if you're using an older device. For larger meetings, consider only displaying a few videos at a time. In a future release, `daily-js`'s [track subscription APIs](https://www.daily.co/blog/create-dynamic-meetings-using-track-subscriptions/) will be brought over to `react-native-daily-js`.
+Keep in mind that simultaneously displaying videos for numerous participants can use up a lot of your phone's resources. This can make the app run more slowly and use up more of your battery, especially if you're using an older device. For larger meetings, consider only displaying a few videos at a time. In a future release, `daily-js`'s [track subscription APIs](https://www.daily.co/blog/create-dynamic-meetings-using-track-subscriptions/) will be brought over to `react-native-daily-js`, letting you avoid the network bandwidth cost of receiving video for off-screen participants.
 
 ### Device orientation
 
@@ -187,7 +187,7 @@ On iOS, your captured video will rotate to compensate for the phone's rotation, 
 - Other participants will continue to see you upright
 - Your local video will be oriented the same way as other participant's videos on your phone (so you'd now need to cock your head to see it upright)
 
-On Android, your captured videow will _not_ rotate to compensate for the phone's rotation, meaning that:
+On Android, your captured video will _not_ rotate to compensate for the phone's rotation, meaning that:
 
 - Other participants will now see you sideways
 - Your local video will _not_ be oriented the same way as other participant's videos on your phone (it will appear upright to you)
