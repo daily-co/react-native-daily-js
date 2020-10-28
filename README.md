@@ -71,7 +71,7 @@ If you view the raw file contents of `Info.plist`, it should look like this:
 
 ### Android
 
-Add the following permissions to `AndroidManifest.xml`:
+Add the following to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
@@ -86,7 +86,7 @@ Add the following permissions to `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
 <application>
-// ...
+  // ...
   <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService"/>
 </application>
 ```
@@ -169,3 +169,25 @@ import { DailyMediaView } from '@daily-co/react-native-daily-js';
 ```
 
 [See this blog post for a more thorough walkthrough of structuring a React video-chat app powered by Daily](https://www.daily.co/blog/building-a-custom-video-chat-app-with-react). It's focused on React web, but most of it should also apply to your React Native app.
+
+## Assorted considerations for app implementers
+
+### Participant count
+
+Keep in mind that simultaneously displaying videos for numerous participants can use up a lot of your phone's resources. This can make the app run more slowly and use up more of your battery, especially if you're using an older device. For larger meetings, consider only displaying a few videos at a time. In a future release, `daily-js`'s [track subscription APIs](https://www.daily.co/blog/create-dynamic-meetings-using-track-subscriptions/) will be brought over to `react-native-daily-js`.
+
+### Device orientation
+
+If you'd like to support rotating your phone while in a call, it's recommended that you do not restrict your app's supported orientations (i.e. through `Info.plist` or `AndroidManifest.xml`).
+
+If you _are_ restricting your app's supported orientations (to portrait, for example), note that by default you'll end up with somewhat divergent video behavior on iOS and Android whenever you _do_ rotate your phone (to landscape, for example).
+
+On iOS, your captured video will rotate to compensate for the phone's rotation, meaning that:
+
+- Other participants will continue to see you upright
+- Your local video will be oriented the same way as other participant's videos on your phone (so you'd now need to cock your head to see it upright)
+
+On Android, your captured videow will _not_ rotate to compensate for the phone's rotation, meaning that:
+
+- Other participants will now see you sideways
+- Your local video will _not_ be oriented the same way as other participant's videos on your phone (it will appear upright to you)
