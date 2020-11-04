@@ -100,6 +100,7 @@ function setupGlobals(): void {
     ) => {
       appActiveStateChangeListeners.delete(listener);
     },
+    platform: Platform,
   };
 }
 

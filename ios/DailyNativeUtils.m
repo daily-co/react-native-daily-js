@@ -1,5 +1,6 @@
 #import "DailyNativeUtils.h"
 #import <AVFoundation/AVFoundation.h>
+#import <sys/utsname.h>
 
 @interface DailyNativeUtils()
 
@@ -60,6 +61,15 @@ RCT_EXPORT_METHOD(enableNoOpRecordingEnsuringBackgroundContinuity:(BOOL)enable) 
       self.captureSession = nil;
     }
   });
+}
+
+RCT_REMAP_METHOD(getDeviceCode,
+                 getDeviceCodewithResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject) {
+  struct utsname systemInfo;
+  uname(&systemInfo);
+  resolve([NSString stringWithCString:systemInfo.machine
+                             encoding:NSUTF8StringEncoding]);
 }
 
 #pragma mark Private
