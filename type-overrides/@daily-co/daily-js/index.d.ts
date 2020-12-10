@@ -130,6 +130,21 @@ export interface DailyParticipant {
   screen_info: {} | DailyVideoElementInfo;
 }
 
+export type DailyTrackSubscriptionOptions =
+  | boolean
+  | {
+      audio?: boolean;
+      video?: boolean;
+      screenVideo?: boolean;
+    };
+
+export interface DailyParticipantUpdateOptions {
+  setAudio?: boolean;
+  setVideo?: boolean;
+  setSubscribedTracks?: DailyTrackSubscriptionOptions;
+  eject?: true;
+}
+
 export interface DailyVideoElementInfo {
   width: number;
   height: number;
@@ -285,6 +300,13 @@ export interface DailyCall {
   destroy(): Promise<void>;
   meetingState(): DailyMeetingState;
   participants(): DailyParticipantsObject;
+  updateParticipant(
+    sessionId: string,
+    updates: DailyParticipantUpdateOptions
+  ): DailyCall;
+  updateParticipants(updates: {
+    [sessionId: string]: DailyParticipantUpdateOptions;
+  }): DailyCall;
   localAudio(): boolean;
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
@@ -300,6 +322,8 @@ export interface DailyCall {
   ): DailyCall;
   load(properties?: DailyLoadOptions): Promise<void>;
   getNetworkStats(): Promise<DailyNetworkStats>;
+  subscribeToTracksAutomatically(): boolean;
+  setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   sendAppMessage(data: any, to?: string): DailyCall;
   room(): Promise<DailyPendingRoomInfo | DailyRoomInfo | null>;
   geo(): Promise<{ current: string }>;
