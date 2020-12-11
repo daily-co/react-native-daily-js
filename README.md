@@ -129,7 +129,8 @@ const call = Daily.createCallObject();
 call.join({ url: 'https://your-team.daily.co/allhands' });
 
 // Listen for events signaling changes to participants or their audio or video.
-// This includes the local participant.
+// - 'participant-joined' and 'participant-left' are for remote participants only
+// - 'participant-updated' is for the local participant as well as remote participants
 const events: DailyEvent[] = [
   'participant-joined',
   'participant-updated',
