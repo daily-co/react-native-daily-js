@@ -165,6 +165,7 @@ export type DailyTrackSubscriptionOptions =
       audio?: boolean;
       video?: boolean;
       screenVideo?: boolean;
+      screenAudio?: boolean;
     };
 
 export interface DailyParticipantUpdateOptions {
