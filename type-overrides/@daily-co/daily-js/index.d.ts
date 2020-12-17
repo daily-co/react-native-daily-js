@@ -236,8 +236,6 @@ export interface DailyEventObjectNoPayload {
     | 'left-meeting'
     | 'live-streaming-started'
     | 'live-streaming-stopped'
-    | 'track-started'
-    | 'track-stopped'
   >;
 }
 
@@ -260,6 +258,12 @@ export interface DailyEventObjectParticipant {
     'participant-joined' | 'participant-updated' | 'participant-left'
   >;
   participant: DailyParticipant;
+}
+
+export interface DailyEventObjectTrack {
+  action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
+  participant: DailyParticipant | null; // null if participant left meeting
+  track: MediaStreamTrack;
 }
 
 export interface DailyEventObjectNetworkQualityEvent {
@@ -303,6 +307,8 @@ export type DailyEventObject<
   ? DailyEventObjectParticipants
   : T extends DailyEventObjectParticipant['action']
   ? DailyEventObjectParticipant
+  : T extends DailyEventObjectTrack['action']
+  ? DailyEventObjectTrack
   : T extends DailyEventObjectNetworkQualityEvent['action']
   ? DailyEventObjectNetworkQualityEvent
   : T extends DailyEventObjectNetworkConnectionEvent['action']
