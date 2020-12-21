@@ -347,10 +347,6 @@ export interface DailyCall {
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
   setLocalVideo(enabled: boolean): DailyCall;
-  setUserName(
-    name: string,
-    options?: { thisMeetingOnly?: boolean }
-  ): Promise<{ userName: string }>;
   startCamera(properties?: DailyCallOptions): Promise<void>;
   cycleCamera(): Promise<{
     device: { facingMode: DailyCameraFacingMode } | null;
