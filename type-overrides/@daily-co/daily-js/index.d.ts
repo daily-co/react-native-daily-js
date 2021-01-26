@@ -123,6 +123,7 @@ export interface DailyTrackState {
     byUser?: boolean;
     byBandwidth?: boolean;
   };
+  track?: MediaStreamTrack;
 }
 
 export interface DailyParticipant {
