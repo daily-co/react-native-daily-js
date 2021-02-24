@@ -379,6 +379,7 @@ export interface DailyCall {
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   sendAppMessage(data: any, to?: string): DailyCall;
+  setUserName(name: string): Promise<{ userName: string }>;
   room(options?: {
     includeRoomConfigDefaults: boolean;
   }): Promise<DailyPendingRoomInfo | DailyRoomInfo | null>;
