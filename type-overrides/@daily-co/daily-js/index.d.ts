@@ -217,6 +217,8 @@ export interface DailyRoomInfo {
     enable_screenshare?: boolean;
     enable_chat?: boolean;
     enable_knocking?: boolean;
+    enable_network_ui?: boolean;
+    enable_prejoin_ui?: boolean;
     start_video_off?: boolean;
     start_audio_off?: boolean;
     owner_only_broadcast?: boolean;
@@ -242,6 +244,8 @@ export interface DailyRoomInfo {
     max_api_rooms?: number;
     webhook_meeting_end?: any;
     max_live_streams?: number;
+    enable_network_ui?: boolean;
+    enable_prejoin_ui?: boolean;
   };
   dialInPIN?: string;
 }
