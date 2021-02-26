@@ -42,6 +42,8 @@ export type DailyEvent =
   | 'participant-left'
   | 'track-started'
   | 'track-stopped'
+  | 'recording-started'
+  | 'recording-stopped'
   | 'app-message'
   | 'active-speaker-change'
   | 'network-quality-change'
@@ -154,6 +156,7 @@ export interface DailyParticipant {
   will_eject_at: Date;
   local: boolean;
   owner: boolean;
+  record: boolean;
 
   // video element info (iframe-based calls using standard UI only)
   cam_info: {} | DailyVideoElementInfo;
@@ -253,6 +256,8 @@ export interface DailyEventObjectNoPayload {
     | 'loaded'
     | 'joining-meeting'
     | 'left-meeting'
+    | 'recording-started'
+    | 'recording-stopped'
     | 'live-streaming-started'
     | 'live-streaming-stopped'
   >;
