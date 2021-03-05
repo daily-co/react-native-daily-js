@@ -49,7 +49,11 @@ export type DailyEvent =
   | 'error'
   | 'live-streaming-started'
   | 'live-streaming-stopped'
-  | 'live-streaming-error';
+  | 'live-streaming-error'
+  | 'access-state-updated'
+  | 'waiting-participant-added'
+  | 'waiting-participant-updated'
+  | 'waiting-participant-removed';
 
 export type DailyMeetingState =
   | 'new'
@@ -162,6 +166,12 @@ export interface DailyParticipant {
   screen_info: {} | DailyVideoElementInfo;
 }
 
+export interface DailyWaitingParticipant {
+  id: string;
+  name: string;
+  awaitingAccess: SpecifiedDailyAccess;
+}
+
 export type DailyTrackSubscriptionOptions =
   | boolean
   | {
@@ -176,6 +186,10 @@ export interface DailyParticipantUpdateOptions {
   setVideo?: boolean;
   setSubscribedTracks?: DailyTrackSubscriptionOptions;
   eject?: true;
+}
+
+export interface DailyWaitingParticipantUpdateOptions {
+  grantRequestedAccess?: boolean;
 }
 
 export interface DailyVideoElementInfo {
@@ -285,6 +299,20 @@ export interface DailyEventObjectParticipant {
   participant: DailyParticipant;
 }
 
+export interface DailyEventObjectWaitingParticipant {
+  action: Extract<
+    DailyEvent,
+    | 'waiting-participant-added'
+    | 'waiting-participant-updated'
+    | 'waiting-participant-removed'
+  >;
+  participant: DailyWaitingParticipant;
+}
+
+export interface DailyEventObjectAccessState extends DailyAccessState {
+  action: Extract<DailyEvent, 'access-state-updated'>;
+}
+
 export interface DailyEventObjectTrack {
   action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
   participant: DailyParticipant | null; // null if participant left meeting
@@ -332,6 +360,10 @@ export type DailyEventObject<
   ? DailyEventObjectParticipants
   : T extends DailyEventObjectParticipant['action']
   ? DailyEventObjectParticipant
+  : T extends DailyEventObjectWaitingParticipant['action']
+  ? DailyEventObjectWaitingParticipant
+  : T extends DailyEventObjectAccessState['action']
+  ? DailyEventObjectAccessState
   : T extends DailyEventObjectTrack['action']
   ? DailyEventObjectTrack
   : T extends DailyEventObjectNetworkQualityEvent['action']
@@ -354,11 +386,26 @@ export interface DailyCallStaticUtils {
 
 export type DailyCameraFacingMode = 'user' | 'environment';
 
+export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
+
+export type SpecifiedDailyAccess = { level: 'none' | 'lobby' | 'full' };
+
+export type DailyAccessState = {
+  access: DailyAccess;
+  awaitingAccess?: SpecifiedDailyAccess;
+};
+
+export type DailyAccessRequest = {
+  access?: { level: 'full' };
+  name: string;
+};
+
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
   destroy(): Promise<void>;
   meetingState(): DailyMeetingState;
+  accessState(): DailyAccessState;
   participants(): DailyParticipantsObject;
   updateParticipant(
     sessionId: string,
@@ -367,6 +414,17 @@ export interface DailyCall {
   updateParticipants(updates: {
     [sessionId: string]: DailyParticipantUpdateOptions;
   }): DailyCall;
+  waitingParticipants(): { [id: string]: DailyWaitingParticipant };
+  updateWaitingParticipant(
+    id: string,
+    updates: DailyWaitingParticipantUpdateOptions
+  ): Promise<{ id: string }>;
+  updateWaitingParticipants(updates: {
+    [id: string]: DailyWaitingParticipantUpdateOptions;
+  }): Promise<{ ids: string[] }>;
+  requestAccess(
+    access: DailyAccessRequest
+  ): Promise<{ access: DailyAccess; granted: boolean }>;
   localAudio(): boolean;
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
@@ -380,6 +438,7 @@ export interface DailyCall {
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
+  preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
