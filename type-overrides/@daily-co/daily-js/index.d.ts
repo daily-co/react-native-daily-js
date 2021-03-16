@@ -78,6 +78,7 @@ export interface DailyCallOptions {
   url?: string;
   token?: string;
   dailyConfig?: DailyAdvancedConfig;
+  subscribeToTracksAutomatically?: boolean;
   reactNativeConfig?: DailyReactNativeConfig;
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
