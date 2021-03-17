@@ -60,7 +60,7 @@ export type DailyMeetingState =
   | 'left-meeting'
   | 'error';
 
-export type DailyMeetingErrorCode = 'ejected';
+export type DailyMeetingErrorType = 'ejected';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
@@ -268,7 +268,7 @@ export interface DailyEventObjectMeetingError {
   action: Extract<DailyEvent, 'error'>;
   errorMsg: string;
   error?: {
-    code: DailyMeetingErrorCode;
+    type: DailyMeetingErrorType;
     localizedMsg?: string;
   };
 }
