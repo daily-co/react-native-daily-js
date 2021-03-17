@@ -60,7 +60,7 @@ export type DailyMeetingState =
   | 'left-meeting'
   | 'error';
 
-export type DailyMeetingErrorType = 'ejected';
+export type DailyFatalErrorType = 'ejected';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
@@ -264,11 +264,11 @@ export interface DailyEventObjectNoPayload {
   >;
 }
 
-export interface DailyEventObjectMeetingError {
+export interface DailyEventObjectFatalError {
   action: Extract<DailyEvent, 'error'>;
   errorMsg: string;
   error?: {
-    type: DailyMeetingErrorType;
+    type: DailyFatalErrorType;
     localizedMsg?: string;
   };
 }
@@ -335,8 +335,8 @@ export type DailyEventObject<
   ? DailyEventObjectAppMessage
   : T extends DailyEventObjectNoPayload['action']
   ? DailyEventObjectNoPayload
-  : T extends DailyEventObjectMeetingError['action']
-  ? DailyEventObjectMeetingError
+  : T extends DailyEventObjectFatalError['action']
+  ? DailyEventObjectFatalError
   : T extends DailyEventErrorObject['action']
   ? DailyEventErrorObject
   : T extends DailyEventObjectParticipants['action']
