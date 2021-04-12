@@ -25,8 +25,9 @@ export type DailyLanguage =
   | 'tr'
   | 'it'
   | 'ka'
-  | 'jp'
-  | 'user';
+  | 'jp';
+
+export type DailyLanguageSetting = DailyLanguage | 'user';
 
 export type DailyEvent =
   | 'loading'
@@ -251,7 +252,7 @@ export interface DailyRoomInfo {
     autojoin?: boolean;
     eject_at_room_exp?: boolean;
     eject_after_elapsed?: number;
-    lang?: '' | DailyLanguage;
+    lang?: '' | DailyLanguageSetting;
     sfu_switchover?: number;
     signaling_impl?: string;
     geo?: string;
@@ -263,12 +264,29 @@ export interface DailyRoomInfo {
     sfu_impl?: string;
     signaling_impl?: string;
     sfu_switchover?: number;
-    lang?: '' | DailyLanguage;
+    lang?: '' | DailyLanguageSetting;
     max_api_rooms?: number;
     webhook_meeting_end?: any;
     max_live_streams?: number;
     enable_network_ui?: boolean;
     enable_prejoin_ui?: boolean;
+  };
+  tokenConfig: {
+    eject_at_token_exp?: boolean;
+    eject_after_elapsed?: boolean;
+    nbf?: number;
+    exp?: number;
+    is_owner?: boolean;
+    user_name?: string;
+    user_id?: string;
+    enable_screenshare?: boolean;
+    start_video_off?: boolean;
+    start_audio_off?: boolean;
+    enable_recording?: string;
+    start_cloud_recording?: boolean;
+    close_tab_on_exit?: boolean;
+    redirect_on_meeting_exit?: string;
+    lang?: '' | DailyLanguageSetting;
   };
   dialInPIN?: string;
 }
