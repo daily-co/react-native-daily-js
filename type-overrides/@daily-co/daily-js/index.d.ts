@@ -18,6 +18,7 @@ export type DailyLanguage =
   | 'fi'
   | 'fr'
   | 'nl'
+  | 'no'
   | 'pt'
   | 'pl'
   | 'sv'
