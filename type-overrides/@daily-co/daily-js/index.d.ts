@@ -131,6 +131,7 @@ export interface DailyTrackState {
     | 'playable';
   blocked?: {
     byDeviceMissing?: boolean;
+    byDeviceInUse?: boolean;
     byPermissions?: boolean;
   };
   off?: {
