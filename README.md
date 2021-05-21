@@ -6,7 +6,7 @@ The Daily JavaScript library for React Native.
 
 This package introduces some constraints on what OS/SDK versions your project can support:
 
-- **iOS**: Deployment target >= 10.0
+- **iOS**: Deployment target >= 11.0
 - **Android**: `minSdkVersion` >= 23
 
 ## Installation
@@ -21,10 +21,10 @@ Then, follow the below steps to set up your native project on each platform. **N
 
 ### iOS
 
-Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 10 and above:
+Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 11 and above:
 
 ```ruby
-platform :ios, '10.0'
+platform :ios, '11.0'
 ```
 
 Then run:
