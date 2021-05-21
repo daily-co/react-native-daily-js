@@ -7,10 +7,6 @@
 // Expects to only be accessed on main thread
 @property (nonatomic, strong) NSMutableSet *requestersKeepingDeviceAwake;
 
-// Expects to only be accessed on captureSessionQueue
-@property (nonatomic, strong) AVCaptureSession *captureSession;
-@property (nonatomic, strong, readonly) dispatch_queue_t captureSessionQueue;
-
 @end
 
 @implementation DailyNativeUtils
@@ -21,7 +17,6 @@ RCT_EXPORT_MODULE()
 {
   if (self = [super init]) {
     _requestersKeepingDeviceAwake = [NSMutableSet set];
-    _captureSessionQueue = dispatch_queue_create("com.daily.noopcapturesession", DISPATCH_QUEUE_SERIAL);
   }
   return self;
 }
@@ -44,23 +39,6 @@ RCT_EXPORT_METHOD(setKeepDeviceAwake:(BOOL)keepDeviceAwake onBehalfOfRequester:(
     }
     [self updateIdleTimer];
   }];
-}
-
-RCT_EXPORT_METHOD(enableNoOpRecordingEnsuringBackgroundContinuity:(BOOL)enable) {
-  dispatch_async(self.captureSessionQueue, ^{
-    if (enable) {
-      if (self.captureSession) {
-        return;
-      }
-      AVCaptureSession *captureSession = [self configuredCaptureSession];
-      [captureSession startRunning];
-      self.captureSession = captureSession;
-    }
-    else {
-      [self.captureSession stopRunning];
-      self.captureSession = nil;
-    }
-  });
 }
 
 RCT_REMAP_METHOD(getDeviceCode,
@@ -88,35 +66,6 @@ RCT_REMAP_METHOD(getDeviceCode,
 {
   BOOL disableIdleTimer = _requestersKeepingDeviceAwake.count > 0;
   [[UIApplication sharedApplication] setIdleTimerDisabled:disableIdleTimer];
-}
-
-// Expects to be invoked from captureSessionQueue
-- (AVCaptureSession *)configuredCaptureSession
-{
-  AVCaptureSession *captureSession = [[AVCaptureSession alloc] init];
-  AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-  if (!audioDevice) {
-    return nil;
-  }
-  NSError *inputError;
-  AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&inputError];
-  if (inputError) {
-    return nil;
-  }
-  if ([captureSession canAddInput:audioInput]) {
-    [captureSession addInput:audioInput];
-  }
-  else {
-    return nil;
-  }
-  AVCaptureAudioDataOutput *audioOutput = [[AVCaptureAudioDataOutput alloc] init];
-  if ([captureSession canAddOutput:audioOutput]) {
-    [captureSession addOutput:audioOutput];
-  }
-  else {
-    return nil;
-  }
-  return captureSession;
 }
 
 @end

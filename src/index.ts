@@ -84,6 +84,8 @@ function setupGlobals(): void {
   global.DailyNativeUtils = {
     ...DailyNativeUtils,
     setAudioMode: WebRTCModule.setDailyAudioMode,
+    enableNoOpRecordingEnsuringBackgroundContinuity:
+      WebRTCModule.enableNoOpRecordingEnsuringBackgroundContinuity,
     addAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
       audioFocusChangeListeners.add(listener);
     },
