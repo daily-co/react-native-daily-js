@@ -33,7 +33,7 @@ If you plan on doing a release build with bitcode enabled, run:
 ./node_modules/@daily-co/react-native-webrtc/tools/downloadBitcode.sh
 ```
 
-(But don't fret—you can always run it and rerun the next step at a later point.)
+(But don't fret—you can always run it later, before you do your release build.)
 
 Then run:
 
