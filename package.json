@@ -26,17 +26,17 @@
     "baseUrl": "https://github.com/daily-co/react-native-daily-js"
   },
   "dependencies": {
-    "@daily-co/daily-js": "^0.13.0",
+    "@daily-co/daily-js": "0.14.0-alpha.0",
     "@types/react-native-background-timer": "^2.0.0",
     "react-native-url-polyfill": "^1.1.2"
   },
   "peerDependencies": {
-    "@daily-co/react-native-webrtc": "^1.75.8",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.1",
     "@react-native-community/async-storage": "^1.11.0",
     "react-native-background-timer": "^2.3.1"
   },
   "devDependencies": {
-    "@daily-co/react-native-webrtc": "^1.75.8",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.1",
     "@react-native-community/async-storage": "^1.11.0",
     "react-native-background-timer": "^2.3.1",
     "typescript": "^3.8.3"
