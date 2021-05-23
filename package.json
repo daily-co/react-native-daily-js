@@ -31,12 +31,12 @@
     "react-native-url-polyfill": "^1.1.2"
   },
   "peerDependencies": {
-    "@daily-co/react-native-webrtc": "1.89.2-daily.1",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.2",
     "@react-native-community/async-storage": "^1.11.0",
     "react-native-background-timer": "^2.3.1"
   },
   "devDependencies": {
-    "@daily-co/react-native-webrtc": "1.89.2-daily.1",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.2",
     "@react-native-community/async-storage": "^1.11.0",
     "react-native-background-timer": "^2.3.1",
     "typescript": "^3.8.3"
