@@ -424,6 +424,25 @@ export interface DailyCallStaticUtils {
 
 export type DailyCameraFacingMode = 'user' | 'environment';
 
+export interface DailyStreamingDefaultLayoutConfig {
+  preset: 'default';
+  max_cam_streams?: number;
+}
+
+export interface DailyStreamingSingleParticipantLayoutConfig {
+  preset: 'single-participant';
+  session_id: string;
+}
+
+export interface DailyStreamingActiveParticipantLayoutConfig {
+  preset: 'active-participant';
+}
+
+export type DailyStreamingLayoutConfig =
+  | DailyStreamingDefaultLayoutConfig
+  | DailyStreamingSingleParticipantLayoutConfig
+  | DailyStreamingActiveParticipantLayoutConfig;
+
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
 export type SpecifiedDailyAccess = { level: 'none' | 'lobby' | 'full' };
@@ -476,6 +495,15 @@ export interface DailyCall {
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
+  startLiveStreaming(options: {
+    rtmpUrl: string;
+    width?: number;
+    height?: number;
+    backgroundColor?: string;
+    layout?: DailyStreamingLayoutConfig;
+  }): void;
+  updateLiveStreaming(options: { layout?: DailyStreamingLayoutConfig }): void;
+  stopLiveStreaming(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   getNetworkStats(): Promise<DailyNetworkStats>;
