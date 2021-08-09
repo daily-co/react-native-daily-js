@@ -55,7 +55,8 @@ export type DailyEvent =
   | 'access-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
-  | 'waiting-participant-removed';
+  | 'waiting-participant-removed'
+  | 'receive-settings-updated';
 
 export type DailyMeetingState =
   | 'new'
@@ -95,6 +96,7 @@ export interface DailyCallOptions {
   reactNativeConfig?: DailyReactNativeConfig;
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
+  receiveSettings?: DailyReceiveSettings;
 }
 
 export interface DailyLoadOptions extends DailyCallOptions {
@@ -295,6 +297,33 @@ export interface DailyRoomInfo {
   dialInPIN?: string;
 }
 
+export interface DailyVideoReceiveSettings {
+  layer?: number;
+}
+export interface DailySingleParticipantReceiveSettings {
+  video?: DailyVideoReceiveSettings;
+  screenVideo?: DailyVideoReceiveSettings;
+}
+
+export interface DailyReceiveSettings {
+  [participantId: string]: DailySingleParticipantReceiveSettings;
+}
+
+export interface DailyVideoReceiveSettingsUpdates {
+  layer?: number | 'inherit';
+}
+
+export interface DailySingleParticipantReceiveSettingsUpdates {
+  video?: DailyVideoReceiveSettingsUpdates | 'inherit';
+  screenVideo?: DailyVideoReceiveSettingsUpdates | 'inherit';
+}
+
+export interface DailyReceiveSettingsUpdates {
+  [participantId: string]:
+    | DailySingleParticipantReceiveSettingsUpdates
+    | 'inherit';
+}
+
 export interface DailyEventObjectNoPayload {
   action: Extract<
     DailyEvent,
@@ -386,6 +415,11 @@ export interface DailyEventObjectAppMessage {
   fromId: string;
 }
 
+export interface DailyEventObjectReceiveSettingsUpdated {
+  action: Extract<DailyEvent, 'receive-settings-updated'>;
+  receiveSettings: DailyReceiveSettings;
+}
+
 export type DailyEventObject<
   T extends DailyEvent = any
 > = T extends DailyEventObjectAppMessage['action']
@@ -412,6 +446,8 @@ export type DailyEventObject<
   ? DailyEventObjectNetworkConnectionEvent
   : T extends DailyEventObjectActiveSpeakerChange['action']
   ? DailyEventObjectActiveSpeakerChange
+  : T extends DailyEventObjectReceiveSettingsUpdated['action']
+  ? DailyEventObjectReceiveSettingsUpdated
   : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
@@ -488,6 +524,14 @@ export interface DailyCall {
   localVideo(): boolean;
   setLocalAudio(enabled: boolean): DailyCall;
   setLocalVideo(enabled: boolean): DailyCall;
+  getReceiveSettings(
+    id: string,
+    options: { showInheritedValues: boolean }
+  ): Promise<DailySingleParticipantReceiveSettings>;
+  getReceiveSettings(): Promise<DailyReceiveSettings>;
+  updateReceiveSettings(
+    receiveSettings: DailyReceiveSettingsUpdates
+  ): Promise<DailyReceiveSettings>;
   startCamera(properties?: DailyCallOptions): Promise<void>;
   cycleCamera(): Promise<{
     device: { facingMode: DailyCameraFacingMode } | null;
