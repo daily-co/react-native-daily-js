@@ -32,12 +32,12 @@
   },
   "peerDependencies": {
     "@daily-co/react-native-webrtc": "1.89.2-daily.3",
-    "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-async-storage/async-storage": "^1.15.7",
     "react-native-background-timer": "^2.3.1"
   },
   "devDependencies": {
     "@daily-co/react-native-webrtc": "1.89.2-daily.3",
-    "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-async-storage/async-storage": "^1.15.7",
     "react-native-background-timer": "^2.3.1",
     "typescript": "^3.8.3"
   }

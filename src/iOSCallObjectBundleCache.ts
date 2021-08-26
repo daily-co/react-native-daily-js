@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FIELD_CACHE_EXPIRY = 'expiry';
 const FIELD_BUNDLE_CODE = 'code';
