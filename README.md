@@ -7,7 +7,7 @@ The Daily JavaScript library for React Native.
 This package introduces some constraints on what OS/SDK versions your project can support:
 
 - **iOS**: Deployment target >= 11.0
-- **Android**: `minSdkVersion` >= 23
+- **Android**: `minSdkVersion` >= 24
 
 ## Installation
 
@@ -102,7 +102,7 @@ Add the following to `AndroidManifest.xml`:
 Update your `minSdkVersion` in your top-level `build.gradle` file:
 
 ```groovy
-minSdkVersion = 23
+minSdkVersion = 24
 ```
 
 (If you run into any issues, refer to [Github issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a more complicated process. The simpler process laid out above seems to work in a vanilla modern React Native CLI-based setup).
