@@ -14,7 +14,8 @@ This package introduces some constraints on what OS/SDK versions your project ca
 Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
-npm i @daily-co/react-native-daily-js @daily-co/react-native-webrtc@1.89.2-daily.3 @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1
+npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1
+npm i --save-exact @daily-co/react-native-webrtc@1.89.2-daily.3
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
