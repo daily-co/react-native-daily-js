@@ -476,13 +476,13 @@ export interface DailyStreamingActiveParticipantLayoutConfig {
   preset: 'active-participant';
 }
 
-export interface DailyStreamingMobileVerticalLayoutConfig {
-  preset: 'mobile-vertical';
-  max_cam_streams?: number;
-}
+export type DailyStreamingPortraitLayoutVariant =
+  | 'vertical'
+  | 'inset';
 
-export interface DailyStreamingMobileInsetLayoutConfig {
-  preset: 'mobile-inset';
+export interface DailyStreamingPortraitLayoutConfig {
+  preset: 'portrait';
+  variant?: DailyStreamingPortraitLayoutVariant;
   max_cam_streams?: number;
 }
 
@@ -490,9 +490,7 @@ export type DailyStreamingLayoutConfig =
   | DailyStreamingDefaultLayoutConfig
   | DailyStreamingSingleParticipantLayoutConfig
   | DailyStreamingActiveParticipantLayoutConfig
-  | DailyStreamingMobileVerticalLayoutConfig
-  | DailyStreamingMobileInsetLayoutConfig;
-
+  | DailyStreamingPortraitLayoutConfig;
 
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
