@@ -14,6 +14,7 @@ type Props = {
   mirror?: RTCViewProps['mirror'];
   zOrder?: RTCViewProps['zOrder'];
   objectFit?: RTCViewProps['objectFit'];
+  volume?: number;
   style?: ViewStyle;
 };
 
@@ -25,6 +26,12 @@ export default function DailyMediaView(props: Props) {
     const stream = tracks.length > 0 ? new MediaStream(tracks) : null;
     setStream(stream);
   }, [props.videoTrack, props.audioTrack]);
+
+  useEffect(() => {
+    if (stream && typeof props.volume !== 'undefined') {
+      stream.setVolume(props.volume / 100);
+    }
+  }, [stream, props.volume]);
 
   const rtcView = stream ? (
     <RTCView
