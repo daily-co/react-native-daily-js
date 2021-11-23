@@ -3,6 +3,18 @@
 // Definitions by: Paul Kompfner <https://github.com/kompfner>
 
 /**
+ * --- ADDED BY PLAYBACK ---
+ */
+import '@daily-co/react-native-webrtc';
+
+declare module '@daily-co/react-native-webrtc' {
+  export interface MediaStream {
+    setVolume: (volume: number) => void;
+  }
+}
+ 
+
+/**
  * --- REACT-NATIVE-SPECIFIC TYPES ---
  */
 
