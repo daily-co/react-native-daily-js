@@ -2,7 +2,7 @@
   "name": "@daily-co/react-native-daily-js",
   "private": true,
   "//": "^ COMMENT OUT 'private: true' BEFORE RUNNING NPM PUBLISH",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "React Native library for making video calls using Daily",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,12 +34,12 @@
   },
   "//": "WHEN ONE OF THESE CHANGE, PLEASE UPDATE README.md INSTALL SNIPPET ACCORDINGLY",
   "peerDependencies": {
-    "@daily-co/react-native-webrtc": "1.89.2-daily.3",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.4",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "react-native-background-timer": "^2.3.1"
   },
   "devDependencies": {
-    "@daily-co/react-native-webrtc": "1.89.2-daily.3",
+    "@daily-co/react-native-webrtc": "1.89.2-daily.4",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "react-native-background-timer": "^2.3.1",
     "typescript": "^3.8.3"
