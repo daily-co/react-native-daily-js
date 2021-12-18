@@ -250,6 +250,7 @@ export interface DailyRoomInfo {
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
+    enable_people_ui?: boolean;
     enable_prejoin_ui?: boolean;
     enable_video_processing_ui?: boolean;
     start_video_off?: boolean;
@@ -278,6 +279,7 @@ export interface DailyRoomInfo {
     webhook_meeting_end?: any;
     max_live_streams?: number;
     enable_network_ui?: boolean;
+    enable_people_ui?: boolean;
     enable_prejoin_ui?: boolean;
     enable_video_processing_ui?: boolean;
   };
