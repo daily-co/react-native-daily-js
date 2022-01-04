@@ -568,6 +568,7 @@ export interface DailyCall {
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
+  enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
   setUserName(name: string): Promise<{ userName: string }>;
   room(options?: {
