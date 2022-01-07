@@ -6,7 +6,10 @@
  * --- REACT-NATIVE-SPECIFIC TYPES ---
  */
 
-import { MediaStreamTrack } from '@daily-co/react-native-webrtc';
+import {
+  MediaStreamTrack,
+  MediaDeviceInfo,
+} from '@daily-co/react-native-webrtc';
 
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
