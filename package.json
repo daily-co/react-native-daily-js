@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.21.0",
-    "@types/node": "^14.14.2",
     "@types/react-native-background-timer": "^2.0.0",
     "react-native-url-polyfill": "^1.1.2"
   },
