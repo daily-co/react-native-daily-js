@@ -6,7 +6,10 @@
  * --- REACT-NATIVE-SPECIFIC TYPES ---
  */
 
-import { MediaStreamTrack } from '@daily-co/react-native-webrtc';
+import {
+  MediaStreamTrack,
+  MediaDeviceInfo,
+} from '@daily-co/react-native-webrtc';
 
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
@@ -579,6 +582,7 @@ export interface DailyCall {
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
+  enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
   setUserName(name: string): Promise<{ userName: string }>;
   room(options?: {

@@ -108,22 +108,6 @@ minSdkVersion = 24
 
 (If you run into any issues, refer to [Github issues](https://github.com/react-native-webrtc/react-native-webrtc/issues/720) like [these](https://github.com/jitsi/jitsi-meet/issues/4778), or the `react-native-webrtc` [installation docs](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md), which walk you through a more complicated process. The simpler process laid out above seems to work in a vanilla modern React Native CLI-based setup).
 
-## Room configuration
-
-Your Daily room must be configured in a particular way in order for a `react-native-daily-js` client to be able to connect to it: it must specify the property `signaling_impl: ws`.
-
-To create a room with the `signaling_impl` property set appropriately, run the following (replacing `<your-api-key>` with your actual API key):
-
-```bash
-curl --request POST \
-  --url https://api.daily.co/v1/rooms \
-  --header 'authorization: Bearer <your-api-key>' \
-  --header 'content-type: application/json' \
-  --data '{"properties":{"signaling_impl":"ws"}}'
-```
-
-Of course, you may also want to specify a name as well as other properties. See the [Daily REST API docs](https://docs.daily.co/reference#rooms) for general guidance on how to create a new room or update an existing room.
-
 ## Usage
 
 `react-native-daily-js` is the React Native counterpart to `daily-js`, and can be used in pretty much the same way to add video calls to your apps. [Complete documentation for `react-native-daily-js` (as well as `daily-js`) can be found here](https://docs.daily.co/reference#using-the-react-native-daily-js-library).
