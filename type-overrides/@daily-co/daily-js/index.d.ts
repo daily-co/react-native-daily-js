@@ -499,6 +499,13 @@ export type DailyStreamingLayoutConfig =
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig;
 
+export interface DailyStreamingOptions {
+  width?: number;
+  height?: number;
+  backgroundColor?: string;
+  layout?: DailyStreamingLayoutConfig;
+}
+
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
 export type SpecifiedDailyAccess = { level: 'none' | 'lobby' | 'full' };
@@ -570,6 +577,8 @@ export interface DailyCall {
   stopLiveStreaming(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
+  startRecording(options?: DailyStreamingOptions): void;
+  stopRecording(): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
