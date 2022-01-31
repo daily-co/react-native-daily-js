@@ -53,9 +53,13 @@ export type DailyEvent =
   | 'network-quality-change'
   | 'network-connection'
   | 'error'
+  | 'nonfatal-error'
   | 'live-streaming-started'
   | 'live-streaming-stopped'
   | 'live-streaming-error'
+  | 'remote-media-player-started'
+  | 'remote-media-player-stopped'
+  | 'remote-media-player-updated'
   | 'access-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
@@ -77,6 +81,12 @@ export type DailyFatalErrorType =
   | 'nbf-token'
   | 'exp-room'
   | 'exp-token';
+
+export type DailyNonFatalErrorType =
+  | 'input-settings-error'
+  | 'screen-share-error'
+  | 'video-processor-error'
+  | 'remote-media-player-error';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
@@ -354,6 +364,12 @@ export interface DailyEventObjectFatalError {
   };
 }
 
+export interface DailyEventObjectNonFatalError {
+  action: Extract<DailyEvent, 'nonfatal-error'>;
+  type: DailyNonFatalErrorType;
+  errorMsg: string;
+}
+
 export interface DailyEventObjectGenericError {
   action: Extract<
     DailyEvent,
@@ -429,6 +445,23 @@ export interface DailyEventObjectReceiveSettingsUpdated {
   receiveSettings: DailyReceiveSettings;
 }
 
+export interface DailyEventObjectRemoteMediaPlayerUpdate {
+  action: Extract<
+    DailyEvent,
+    'remote-media-player-started' | 'remote-media-player-updated'
+  >;
+  updatedBy: string;
+  session_id: string;
+  remoteMediaPlayerState: DailyRemoteMediaPlayerState;
+}
+
+export interface DailyEventObjectRemoteMediaPlayerStopped {
+  action: Extract<DailyEvent, 'remote-media-player-stopped'>;
+  session_id: string;
+  updatedBy: string;
+  reason: DailyRemoteMediaPlayerStopReason;
+}
+
 export type DailyEventObject<
   T extends DailyEvent = any
 > = T extends DailyEventObjectAppMessage['action']
@@ -437,6 +470,8 @@ export type DailyEventObject<
   ? DailyEventObjectNoPayload
   : T extends DailyEventObjectFatalError['action']
   ? DailyEventObjectFatalError
+  : T extends DailyEventObjectNonFatalError['action']
+  ? DailyEventObjectNonFatalError
   : T extends DailyEventObjectGenericError['action']
   ? DailyEventObjectGenericError
   : T extends DailyEventObjectParticipants['action']
@@ -449,6 +484,10 @@ export type DailyEventObject<
   ? DailyEventObjectAccessState
   : T extends DailyEventObjectTrack['action']
   ? DailyEventObjectTrack
+  : T extends DailyEventObjectRemoteMediaPlayerUpdate['action']
+  ? DailyEventObjectRemoteMediaPlayerUpdate
+  : T extends DailyEventObjectRemoteMediaPlayerStopped['action']
+  ? DailyEventObjectRemoteMediaPlayerStopped
   : T extends DailyEventObjectNetworkQualityEvent['action']
   ? DailyEventObjectNetworkQualityEvent
   : T extends DailyEventObjectNetworkConnectionEvent['action']
@@ -499,6 +538,20 @@ export type DailyStreamingLayoutConfig =
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig;
 
+export type DailyRemoteMediaPlayerSettingPlay = 'play';
+export type DailyRemoteMediaPlayerSettingPause = 'pause';
+
+export type DailyRemoteMediaPlayerStatePlaying = 'playing';
+export type DailyRemoteMediaPlayerStatePaused = 'paused';
+export type DailyRemoteMediaPlayerStateBuffering = 'buffering';
+
+export type DailyRemoteMediaPlayerEOS = 'EOS';
+export type DailyRemoteMediaPlayerPeerStopped = 'stopped-by-peer';
+
+export type DailyRemoteMediaPlayerStopReason =
+  | DailyRemoteMediaPlayerEOS
+  | DailyRemoteMediaPlayerPeerStopped;
+
 export interface DailyStreamingOptions {
   width?: number;
   height?: number;
@@ -519,6 +572,40 @@ export type DailyAccessRequest = {
   access?: { level: 'full' };
   name: string;
 };
+
+export interface RemoteMediaPlayerSimulcastEncoding {
+  maxBitrate: number;
+  maxFramerate?: number;
+  scaleResolutionDownBy?: number;
+}
+
+export interface DailyRemoteMediaPlayerSettings {
+  state: DailyRemoteMediaPlayerSettingPlay | DailyRemoteMediaPlayerSettingPause;
+  simulcastEncodings?: RemoteMediaPlayerSimulcastEncoding[];
+}
+
+export interface DailyRemoteMediaPlayerStartOptions {
+  url: string;
+  settings?: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerUpdateOptions {
+  session_id: string;
+  settings: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerState {
+  state:
+    | DailyRemoteMediaPlayerStatePlaying
+    | DailyRemoteMediaPlayerStatePaused
+    | DailyRemoteMediaPlayerStateBuffering;
+  settings: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerInfo {
+  session_id: string;
+  remoteMediaPlayerState: DailyRemoteMediaPlayerState;
+}
 
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
@@ -575,6 +662,13 @@ export interface DailyCall {
   }): void;
   updateLiveStreaming(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopLiveStreaming(): void;
+  startRemoteMediaPlayer(
+    options: DailyRemoteMediaPlayerStartOptions
+  ): Promise<DailyRemoteMediaPlayerInfo>;
+  stopRemoteMediaPlayer(session_id: string): Promise<void>;
+  updateRemoteMediaPlayer(
+    options: DailyRemoteMediaPlayerUpdateOptions
+  ): Promise<DailyRemoteMediaPlayerInfo>;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   startRecording(options?: DailyStreamingOptions): void;
