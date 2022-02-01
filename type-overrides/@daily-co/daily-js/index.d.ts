@@ -48,6 +48,10 @@ export type DailyEvent =
   | 'participant-left'
   | 'track-started'
   | 'track-stopped'
+  | 'recording-started'
+  | 'recording-stopped'
+  | 'recording-stats'
+  | 'recording-error'
   | 'app-message'
   | 'active-speaker-change'
   | 'network-quality-change'
@@ -187,6 +191,7 @@ export interface DailyParticipant {
   will_eject_at: Date;
   local: boolean;
   owner: boolean;
+  record: boolean;
 
   // video element info (iframe-based calls using standard UI only)
   cam_info: {} | DailyVideoElementInfo;
@@ -350,6 +355,9 @@ export interface DailyEventObjectNoPayload {
     | 'loaded'
     | 'joining-meeting'
     | 'left-meeting'
+    | 'recording-stopped'
+    | 'recording-stats'
+    | 'recording-error'
     | 'live-streaming-started'
     | 'live-streaming-stopped'
   >;
@@ -409,6 +417,15 @@ export interface DailyEventObjectTrack {
   action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
   participant: DailyParticipant | null; // null if participant left meeting
   track: MediaStreamTrack;
+}
+
+export interface DailyEventObjectRecordingStarted {
+  action: Extract<DailyEvent, 'recording-started'>;
+  local?: boolean;
+  recordingId?: string;
+  startedBy?: string;
+  type?: string;
+  layout?: DailyStreamingLayoutConfig;
 }
 
 export interface DailyEventObjectNetworkQualityEvent {
@@ -484,6 +501,8 @@ export type DailyEventObject<
   ? DailyEventObjectAccessState
   : T extends DailyEventObjectTrack['action']
   ? DailyEventObjectTrack
+  : T extends DailyEventObjectRecordingStarted['action']
+  ? DailyEventObjectRecordingStarted
   : T extends DailyEventObjectRemoteMediaPlayerUpdate['action']
   ? DailyEventObjectRemoteMediaPlayerUpdate
   : T extends DailyEventObjectRemoteMediaPlayerStopped['action']
@@ -672,6 +691,7 @@ export interface DailyCall {
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   startRecording(options?: DailyStreamingOptions): void;
+  updateRecording(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopRecording(): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
