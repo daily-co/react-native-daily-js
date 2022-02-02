@@ -164,6 +164,7 @@ export interface DailyTrackState {
     byUser?: boolean;
     byRemoteRequest?: boolean;
     byBandwidth?: boolean;
+    byInputSourceDisabled?: boolean;
   };
   track?: MediaStreamTrack;
 }
