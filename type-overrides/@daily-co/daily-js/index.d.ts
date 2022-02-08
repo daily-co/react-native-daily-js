@@ -462,6 +462,11 @@ export interface DailyEventObjectReceiveSettingsUpdated {
   receiveSettings: DailyReceiveSettings;
 }
 
+export interface DailyEventObjectLiveStreamingStarted {
+  action: Extract<DailyEvent, 'live-streaming-started'>;
+  layout?: DailyStreamingLayoutConfig;
+}
+
 export interface DailyEventObjectRemoteMediaPlayerUpdate {
   action: Extract<
     DailyEvent,
@@ -571,13 +576,6 @@ export type DailyRemoteMediaPlayerStopReason =
   | DailyRemoteMediaPlayerEOS
   | DailyRemoteMediaPlayerPeerStopped;
 
-export interface DailyStreamingOptions {
-  width?: number;
-  height?: number;
-  backgroundColor?: string;
-  layout?: DailyStreamingLayoutConfig;
-}
-
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
 export type SpecifiedDailyAccess = { level: 'none' | 'lobby' | 'full' };
@@ -591,6 +589,17 @@ export type DailyAccessRequest = {
   access?: { level: 'full' };
   name: string;
 };
+
+export interface DailyStreamingOptions {
+  width?: number;
+  height?: number;
+  backgroundColor?: string;
+  layout?: DailyStreamingLayoutConfig;
+}
+
+export interface DailyLiveStreamingOptions extends DailyStreamingOptions {
+  rtmpUrl: string;
+}
 
 export interface RemoteMediaPlayerSimulcastEncoding {
   maxBitrate: number;
@@ -672,13 +681,7 @@ export interface DailyCall {
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
-  startLiveStreaming(options: {
-    rtmpUrl: string;
-    width?: number;
-    height?: number;
-    backgroundColor?: string;
-    layout?: DailyStreamingLayoutConfig;
-  }): void;
+  startLiveStreaming(options: DailyLiveStreamingOptions): void;
   updateLiveStreaming(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopLiveStreaming(): void;
   startRemoteMediaPlayer(
