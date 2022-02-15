@@ -9,7 +9,6 @@
 import {
   MediaStreamTrack,
   MediaDeviceInfo,
-  MediaTrackConstraints,
 } from '@daily-co/react-native-webrtc';
 
 /**
@@ -125,10 +124,6 @@ export interface DailyLoadOptions extends DailyCallOptions {
 
 export interface DailyAdvancedConfig {
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
-  getUserMediaConstraints?: {
-    audio?: boolean | MediaTrackConstraints;
-    video?: boolean | MediaTrackConstraints;
-  };
   preferH264ForCam?: boolean;
   h264Profile?: string;
 }
