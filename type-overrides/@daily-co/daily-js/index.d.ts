@@ -86,11 +86,7 @@ export type DailyFatalErrorType =
   | 'exp-room'
   | 'exp-token';
 
-export type DailyNonFatalErrorType =
-  | 'input-settings-error'
-  | 'screen-share-error'
-  | 'video-processor-error'
-  | 'remote-media-player-error';
+export type DailyNonFatalErrorType = 'remote-media-player-error';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
