@@ -9,6 +9,7 @@
 import {
   MediaStreamTrack,
   MediaDeviceInfo,
+  MediaTrackConstraints,
 } from '@daily-co/react-native-webrtc';
 
 /**
@@ -48,14 +49,22 @@ export type DailyEvent =
   | 'participant-left'
   | 'track-started'
   | 'track-stopped'
+  | 'recording-started'
+  | 'recording-stopped'
+  | 'recording-stats'
+  | 'recording-error'
   | 'app-message'
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
   | 'error'
+  | 'nonfatal-error'
   | 'live-streaming-started'
   | 'live-streaming-stopped'
   | 'live-streaming-error'
+  | 'remote-media-player-started'
+  | 'remote-media-player-stopped'
+  | 'remote-media-player-updated'
   | 'access-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
@@ -77,6 +86,8 @@ export type DailyFatalErrorType =
   | 'nbf-token'
   | 'exp-room'
   | 'exp-token';
+
+export type DailyNonFatalErrorType = 'remote-media-player-error';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
@@ -110,6 +121,7 @@ export interface DailyLoadOptions extends DailyCallOptions {
 
 export interface DailyAdvancedConfig {
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
+  userMediaVideoConstraints?: boolean | MediaTrackConstraints;
   preferH264ForCam?: boolean;
   h264Profile?: string;
 }
@@ -177,6 +189,7 @@ export interface DailyParticipant {
   will_eject_at: Date;
   local: boolean;
   owner: boolean;
+  record: boolean;
 
   // video element info (iframe-based calls using standard UI only)
   cam_info: {} | DailyVideoElementInfo;
@@ -340,6 +353,9 @@ export interface DailyEventObjectNoPayload {
     | 'loaded'
     | 'joining-meeting'
     | 'left-meeting'
+    | 'recording-stopped'
+    | 'recording-stats'
+    | 'recording-error'
     | 'live-streaming-started'
     | 'live-streaming-stopped'
   >;
@@ -352,6 +368,12 @@ export interface DailyEventObjectFatalError {
     type: DailyFatalErrorType;
     localizedMsg?: string;
   };
+}
+
+export interface DailyEventObjectNonFatalError {
+  action: Extract<DailyEvent, 'nonfatal-error'>;
+  type: DailyNonFatalErrorType;
+  errorMsg: string;
 }
 
 export interface DailyEventObjectGenericError {
@@ -395,6 +417,15 @@ export interface DailyEventObjectTrack {
   track: MediaStreamTrack;
 }
 
+export interface DailyEventObjectRecordingStarted {
+  action: Extract<DailyEvent, 'recording-started'>;
+  local?: boolean;
+  recordingId?: string;
+  startedBy?: string;
+  type?: string;
+  layout?: DailyStreamingLayoutConfig;
+}
+
 export interface DailyEventObjectNetworkQualityEvent {
   action: Extract<DailyEvent, 'network-quality-change'>;
   threshold: string;
@@ -429,6 +460,28 @@ export interface DailyEventObjectReceiveSettingsUpdated {
   receiveSettings: DailyReceiveSettings;
 }
 
+export interface DailyEventObjectLiveStreamingStarted {
+  action: Extract<DailyEvent, 'live-streaming-started'>;
+  layout?: DailyStreamingLayoutConfig;
+}
+
+export interface DailyEventObjectRemoteMediaPlayerUpdate {
+  action: Extract<
+    DailyEvent,
+    'remote-media-player-started' | 'remote-media-player-updated'
+  >;
+  updatedBy: string;
+  session_id: string;
+  remoteMediaPlayerState: DailyRemoteMediaPlayerState;
+}
+
+export interface DailyEventObjectRemoteMediaPlayerStopped {
+  action: Extract<DailyEvent, 'remote-media-player-stopped'>;
+  session_id: string;
+  updatedBy: string;
+  reason: DailyRemoteMediaPlayerStopReason;
+}
+
 export type DailyEventObject<
   T extends DailyEvent = any
 > = T extends DailyEventObjectAppMessage['action']
@@ -437,6 +490,8 @@ export type DailyEventObject<
   ? DailyEventObjectNoPayload
   : T extends DailyEventObjectFatalError['action']
   ? DailyEventObjectFatalError
+  : T extends DailyEventObjectNonFatalError['action']
+  ? DailyEventObjectNonFatalError
   : T extends DailyEventObjectGenericError['action']
   ? DailyEventObjectGenericError
   : T extends DailyEventObjectParticipants['action']
@@ -449,6 +504,12 @@ export type DailyEventObject<
   ? DailyEventObjectAccessState
   : T extends DailyEventObjectTrack['action']
   ? DailyEventObjectTrack
+  : T extends DailyEventObjectRecordingStarted['action']
+  ? DailyEventObjectRecordingStarted
+  : T extends DailyEventObjectRemoteMediaPlayerUpdate['action']
+  ? DailyEventObjectRemoteMediaPlayerUpdate
+  : T extends DailyEventObjectRemoteMediaPlayerStopped['action']
+  ? DailyEventObjectRemoteMediaPlayerStopped
   : T extends DailyEventObjectNetworkQualityEvent['action']
   ? DailyEventObjectNetworkQualityEvent
   : T extends DailyEventObjectNetworkConnectionEvent['action']
@@ -499,12 +560,19 @@ export type DailyStreamingLayoutConfig =
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig;
 
-export interface DailyStreamingOptions {
-  width?: number;
-  height?: number;
-  backgroundColor?: string;
-  layout?: DailyStreamingLayoutConfig;
-}
+export type DailyRemoteMediaPlayerSettingPlay = 'play';
+export type DailyRemoteMediaPlayerSettingPause = 'pause';
+
+export type DailyRemoteMediaPlayerStatePlaying = 'playing';
+export type DailyRemoteMediaPlayerStatePaused = 'paused';
+export type DailyRemoteMediaPlayerStateBuffering = 'buffering';
+
+export type DailyRemoteMediaPlayerEOS = 'EOS';
+export type DailyRemoteMediaPlayerPeerStopped = 'stopped-by-peer';
+
+export type DailyRemoteMediaPlayerStopReason =
+  | DailyRemoteMediaPlayerEOS
+  | DailyRemoteMediaPlayerPeerStopped;
 
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
@@ -519,6 +587,51 @@ export type DailyAccessRequest = {
   access?: { level: 'full' };
   name: string;
 };
+
+export interface DailyStreamingOptions {
+  width?: number;
+  height?: number;
+  backgroundColor?: string;
+  layout?: DailyStreamingLayoutConfig;
+}
+
+export interface DailyLiveStreamingOptions extends DailyStreamingOptions {
+  rtmpUrl: string;
+}
+
+export interface RemoteMediaPlayerSimulcastEncoding {
+  maxBitrate: number;
+  maxFramerate?: number;
+  scaleResolutionDownBy?: number;
+}
+
+export interface DailyRemoteMediaPlayerSettings {
+  state: DailyRemoteMediaPlayerSettingPlay | DailyRemoteMediaPlayerSettingPause;
+  simulcastEncodings?: RemoteMediaPlayerSimulcastEncoding[];
+}
+
+export interface DailyRemoteMediaPlayerStartOptions {
+  url: string;
+  settings?: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerUpdateOptions {
+  session_id: string;
+  settings: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerState {
+  state:
+    | DailyRemoteMediaPlayerStatePlaying
+    | DailyRemoteMediaPlayerStatePaused
+    | DailyRemoteMediaPlayerStateBuffering;
+  settings: DailyRemoteMediaPlayerSettings;
+}
+
+export interface DailyRemoteMediaPlayerInfo {
+  session_id: string;
+  remoteMediaPlayerState: DailyRemoteMediaPlayerState;
+}
 
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
@@ -566,18 +679,20 @@ export interface DailyCall {
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
-  startLiveStreaming(options: {
-    rtmpUrl: string;
-    width?: number;
-    height?: number;
-    backgroundColor?: string;
-    layout?: DailyStreamingLayoutConfig;
-  }): void;
+  startLiveStreaming(options: DailyLiveStreamingOptions): void;
   updateLiveStreaming(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopLiveStreaming(): void;
+  startRemoteMediaPlayer(
+    options: DailyRemoteMediaPlayerStartOptions
+  ): Promise<DailyRemoteMediaPlayerInfo>;
+  stopRemoteMediaPlayer(session_id: string): Promise<void>;
+  updateRemoteMediaPlayer(
+    options: DailyRemoteMediaPlayerUpdateOptions
+  ): Promise<DailyRemoteMediaPlayerInfo>;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   startRecording(options?: DailyStreamingOptions): void;
+  updateRecording(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopRecording(): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   subscribeToTracksAutomatically(): boolean;
