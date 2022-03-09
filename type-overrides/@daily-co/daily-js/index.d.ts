@@ -267,6 +267,7 @@ export interface DailyRoomInfo {
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
     enable_people_ui?: boolean;
+    enable_pip_ui?: boolean;
     enable_prejoin_ui?: boolean;
     enable_video_processing_ui?: boolean;
     start_video_off?: boolean;
@@ -296,6 +297,7 @@ export interface DailyRoomInfo {
     max_live_streams?: number;
     enable_network_ui?: boolean;
     enable_people_ui?: boolean;
+    enable_pip_ui?: boolean;
     enable_prejoin_ui?: boolean;
     enable_video_processing_ui?: boolean;
   };
