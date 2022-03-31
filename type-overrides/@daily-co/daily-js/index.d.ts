@@ -244,6 +244,8 @@ export interface DailyNetworkStats {
       videoRecvPacketLoss: number;
       videoSendBitsPerSecond: number;
       videoSendPacketLoss: number;
+      totalSendPacketLoss: number;
+      totalRecvPacketLoss: number;
     };
     worstVideoRecvPacketLoss: number;
     worstVideoSendPacketLoss: number;
