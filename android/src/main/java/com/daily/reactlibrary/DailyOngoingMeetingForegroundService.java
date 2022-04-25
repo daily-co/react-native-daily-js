@@ -72,7 +72,7 @@ public class DailyOngoingMeetingForegroundService extends Service {
                 getPackageName());
 
         Intent notificationIntent = new Intent(this, activityClassToOpenFromNotification);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(title)
