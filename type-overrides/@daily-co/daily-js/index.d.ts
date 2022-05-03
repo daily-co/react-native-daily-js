@@ -69,6 +69,7 @@ export type DailyEvent =
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
   | 'waiting-participant-removed'
+  | 'available-devices-updated'
   | 'receive-settings-updated';
 
 export type DailyMeetingState =
@@ -231,6 +232,12 @@ export interface DailyVideoElementInfo {
   top: number;
   video_width: number;
   video_height: number;
+}
+
+export interface DailyDeviceInfos {
+  camera: {} | MediaDeviceInfo;
+  mic: {} | MediaDeviceInfo;
+  speaker: {} | MediaDeviceInfo;
 }
 
 export interface DailyNetworkStats {
@@ -464,6 +471,11 @@ export interface DailyEventObjectReceiveSettingsUpdated {
   receiveSettings: DailyReceiveSettings;
 }
 
+export interface DailyEventObjectAvailableDevicesUpdated {
+  action: Extract<DailyEvent, 'available-devices-updated'>;
+  availableDevices: MediaDeviceInfo[];
+}
+
 export interface DailyEventObjectLiveStreamingStarted {
   action: Extract<DailyEvent, 'live-streaming-started'>;
   layout?: DailyStreamingLayoutConfig;
@@ -486,43 +498,44 @@ export interface DailyEventObjectRemoteMediaPlayerStopped {
   reason: DailyRemoteMediaPlayerStopReason;
 }
 
-export type DailyEventObject<
-  T extends DailyEvent = any
-> = T extends DailyEventObjectAppMessage['action']
-  ? DailyEventObjectAppMessage
-  : T extends DailyEventObjectNoPayload['action']
-  ? DailyEventObjectNoPayload
-  : T extends DailyEventObjectFatalError['action']
-  ? DailyEventObjectFatalError
-  : T extends DailyEventObjectNonFatalError['action']
-  ? DailyEventObjectNonFatalError
-  : T extends DailyEventObjectGenericError['action']
-  ? DailyEventObjectGenericError
-  : T extends DailyEventObjectParticipants['action']
-  ? DailyEventObjectParticipants
-  : T extends DailyEventObjectParticipant['action']
-  ? DailyEventObjectParticipant
-  : T extends DailyEventObjectWaitingParticipant['action']
-  ? DailyEventObjectWaitingParticipant
-  : T extends DailyEventObjectAccessState['action']
-  ? DailyEventObjectAccessState
-  : T extends DailyEventObjectTrack['action']
-  ? DailyEventObjectTrack
-  : T extends DailyEventObjectRecordingStarted['action']
-  ? DailyEventObjectRecordingStarted
-  : T extends DailyEventObjectRemoteMediaPlayerUpdate['action']
-  ? DailyEventObjectRemoteMediaPlayerUpdate
-  : T extends DailyEventObjectRemoteMediaPlayerStopped['action']
-  ? DailyEventObjectRemoteMediaPlayerStopped
-  : T extends DailyEventObjectNetworkQualityEvent['action']
-  ? DailyEventObjectNetworkQualityEvent
-  : T extends DailyEventObjectNetworkConnectionEvent['action']
-  ? DailyEventObjectNetworkConnectionEvent
-  : T extends DailyEventObjectActiveSpeakerChange['action']
-  ? DailyEventObjectActiveSpeakerChange
-  : T extends DailyEventObjectReceiveSettingsUpdated['action']
-  ? DailyEventObjectReceiveSettingsUpdated
-  : any;
+export type DailyEventObject<T extends DailyEvent = any> =
+  T extends DailyEventObjectAppMessage['action']
+    ? DailyEventObjectAppMessage
+    : T extends DailyEventObjectNoPayload['action']
+    ? DailyEventObjectNoPayload
+    : T extends DailyEventObjectFatalError['action']
+    ? DailyEventObjectFatalError
+    : T extends DailyEventObjectNonFatalError['action']
+    ? DailyEventObjectNonFatalError
+    : T extends DailyEventObjectGenericError['action']
+    ? DailyEventObjectGenericError
+    : T extends DailyEventObjectParticipants['action']
+    ? DailyEventObjectParticipants
+    : T extends DailyEventObjectParticipant['action']
+    ? DailyEventObjectParticipant
+    : T extends DailyEventObjectWaitingParticipant['action']
+    ? DailyEventObjectWaitingParticipant
+    : T extends DailyEventObjectAccessState['action']
+    ? DailyEventObjectAccessState
+    : T extends DailyEventObjectTrack['action']
+    ? DailyEventObjectTrack
+    : T extends DailyEventObjectRecordingStarted['action']
+    ? DailyEventObjectRecordingStarted
+    : T extends DailyEventObjectRemoteMediaPlayerUpdate['action']
+    ? DailyEventObjectRemoteMediaPlayerUpdate
+    : T extends DailyEventObjectRemoteMediaPlayerStopped['action']
+    ? DailyEventObjectRemoteMediaPlayerStopped
+    : T extends DailyEventObjectNetworkQualityEvent['action']
+    ? DailyEventObjectNetworkQualityEvent
+    : T extends DailyEventObjectNetworkConnectionEvent['action']
+    ? DailyEventObjectNetworkConnectionEvent
+    : T extends DailyEventObjectActiveSpeakerChange['action']
+    ? DailyEventObjectActiveSpeakerChange
+    : T extends DailyEventObjectReceiveSettingsUpdated['action']
+    ? DailyEventObjectReceiveSettingsUpdated
+    : T extends DailyEventObjectAvailableDevicesUpdated['action']
+    ? DailyEventObjectAvailableDevicesUpdated
+    : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
@@ -678,11 +691,18 @@ export interface DailyCall {
   cycleCamera(): Promise<{
     device: { facingMode: DailyCameraFacingMode } | null;
   }>;
+  setCamera(cameraDeviceId: string | number): Promise<{
+    device: { facingMode: DailyCameraFacingMode } | null;
+  }>;
+  setAudioDevice(deviceId: string): Promise<{
+    deviceId: String;
+  }>;
   getCameraFacingMode(): Promise<DailyCameraFacingMode | null>;
   nativeInCallAudioMode(): DailyNativeInCallAudioMode;
   setNativeInCallAudioMode(
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
+  getInputDevices(): Promise<DailyDeviceInfos>;
   startLiveStreaming(options: DailyLiveStreamingOptions): void;
   updateLiveStreaming(options: { layout?: DailyStreamingLayoutConfig }): void;
   stopLiveStreaming(): void;
