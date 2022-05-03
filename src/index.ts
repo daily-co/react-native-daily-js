@@ -20,9 +20,8 @@ const webRTCEventEmitter = new NativeEventEmitter(WebRTCModule);
 let hasAudioFocus: boolean;
 let appState: AppStateStatus;
 const audioFocusChangeListeners: Set<(hasFocus: boolean) => void> = new Set();
-const appActiveStateChangeListeners: Set<(
-  isActive: boolean
-) => void> = new Set();
+const appActiveStateChangeListeners: Set<(isActive: boolean) => void> =
+  new Set();
 
 function setupEventListeners() {
   // audio focus: used by daily-js to auto-mute mic, for instance
@@ -84,6 +83,8 @@ function setupGlobals(): void {
   global.DailyNativeUtils = {
     ...DailyNativeUtils,
     setAudioMode: WebRTCModule.setDailyAudioMode,
+    setAudioDevice: WebRTCModule.setAudioDevice,
+    getAudioDevice: WebRTCModule.getAudioDevice,
     enableNoOpRecordingEnsuringBackgroundContinuity:
       WebRTCModule.enableNoOpRecordingEnsuringBackgroundContinuity,
     addAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
