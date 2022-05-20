@@ -53,6 +53,9 @@ export type DailyEvent =
   | 'recording-stopped'
   | 'recording-stats'
   | 'recording-error'
+  | 'transcription-started'
+  | 'transcription-stopped'
+  | 'transcription-error'
   | 'app-message'
   | 'active-speaker-change'
   | 'network-quality-change'
@@ -713,6 +716,8 @@ export interface DailyCall {
   updateRemoteMediaPlayer(
     options: DailyRemoteMediaPlayerUpdateOptions
   ): Promise<DailyRemoteMediaPlayerInfo>;
+  startTranscription(): void;
+  stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
   startRecording(options?: DailyStreamingOptions): void;
