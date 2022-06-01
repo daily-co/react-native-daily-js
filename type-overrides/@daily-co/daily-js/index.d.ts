@@ -716,7 +716,7 @@ export interface DailyCall {
   updateRemoteMediaPlayer(
     options: DailyRemoteMediaPlayerUpdateOptions
   ): Promise<DailyRemoteMediaPlayerInfo>;
-  startTranscription(): void;
+  startTranscription(options?: { language?: string; model?: string }): void;
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
