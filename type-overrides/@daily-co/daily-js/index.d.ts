@@ -659,6 +659,11 @@ export interface DailyRemoteMediaPlayerInfo {
   remoteMediaPlayerState: DailyRemoteMediaPlayerState;
 }
 
+export interface DailyTranscriptionDeepgramOptions {
+  language?: string;
+  model?: string;
+}
+
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
@@ -728,7 +733,7 @@ export interface DailyCall {
   updateRemoteMediaPlayer(
     options: DailyRemoteMediaPlayerUpdateOptions
   ): Promise<DailyRemoteMediaPlayerInfo>;
-  startTranscription(): void;
+  startTranscription(options?: DailyTranscriptionDeepgramOptions): void;
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
