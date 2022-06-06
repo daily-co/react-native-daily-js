@@ -123,7 +123,14 @@ export interface DailyLoadOptions extends DailyCallOptions {
   baseUrl?: string;
 }
 
+export interface CamSimulcastEncoding {
+  maxBitrate: number;
+  maxFramerate?: number;
+  scaleResolutionDownBy?: number;
+}
+
 export interface DailyAdvancedConfig {
+  camSimulcastEncodings?: CamSimulcastEncoding[];
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
   userMediaVideoConstraints?: boolean | MediaTrackConstraints;
   preferH264ForCam?: boolean;
