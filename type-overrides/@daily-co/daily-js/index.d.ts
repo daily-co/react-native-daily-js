@@ -132,6 +132,8 @@ export interface CamSimulcastEncoding {
 export interface DailyAdvancedConfig {
   camSimulcastEncodings?: CamSimulcastEncoding[];
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
+  micAudioMode?: 'music' | 'speech';
+  userMediaAudioConstraints?: boolean | MediaTrackConstraints;
   userMediaVideoConstraints?: boolean | MediaTrackConstraints;
   preferH264ForCam?: boolean;
   h264Profile?: string;
