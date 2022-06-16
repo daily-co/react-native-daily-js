@@ -28,7 +28,7 @@
     "baseUrl": "https://github.com/daily-co/react-native-daily-js"
   },
   "dependencies": {
-    "@daily-co/daily-js": "^0.26.0",
+    "@daily-co/daily-js": "^0.27.0",
     "@types/react-native-background-timer": "^2.0.0",
     "react-native-url-polyfill": "^1.1.2"
   },
