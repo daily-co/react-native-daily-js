@@ -595,11 +595,23 @@ export interface DailyStreamingPortraitLayoutConfig {
   max_cam_streams?: number;
 }
 
+export interface DailyStreamingCustomLayoutConfig {
+  preset: 'custom';
+  composition_id: string;
+  composition_params?: {
+    [key: string]: boolean | number | string;
+  };
+  session_assets?: {
+    [key: string]: string;
+  };
+}
+
 export type DailyStreamingLayoutConfig =
   | DailyStreamingDefaultLayoutConfig
   | DailyStreamingSingleParticipantLayoutConfig
   | DailyStreamingActiveParticipantLayoutConfig
-  | DailyStreamingPortraitLayoutConfig;
+  | DailyStreamingPortraitLayoutConfig
+  | DailyStreamingCustomLayoutConfig;
 
 export type DailyRemoteMediaPlayerSettingPlay = 'play';
 export type DailyRemoteMediaPlayerSettingPause = 'pause';
