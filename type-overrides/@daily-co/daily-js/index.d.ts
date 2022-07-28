@@ -117,6 +117,8 @@ export interface DailyCallOptions {
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
   receiveSettings?: DailyReceiveSettings;
+  userName?: string;
+  userData?: any;
 }
 
 export interface DailyLoadOptions extends DailyCallOptions {
@@ -197,6 +199,7 @@ export interface DailyParticipant {
   // user/session info
   user_id: string;
   user_name: string;
+  userData?: any;
   session_id: string;
   joined_at: Date;
   will_eject_at: Date;
@@ -779,6 +782,7 @@ export interface DailyCall {
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
   setUserName(name: string): Promise<{ userName: string }>;
+  setUserData(data: any): Promise<{ userData: any }>;
   room(options?: {
     includeRoomConfigDefaults: boolean;
   }): Promise<DailyPendingRoomInfo | DailyRoomInfo | null>;
