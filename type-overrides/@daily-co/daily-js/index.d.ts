@@ -201,7 +201,7 @@ export interface DailyParticipant {
   user_name: string;
   userData?: unknown;
   session_id: string;
-  joined_at: Date;
+  joined_at?: Date;
   will_eject_at: Date;
   local: boolean;
   owner: boolean;
@@ -287,7 +287,7 @@ export interface DailyRoomInfo {
     exp?: number;
     max_participants?: number;
     enable_screenshare?: boolean;
-    enable_audience_reactions?:boolean;
+    enable_audience_reactions?: boolean;
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
@@ -749,7 +749,7 @@ export interface DailyCall {
     device: { facingMode: DailyCameraFacingMode } | null;
   }>;
   setAudioDevice(deviceId: string): Promise<{
-    deviceId: String;
+    deviceId: string;
   }>;
   getCameraFacingMode(): Promise<DailyCameraFacingMode | null>;
   nativeInCallAudioMode(): DailyNativeInCallAudioMode;
