@@ -172,9 +172,28 @@ export interface DailyTrackState {
     byUser?: boolean;
     byRemoteRequest?: boolean;
     byBandwidth?: boolean;
+    byCanSendPermission?: boolean;
   };
   track?: MediaStreamTrack;
 }
+
+export interface DailyParticipantPermissions {
+  hasPresence: boolean;
+  canSend:
+    | Set<
+        | 'video'
+        | 'audio'
+        | 'screenVideo'
+        | 'screenAudio'
+        | 'customVideo'
+        | 'customAudio'
+      >
+    | boolean;
+}
+
+export type DailyParticipantPermissionsUpdate = {
+  [Property in keyof DailyParticipantPermissions]+?: DailyParticipantPermissions[Property];
+};
 
 export interface DailyParticipant {
   // tracks
@@ -205,6 +224,7 @@ export interface DailyParticipant {
   will_eject_at: Date;
   local: boolean;
   owner: boolean;
+  permissions: DailyParticipantPermissions;
   record: boolean;
 
   // video element info (iframe-based calls using standard UI only)
@@ -234,6 +254,7 @@ export interface DailyParticipantUpdateOptions {
   setVideo?: boolean;
   setSubscribedTracks?: DailyTrackSubscriptionOptions;
   eject?: true;
+  updatePermissions?: DailyParticipantPermissionsUpdate;
 }
 
 export interface DailyWaitingParticipantUpdateOptions {
@@ -420,11 +441,19 @@ export interface DailyEventObjectParticipants {
 }
 
 export interface DailyEventObjectParticipant {
-  action: Extract<
-    DailyEvent,
-    'participant-joined' | 'participant-updated' | 'participant-left'
-  >;
+  action: Extract<DailyEvent, 'participant-joined' | 'participant-updated'>;
   participant: DailyParticipant;
+}
+
+// only 1 reason reported for now. more to come.
+export type DailyParticipantLeftReason = 'became-hidden';
+
+export interface DailyEventObjectParticipantLeft {
+  action: Extract<DailyEvent, 'participant-left'>;
+  participant: DailyParticipant;
+  // reason undefined if participant left for any reason other than those listed
+  // in DailyParticipantLeftReason
+  reason?: DailyParticipantLeftReason;
 }
 
 export interface DailyEventObjectWaitingParticipant {
@@ -544,6 +573,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectParticipants
     : T extends DailyEventObjectParticipant['action']
     ? DailyEventObjectParticipant
+    : T extends DailyEventObjectParticipantLeft['action']
+    ? DailyEventObjectParticipantLeft
     : T extends DailyEventObjectWaitingParticipant['action']
     ? DailyEventObjectWaitingParticipant
     : T extends DailyEventObjectAccessState['action']
