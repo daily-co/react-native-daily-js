@@ -47,6 +47,7 @@ export type DailyEvent =
   | 'participant-joined'
   | 'participant-updated'
   | 'participant-left'
+  | 'participant-counts-updated'
   | 'track-started'
   | 'track-stopped'
   | 'recording-started'
@@ -230,6 +231,11 @@ export interface DailyParticipant {
   // video element info (iframe-based calls using standard UI only)
   cam_info: {} | DailyVideoElementInfo;
   screen_info: {} | DailyVideoElementInfo;
+}
+
+export interface DailyParticipantCounts {
+  present: number;
+  hidden: number;
 }
 
 export interface DailyWaitingParticipant {
@@ -456,6 +462,11 @@ export interface DailyEventObjectParticipantLeft {
   reason?: DailyParticipantLeftReason;
 }
 
+export interface DailyEventObjectParticipantCounts {
+  action: Extract<DailyEvent, 'participant-counts-updated'>;
+  participantCounts: DailyParticipantCounts;
+}
+
 export interface DailyEventObjectWaitingParticipant {
   action: Extract<
     DailyEvent,
@@ -575,6 +586,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectParticipant
     : T extends DailyEventObjectParticipantLeft['action']
     ? DailyEventObjectParticipantLeft
+    : T extends DailyEventObjectParticipantCounts['action']
+    ? DailyEventObjectParticipantCounts
     : T extends DailyEventObjectWaitingParticipant['action']
     ? DailyEventObjectWaitingParticipant
     : T extends DailyEventObjectAccessState['action']
@@ -742,6 +755,7 @@ export interface DailyCall {
   meetingState(): DailyMeetingState;
   accessState(): DailyAccessState;
   participants(): DailyParticipantsObject;
+  participantCounts(): DailyParticipantCounts;
   updateParticipant(
     sessionId: string,
     updates: DailyParticipantUpdateOptions
