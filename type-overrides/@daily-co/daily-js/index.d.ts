@@ -314,7 +314,7 @@ export interface DailyRoomInfo {
     exp?: number;
     max_participants?: number;
     enable_screenshare?: boolean;
-    enable_audience_reactions?: boolean;
+    enable_emoji_reactions?: boolean;
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
@@ -349,7 +349,7 @@ export interface DailyRoomInfo {
     webhook_meeting_end?: any;
     max_live_streams?: number;
     max_streaming_instances_per_room?: number;
-    enable_audience_reactions?: boolean;
+    enable_emoji_reactions?: boolean;
     enable_network_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
