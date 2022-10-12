@@ -750,9 +750,8 @@ export interface DailyTranscriptionDeepgramOptions {
   language?: string;
   model?: string;
   tier?: string;
-  detect_language?: string;
-  profanity_filter?: string;
-  redact?: string;
+  profanity_filter?: boolean;
+  redact?: boolean;
 }
 
 export interface DailyCall {
