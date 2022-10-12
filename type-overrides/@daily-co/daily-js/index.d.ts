@@ -749,6 +749,10 @@ export interface DailyRemoteMediaPlayerInfo {
 export interface DailyTranscriptionDeepgramOptions {
   language?: string;
   model?: string;
+  tier?: string;
+  detect_language?: string;
+  profanity_filter?: string;
+  redact?: string;
 }
 
 export interface DailyCall {
