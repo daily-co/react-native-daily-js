@@ -120,6 +120,8 @@ export interface DailyCallOptions {
   receiveSettings?: DailyReceiveSettings;
   userName?: string;
   userData?: unknown;
+  startVideoOff?: boolean;
+  startAudioOff?: boolean;
 }
 
 export interface DailyLoadOptions extends DailyCallOptions {
@@ -314,7 +316,8 @@ export interface DailyRoomInfo {
     exp?: number;
     max_participants?: number;
     enable_screenshare?: boolean;
-    enable_audience_reactions?: boolean;
+    enable_breakout_rooms?: boolean;
+    enable_emoji_reactions?: boolean;
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
@@ -348,7 +351,9 @@ export interface DailyRoomInfo {
     max_api_rooms?: number;
     webhook_meeting_end?: any;
     max_live_streams?: number;
-    enable_audience_reactions?: boolean;
+    max_streaming_instances_per_room?: number;
+    enable_breakout_rooms?: boolean;
+    enable_emoji_reactions?: boolean;
     enable_network_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
