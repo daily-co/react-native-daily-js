@@ -120,6 +120,8 @@ export interface DailyCallOptions {
   receiveSettings?: DailyReceiveSettings;
   userName?: string;
   userData?: unknown;
+  startVideoOff?: boolean;
+  startAudioOff?: boolean;
 }
 
 export interface DailyLoadOptions extends DailyCallOptions {
