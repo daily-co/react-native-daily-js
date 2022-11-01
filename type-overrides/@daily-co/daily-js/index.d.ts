@@ -176,6 +176,7 @@ export interface DailyTrackState {
     byRemoteRequest?: boolean;
     byBandwidth?: boolean;
     byCanSendPermission?: boolean;
+    byServerLimit?: boolean;
   };
   track?: MediaStreamTrack;
 }
