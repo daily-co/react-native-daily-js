@@ -70,6 +70,7 @@ export type DailyEvent =
   | 'remote-media-player-stopped'
   | 'remote-media-player-updated'
   | 'access-state-updated'
+  | 'meeting-session-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
   | 'waiting-participant-removed'
@@ -102,7 +103,9 @@ export type DailyFatalErrorType =
   | 'exp-room'
   | 'exp-token';
 
-export type DailyNonFatalErrorType = 'remote-media-player-error';
+export type DailyNonFatalErrorType =
+  | 'remote-media-player-error'
+  | 'meeting-session-data-error';
 
 export interface DailyParticipantsObject {
   local: DailyParticipant;
@@ -392,6 +395,12 @@ export interface DailyRoomInfo {
   dialInPIN?: string;
 }
 
+export interface DailyMeetingSessionState {
+  data: unknown;
+}
+
+export type DailySessionDataMergeStrategy = 'replace' | 'shallow-merge';
+
 export interface DailyVideoReceiveSettings {
   layer?: number;
 }
@@ -555,6 +564,11 @@ export interface DailyEventObjectAccessState extends DailyAccessState {
   action: Extract<DailyEvent, 'access-state-updated'>;
 }
 
+export interface DailyEventObjectMeetingSessionStateUpdated {
+  action: Extract<DailyEvent, 'meeting-session-state-updated'>;
+  meetingSessionState: DailyMeetingSessionState;
+}
+
 export interface DailyEventObjectTrack {
   action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
   participant: DailyParticipant | null; // null if participant left meeting
@@ -668,6 +682,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectWaitingParticipant
     : T extends DailyEventObjectAccessState['action']
     ? DailyEventObjectAccessState
+    : T extends DailyEventObjectMeetingSessionStateUpdated['action']
+    ? DailyEventObjectMeetingSessionStateUpdated
     : T extends DailyEventObjectTrack['action']
     ? DailyEventObjectTrack
     : T extends DailyEventObjectRecordingStarted['action']
@@ -909,6 +925,11 @@ export interface DailyCall {
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
+  meetingSessionState(): DailyMeetingSessionState;
+  setMeetingSessionData(
+    data: unknown,
+    mergeStrategy?: DailySessionDataMergeStrategy
+  ): void;
   setUserName(name: string): Promise<{ userName: string }>;
   setUserData(data: unknown): Promise<{ userData: unknown }>;
   room(options?: {
