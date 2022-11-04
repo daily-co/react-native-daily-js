@@ -85,6 +85,16 @@ export type DailyMeetingState =
   | 'left-meeting'
   | 'error';
 
+export type DailyCameraErrorType =
+  | 'cam-in-use'
+  | 'mic-in-use'
+  | 'cam-mic-in-use'
+  | 'permissions'
+  | 'undefined-mediadevices'
+  | 'not-found'
+  | 'constraints'
+  | 'unknown';
+
 export type DailyFatalErrorType =
   | 'ejected'
   | 'nbf-room'
@@ -176,6 +186,7 @@ export interface DailyTrackState {
     byRemoteRequest?: boolean;
     byBandwidth?: boolean;
     byCanSendPermission?: boolean;
+    byServerLimit?: boolean;
   };
   track?: MediaStreamTrack;
 }
@@ -423,6 +434,67 @@ export interface DailyEventObjectNoPayload {
   >;
 }
 
+export type DailyCameraError = {
+  msg: string;
+  localizedMsg?: string;
+};
+
+export interface DailyCamPermissionsError extends DailyCameraError {
+  type: Extract<DailyCameraErrorType, 'permissions'>;
+  blockedBy: 'user' | 'browser';
+  blockedMedia: Set<'video' | 'audio'>;
+}
+
+export interface DailyCamDeviceNotFoundError extends DailyCameraError {
+  type: Extract<DailyCameraErrorType, 'not-found'>;
+  missingMedia: Set<'video' | 'audio'>;
+}
+
+export interface DailyCamConstraintsError extends DailyCameraError {
+  type: Extract<DailyCameraErrorType, 'constraints'>;
+  reason: Set<'invalid' | 'none-specified'>;
+}
+
+export interface DailyCamInUseError extends DailyCameraError {
+  type: Extract<
+    DailyCameraErrorType,
+    'cam-in-use' | 'mic-in-use' | 'cam-mic-in-use'
+  >;
+}
+
+export interface DailyCamTypeError extends DailyCameraError {
+  type: Extract<DailyCameraErrorType, 'undefined-mediadevices'>;
+}
+
+export interface DailyCamUnknownError extends DailyCameraError {
+  type: Extract<DailyCameraErrorType, 'unknown'>;
+}
+
+export type DailyCameraErrorObject<T extends DailyCameraError = any> =
+  T extends DailyCamPermissionsError['type']
+    ? DailyCamPermissionsError
+    : T extends DailyCamDeviceNotFoundError['type']
+    ? DailyCamDeviceNotFoundError
+    : T extends DailyCamConstraintsError['type']
+    ? DailyCamConstraintsError
+    : T extends DailyCamInUseError['type']
+    ? DailyCamInUseError
+    : T extends DailyCamTypeError['type']
+    ? DailyCamTypeError
+    : T extends DailyCamUnknownError['type']
+    ? DailyCamUnknownError
+    : any;
+
+export interface DailyEventObjectCameraError {
+  action: Extract<DailyEvent, 'camera-error'>;
+  errorMsg: {
+    errorMsg: string;
+    audioOk?: boolean;
+    videoOk?: boolean;
+  };
+  error: DailyCameraErrorObject;
+}
+
 export interface DailyEventObjectFatalError {
   action: Extract<DailyEvent, 'error'>;
   errorMsg: string;
@@ -439,10 +511,7 @@ export interface DailyEventObjectNonFatalError {
 }
 
 export interface DailyEventObjectGenericError {
-  action: Extract<
-    DailyEvent,
-    'load-attempt-failed' | 'live-streaming-error' | 'camera-error'
-  >;
+  action: Extract<DailyEvent, 'load-attempt-failed' | 'live-streaming-error'>;
   errorMsg: string;
 }
 
@@ -579,6 +648,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectAppMessage
     : T extends DailyEventObjectNoPayload['action']
     ? DailyEventObjectNoPayload
+    : T extends DailyEventObjectCameraError['action']
+    ? DailyEventObjectCameraError
     : T extends DailyEventObjectFatalError['action']
     ? DailyEventObjectFatalError
     : T extends DailyEventObjectNonFatalError['action']
@@ -751,6 +822,9 @@ export interface DailyRemoteMediaPlayerInfo {
 export interface DailyTranscriptionDeepgramOptions {
   language?: string;
   model?: string;
+  tier?: string;
+  profanity_filter?: boolean;
+  redact?: boolean;
 }
 
 export interface DailyCall {
