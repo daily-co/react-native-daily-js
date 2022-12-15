@@ -101,7 +101,9 @@ export type DailyFatalErrorType =
   | 'nbf-room'
   | 'nbf-token'
   | 'exp-room'
-  | 'exp-token';
+  | 'exp-token'
+  | 'meeting-full'
+  | 'end-of-life';
 
 export type DailyNonFatalErrorType =
   | 'remote-media-player-error'
