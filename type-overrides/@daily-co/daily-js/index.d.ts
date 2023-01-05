@@ -878,7 +878,7 @@ export interface DailyTranscriptionDeepgramOptions {
   model?: string;
   tier?: string;
   profanity_filter?: boolean;
-  redact?: boolean;
+  redact?: Array<string> | boolean;
 }
 
 export interface DailyCall {
