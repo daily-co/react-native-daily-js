@@ -103,7 +103,8 @@ export type DailyFatalErrorType =
   | 'exp-room'
   | 'exp-token'
   | 'meeting-full'
-  | 'end-of-life';
+  | 'end-of-life'
+  | 'not-allowed';
 
 export type DailyNonFatalErrorType =
   | 'remote-media-player-error'
