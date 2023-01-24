@@ -266,6 +266,8 @@ export interface DailyWaitingParticipant {
 
 export type DailyTrackSubscriptionState = 'staged' | boolean;
 
+export type DailyCustomTrackSubscriptionState = DailyTrackSubscriptionState | { [name: string]: DailyTrackSubscriptionState };
+
 export type DailyTrackSubscriptionOptions =
   | DailyTrackSubscriptionState
   | {
@@ -273,6 +275,7 @@ export type DailyTrackSubscriptionOptions =
       video?: DailyTrackSubscriptionState;
       screenVideo?: DailyTrackSubscriptionState;
       screenAudio?: DailyTrackSubscriptionState;
+      custom?: DailyCustomTrackSubscriptionState;
     };
 
 export interface DailyParticipantUpdateOptions {
