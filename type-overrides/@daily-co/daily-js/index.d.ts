@@ -267,7 +267,9 @@ export interface DailyWaitingParticipant {
 
 export type DailyTrackSubscriptionState = 'staged' | boolean;
 
-export type DailyCustomTrackSubscriptionState = DailyTrackSubscriptionState | { [name: string]: DailyTrackSubscriptionState };
+export type DailyCustomTrackSubscriptionState =
+  | DailyTrackSubscriptionState
+  | { [name: string]: DailyTrackSubscriptionState };
 
 export type DailyTrackSubscriptionOptions =
   | DailyTrackSubscriptionState
@@ -741,6 +743,7 @@ export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
 export interface DailyCallFactory {
   createCallObject(properties?: DailyCallOptions): DailyCall;
+  getCallInstance(): DailyCall;
 }
 
 export interface DailyCallStaticUtils {
@@ -885,6 +888,7 @@ export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
   destroy(): Promise<void>;
+  isDestroyed(): boolean;
   meetingState(): DailyMeetingState;
   accessState(): DailyAccessState;
   participants(): DailyParticipantsObject;
