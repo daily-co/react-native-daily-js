@@ -146,6 +146,10 @@ export interface DailyLoadOptions extends DailyCallOptions {
   baseUrl?: string;
 }
 
+export interface DailyFactoryOptions extends DailyCallOptions {
+  srictMode?: boolean; // only available at constructor time
+}
+
 export interface CamSimulcastEncoding {
   maxBitrate: number;
   maxFramerate?: number;
@@ -742,7 +746,7 @@ export type DailyEventObject<T extends DailyEvent = any> =
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
 export interface DailyCallFactory {
-  createCallObject(properties?: DailyCallOptions): DailyCall;
+  createCallObject(properties?: DailyFactoryOptions): DailyCall;
   getCallInstance(): DailyCall;
 }
 
