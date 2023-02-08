@@ -591,6 +591,14 @@ export interface DailyEventObjectTrack {
   action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
   participant: DailyParticipant | null; // null if participant left meeting
   track: MediaStreamTrack;
+  type:
+    | 'video'
+    | 'audio'
+    | 'screenVideo'
+    | 'screenAudio'
+    | 'rmpVideo'
+    | 'rmpAudio'
+    | string; // string - for custom tracks
 }
 
 export interface DailyEventObjectRecordingStarted {
