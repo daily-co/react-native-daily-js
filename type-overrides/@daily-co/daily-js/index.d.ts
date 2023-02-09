@@ -349,6 +349,7 @@ export interface DailyRoomInfo {
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
+    enable_noise_cancellation_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
     enable_hand_raising?: boolean;
@@ -383,6 +384,7 @@ export interface DailyRoomInfo {
     enable_breakout_rooms?: boolean;
     enable_emoji_reactions?: boolean;
     enable_network_ui?: boolean;
+    enable_noise_cancellation_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
     enable_hand_raising?: boolean;
