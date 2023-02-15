@@ -794,9 +794,14 @@ export interface DailyEventObjectLiveStreamingStopped {
 
 export interface DailyEventObjectTranscriptionStarted {
   action: Extract<DailyEvent, 'transcription-started'>;
-  language: string;
-  model: string;
-  startedBy: string;
+  language: unknown;
+  model: unknown;
+  tier?: unknown;
+  detect_language?: unknown;
+  profanity_filter?: unknown;
+  redact?: unknown;
+  startedBy: unknown;
+  options?: unknown;
 }
 
 export interface DailyEventObjectTranscriptionStopped {
@@ -1065,13 +1070,17 @@ export interface DailyRemoteMediaPlayerInfo {
   session_id: string;
   remoteMediaPlayerState: DailyRemoteMediaPlayerState;
 }
-
+/**
+ * @deprecated This interface will be removed. `startTranscription` will accept all the available
+ * parameters from Deepgram live APIs. https://developers.deepgram.com/reference/streaming
+ */
 export interface DailyTranscriptionDeepgramOptions {
-  language?: string;
-  model?: string;
-  tier?: string;
-  profanity_filter?: boolean;
-  redact?: Array<string> | boolean;
+  language?: unknown;
+  model?: unknown;
+  tier?: unknown;
+  detect_language?: unknown;
+  profanity_filter?: unknown;
+  redact?: unknown;
 }
 
 export interface DailyCall {
@@ -1156,7 +1165,9 @@ export interface DailyCall {
   updateRemoteMediaPlayer(
     options: DailyRemoteMediaPlayerUpdateOptions
   ): Promise<DailyRemoteMediaPlayerInfo>;
-  startTranscription(options?: DailyTranscriptionDeepgramOptions): void;
+  startTranscription(
+    options?: DailyTranscriptionDeepgramOptions | Record<string, unknown>
+  ): void;
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
