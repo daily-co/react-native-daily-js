@@ -124,6 +124,7 @@ export interface DailyBrowserInfo {
   supportsScreenShare: boolean;
   supportsSfu: boolean;
   supportsVideoProcessing: boolean;
+  supportsAudioProcessing: boolean;
 }
 
 export interface DailyCallOptions {
@@ -143,6 +144,10 @@ export interface DailyCallOptions {
 
 export interface DailyLoadOptions extends DailyCallOptions {
   baseUrl?: string;
+}
+
+export interface DailyFactoryOptions extends DailyCallOptions {
+  srictMode?: boolean; // only available at constructor time
 }
 
 export interface CamSimulcastEncoding {
@@ -266,7 +271,9 @@ export interface DailyWaitingParticipant {
 
 export type DailyTrackSubscriptionState = 'staged' | boolean;
 
-export type DailyCustomTrackSubscriptionState = DailyTrackSubscriptionState | { [name: string]: DailyTrackSubscriptionState };
+export type DailyCustomTrackSubscriptionState =
+  | DailyTrackSubscriptionState
+  | { [name: string]: DailyTrackSubscriptionState };
 
 export type DailyTrackSubscriptionOptions =
   | DailyTrackSubscriptionState
@@ -342,6 +349,7 @@ export interface DailyRoomInfo {
     enable_chat?: boolean;
     enable_knocking?: boolean;
     enable_network_ui?: boolean;
+    enable_noise_cancellation_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
     enable_hand_raising?: boolean;
@@ -376,6 +384,7 @@ export interface DailyRoomInfo {
     enable_breakout_rooms?: boolean;
     enable_emoji_reactions?: boolean;
     enable_network_ui?: boolean;
+    enable_noise_cancellation_ui?: boolean;
     enable_people_ui?: boolean;
     enable_pip_ui?: boolean;
     enable_hand_raising?: boolean;
@@ -584,6 +593,14 @@ export interface DailyEventObjectTrack {
   action: Extract<DailyEvent, 'track-started' | 'track-stopped'>;
   participant: DailyParticipant | null; // null if participant left meeting
   track: MediaStreamTrack;
+  type:
+    | 'video'
+    | 'audio'
+    | 'screenVideo'
+    | 'screenAudio'
+    | 'rmpVideo'
+    | 'rmpAudio'
+    | string; // string - for custom tracks
 }
 
 export interface DailyEventObjectRecordingStarted {
@@ -739,7 +756,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
 export interface DailyCallFactory {
-  createCallObject(properties?: DailyCallOptions): DailyCall;
+  createCallObject(properties?: DailyFactoryOptions): DailyCall;
+  getCallInstance(): DailyCall;
 }
 
 export interface DailyCallStaticUtils {
@@ -877,13 +895,14 @@ export interface DailyTranscriptionDeepgramOptions {
   model?: string;
   tier?: string;
   profanity_filter?: boolean;
-  redact?: boolean;
+  redact?: Array<string> | boolean;
 }
 
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
   destroy(): Promise<void>;
+  isDestroyed(): boolean;
   meetingState(): DailyMeetingState;
   accessState(): DailyAccessState;
   participants(): DailyParticipantsObject;
