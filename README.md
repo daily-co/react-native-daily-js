@@ -20,6 +20,8 @@ npm i --save-exact @daily-co/react-native-webrtc@1.94.1-daily.8
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
 
+> If your project uses [Expo](https://expo.dev/), use the [react-native-daily-js configuration plugin](https://www.npmjs.com/package/@daily-co/config-plugin-rn-daily-js) instead of the below steps.
+
 ### iOS
 
 Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 11 and above:
