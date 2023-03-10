@@ -15,10 +15,12 @@ Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
 npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1
-npm i --save-exact @daily-co/react-native-webrtc@1.94.1-daily.8
+npm i --save-exact @daily-co/react-native-webrtc@106.0.6-daily.1
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
+
+> If your project uses [Expo](https://expo.dev/), use the [`config-plugin-rn-daily-js` configuration package](https://www.npmjs.com/package/@daily-co/config-plugin-rn-daily-js) instead of the following steps.
 
 ### iOS
 
