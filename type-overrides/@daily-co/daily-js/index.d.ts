@@ -105,7 +105,8 @@ export type DailyFatalErrorType =
   | 'exp-token'
   | 'meeting-full'
   | 'end-of-life'
-  | 'not-allowed';
+  | 'not-allowed'
+  | 'connection-error';
 
 export type DailyNonFatalErrorType =
   | 'remote-media-player-error'
@@ -522,6 +523,8 @@ export interface DailyEventObjectFatalError {
   errorMsg: string;
   error?: {
     type: DailyFatalErrorType;
+    msg: string;
+    details?: any;
     localizedMsg?: string;
   };
 }
