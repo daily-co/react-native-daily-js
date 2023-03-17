@@ -61,6 +61,7 @@ export type DailyEvent =
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
+  | 'cpu-load-change'
   | 'error'
   | 'nonfatal-error'
   | 'live-streaming-started'
@@ -331,6 +332,35 @@ export interface DailyNetworkStats {
     worstVideoSendPacketLoss: number;
   };
   threshold: 'good' | 'low' | 'very-low';
+}
+
+export interface DailyCpuLoadStats {
+  cpuLoadState: 'low' | 'high';
+  cpuLoadStateReason: 'encode' | 'decode' | 'scheduleDuration' | 'none'; // We are currently not using the Inter frame Delay to change the cpu load state
+  stats: {
+    latest: {
+      timestamp: number;
+      scheduleDuration: number;
+      frameEncodeTimeSec: number;
+      targetEncodeFrameRate: number;
+      targetDecodeFrameRate: number;
+      targetScheduleDuration: number;
+      cpuUsageBasedOnTargetEncode: number;
+      cpuUsageBasedOnGlobalDecode: number;
+      avgFrameDecodeTimeSec: number;
+      avgInterFrameDelayStandardDeviation: number;
+      totalReceivedVideoTracks: number;
+      cpuInboundVideoStats: {
+        trackId: string;
+        ssrc: number;
+        frameWidth: number;
+        frameHeight: number;
+        fps: number;
+        frameDecodeTimeSec: number;
+        interFrameDelayStandardDeviation: number;
+      }[];
+    };
+  };
 }
 
 export interface DailyPendingRoomInfo {
@@ -632,6 +662,12 @@ export interface DailyEventObjectNetworkQualityEvent {
   quality: number;
 }
 
+export interface DailyEventObjectCpuLoadEvent {
+  action: Extract<DailyEvent, 'cpu-load-change'>;
+  cpuLoadState: 'low' | 'high';
+  cpuLoadStateReason: 'encode' | 'decode' | 'scheduleDuration' | 'none'; // We are currently not using the Inter frame Delay to change the cpu load state
+}
+
 export type DailyNetworkConnectionType = 'signaling' | 'peer-to-peer' | 'sfu';
 
 export interface DailyEventObjectNetworkConnectionEvent {
@@ -760,6 +796,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectRemoteMediaPlayerStopped
     : T extends DailyEventObjectNetworkQualityEvent['action']
     ? DailyEventObjectNetworkQualityEvent
+    : T extends DailyEventObjectCpuLoadEvent['action']
+    ? DailyEventObjectCpuLoadEvent
     : T extends DailyEventObjectNetworkConnectionEvent['action']
     ? DailyEventObjectNetworkConnectionEvent
     : T extends DailyEventObjectActiveSpeakerChange['action']
@@ -1004,6 +1042,7 @@ export interface DailyCall {
   }): void;
   stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
+  getCpuLoadStats(): Promise<DailyCpuLoadStats>;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
