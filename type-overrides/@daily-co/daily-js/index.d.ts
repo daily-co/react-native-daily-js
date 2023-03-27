@@ -61,6 +61,7 @@ export type DailyEvent =
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
+  | 'cpu-load-change'
   | 'error'
   | 'nonfatal-error'
   | 'live-streaming-started'
@@ -105,7 +106,8 @@ export type DailyFatalErrorType =
   | 'exp-token'
   | 'meeting-full'
   | 'end-of-life'
-  | 'not-allowed';
+  | 'not-allowed'
+  | 'connection-error';
 
 export type DailyNonFatalErrorType =
   | 'remote-media-player-error'
@@ -148,7 +150,7 @@ export interface DailyLoadOptions extends DailyCallOptions {
 }
 
 export interface DailyFactoryOptions extends DailyCallOptions {
-  srictMode?: boolean; // only available at constructor time
+  strictMode?: boolean; // only available at constructor time
 }
 
 export interface CamSimulcastEncoding {
@@ -333,6 +335,35 @@ export interface DailyNetworkStats {
   threshold: 'good' | 'low' | 'very-low';
 }
 
+export interface DailyCpuLoadStats {
+  cpuLoadState: 'low' | 'high';
+  cpuLoadStateReason: 'encode' | 'decode' | 'scheduleDuration' | 'none'; // We are currently not using the Inter frame Delay to change the cpu load state
+  stats: {
+    latest: {
+      timestamp: number;
+      scheduleDuration: number;
+      frameEncodeTimeSec: number;
+      targetEncodeFrameRate: number;
+      targetDecodeFrameRate: number;
+      targetScheduleDuration: number;
+      cpuUsageBasedOnTargetEncode: number;
+      cpuUsageBasedOnGlobalDecode: number;
+      avgFrameDecodeTimeSec: number;
+      avgInterFrameDelayStandardDeviation: number;
+      totalReceivedVideoTracks: number;
+      cpuInboundVideoStats: {
+        trackId: string;
+        ssrc: number;
+        frameWidth: number;
+        frameHeight: number;
+        fps: number;
+        frameDecodeTimeSec: number;
+        interFrameDelayStandardDeviation: number;
+      }[];
+    };
+  };
+}
+
 export interface DailyPendingRoomInfo {
   roomUrlPendingJoin: string;
 }
@@ -458,7 +489,6 @@ export interface DailyEventObjectNoPayload {
 
 export type DailyCameraError = {
   msg: string;
-  localizedMsg?: string;
 };
 
 export interface DailyCamPermissionsError extends DailyCameraError {
@@ -517,13 +547,27 @@ export interface DailyEventObjectCameraError {
   error: DailyCameraErrorObject;
 }
 
+export type DailyFatalError = {
+  type: DailyFatalErrorType;
+  msg: string;
+};
+
+export interface DailyFatalConnectionError extends DailyFatalError {
+  type: Extract<DailyFatalConnectionError, 'connection-error'>;
+  details: {
+    on: 'join' | 'reconnect';
+    sourceError: Error;
+    uri?: string;
+  };
+}
+
+export type DailyFatalErrorObject<T extends DailyFatalError = any> =
+  T extends DailyFatalConnectionError['type'] ? DailyFatalConnectionError : any;
+
 export interface DailyEventObjectFatalError {
   action: Extract<DailyEvent, 'error'>;
   errorMsg: string;
-  error?: {
-    type: DailyFatalErrorType;
-    localizedMsg?: string;
-  };
+  error?: DailyFatalErrorObject;
 }
 
 export interface DailyEventObjectNonFatalError {
@@ -630,6 +674,12 @@ export interface DailyEventObjectNetworkQualityEvent {
   action: Extract<DailyEvent, 'network-quality-change'>;
   threshold: string;
   quality: number;
+}
+
+export interface DailyEventObjectCpuLoadEvent {
+  action: Extract<DailyEvent, 'cpu-load-change'>;
+  cpuLoadState: 'low' | 'high';
+  cpuLoadStateReason: 'encode' | 'decode' | 'scheduleDuration' | 'none'; // We are currently not using the Inter frame Delay to change the cpu load state
 }
 
 export type DailyNetworkConnectionType = 'signaling' | 'peer-to-peer' | 'sfu';
@@ -760,6 +810,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectRemoteMediaPlayerStopped
     : T extends DailyEventObjectNetworkQualityEvent['action']
     ? DailyEventObjectNetworkQualityEvent
+    : T extends DailyEventObjectCpuLoadEvent['action']
+    ? DailyEventObjectCpuLoadEvent
     : T extends DailyEventObjectNetworkConnectionEvent['action']
     ? DailyEventObjectNetworkConnectionEvent
     : T extends DailyEventObjectActiveSpeakerChange['action']
@@ -1004,6 +1056,7 @@ export interface DailyCall {
   }): void;
   stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
+  getCpuLoadStats(): Promise<DailyCpuLoadStats>;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
