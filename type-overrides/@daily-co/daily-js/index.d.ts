@@ -859,7 +859,7 @@ export interface DailyStreamingPortraitLayoutConfig {
 
 export interface DailyStreamingCustomLayoutConfig {
   preset: 'custom';
-  composition_id: string;
+  composition_id?: string;
   composition_params?: {
     [key: string]: boolean | number | string;
   };
