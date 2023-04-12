@@ -494,17 +494,17 @@ export type DailyCameraError = {
 export interface DailyCamPermissionsError extends DailyCameraError {
   type: Extract<DailyCameraErrorType, 'permissions'>;
   blockedBy: 'user' | 'browser';
-  blockedMedia: Set<'video' | 'audio'>;
+  blockedMedia: Array<'video' | 'audio'>;
 }
 
 export interface DailyCamDeviceNotFoundError extends DailyCameraError {
   type: Extract<DailyCameraErrorType, 'not-found'>;
-  missingMedia: Set<'video' | 'audio'>;
+  missingMedia: Array<'video' | 'audio'>;
 }
 
 export interface DailyCamConstraintsError extends DailyCameraError {
   type: Extract<DailyCameraErrorType, 'constraints'>;
-  reason: Set<'invalid' | 'none-specified'>;
+  reason: 'invalid' | 'none-specified';
 }
 
 export interface DailyCamInUseError extends DailyCameraError {
@@ -522,7 +522,7 @@ export interface DailyCamUnknownError extends DailyCameraError {
   type: Extract<DailyCameraErrorType, 'unknown'>;
 }
 
-export type DailyCameraErrorObject<T extends DailyCameraError = any> =
+export type DailyCameraErrorObject<T extends DailyCameraErrorType> =
   T extends DailyCamPermissionsError['type']
     ? DailyCamPermissionsError
     : T extends DailyCamDeviceNotFoundError['type']
@@ -544,7 +544,7 @@ export interface DailyEventObjectCameraError {
     audioOk?: boolean;
     videoOk?: boolean;
   };
-  error: DailyCameraErrorObject;
+  error: DailyCameraErrorObject<DailyCameraErrorType>;
 }
 
 export type DailyFatalError = {
@@ -553,7 +553,7 @@ export type DailyFatalError = {
 };
 
 export interface DailyFatalConnectionError extends DailyFatalError {
-  type: Extract<DailyFatalConnectionError, 'connection-error'>;
+  type: Extract<DailyFatalErrorType, 'connection-error'>;
   details: {
     on: 'join' | 'reconnect';
     sourceError: Error;
@@ -561,13 +561,13 @@ export interface DailyFatalConnectionError extends DailyFatalError {
   };
 }
 
-export type DailyFatalErrorObject<T extends DailyFatalError = any> =
+export type DailyFatalErrorObject<T extends DailyFatalErrorType> =
   T extends DailyFatalConnectionError['type'] ? DailyFatalConnectionError : any;
 
 export interface DailyEventObjectFatalError {
   action: Extract<DailyEvent, 'error'>;
   errorMsg: string;
-  error?: DailyFatalErrorObject;
+  error?: DailyFatalErrorObject<DailyFatalErrorType>;
 }
 
 export interface DailyEventObjectNonFatalError {
