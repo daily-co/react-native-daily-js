@@ -12,6 +12,8 @@ import {
   MediaTrackConstraints,
 } from '@daily-co/react-native-webrtc';
 
+import RTCRtpEncodingParameters from '@daily-co/react-native-webrtc/lib/typescript/RTCRtpEncodingParameters';
+
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
  */
@@ -77,7 +79,8 @@ export type DailyEvent =
   | 'waiting-participant-updated'
   | 'waiting-participant-removed'
   | 'available-devices-updated'
-  | 'receive-settings-updated';
+  | 'receive-settings-updated'
+  | 'send-settings-updated';
 
 export type DailyMeetingState =
   | 'new'
@@ -361,6 +364,30 @@ export interface DailyCpuLoadStats {
         interFrameDelayStandardDeviation: number;
       }[];
     };
+  };
+}
+
+interface DailySendSettings {
+  video?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
+  customVideoDefaults?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
+  [customKey: string]:
+    | DailyVideoSendSettings
+    | DailyVideoSendSettingsPreset
+    | undefined;
+}
+
+export type DailyVideoSendSettingsPreset =
+  | 'default'
+  | 'bandwidth-optimized'
+  | 'quality-optimized';
+
+// Media Track Send Settings
+interface DailyVideoSendSettings {
+  maxQuality?: 'low' | 'medium' | 'high';
+  encodings?: {
+    low: RTCRtpEncodingParameters;
+    medium: RTCRtpEncodingParameters;
+    high: RTCRtpEncodingParameters;
   };
 }
 
@@ -715,6 +742,11 @@ export interface DailyEventObjectAvailableDevicesUpdated {
   availableDevices: MediaDeviceInfo[];
 }
 
+export interface DailyEventObjectSendSettingsUpdated {
+  action: Extract<DailyEvent, 'send-settings-updated'>;
+  sendSettings: DailySendSettings;
+}
+
 export interface DailyEventObjectLiveStreamingStarted {
   action: Extract<DailyEvent, 'live-streaming-started'>;
   layout?: DailyStreamingLayoutConfig;
@@ -820,6 +852,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectReceiveSettingsUpdated
     : T extends DailyEventObjectAvailableDevicesUpdated['action']
     ? DailyEventObjectAvailableDevicesUpdated
+    : T extends DailyEventObjectSendSettingsUpdated['action']
+    ? DailyEventObjectSendSettingsUpdated
     : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
@@ -1057,6 +1091,13 @@ export interface DailyCall {
   stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   getCpuLoadStats(): Promise<DailyCpuLoadStats>;
+
+  //FIXME Filipi: leaving the method commented until we properly add support for RN
+  //We are going to do this in a follow up PR:https://github.com/daily-co/pluot-core/pull/8075
+  /*updateSendSettings(
+    settings: DailySendSettings
+  ): Promise<DailySendSettings>;*/
+  getSendSettings(): DailySendSettings;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
