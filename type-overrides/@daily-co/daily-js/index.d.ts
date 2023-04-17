@@ -869,7 +869,16 @@ export interface DailyCallStaticUtils {
 
 export type DailyCameraFacingMode = 'user' | 'environment';
 
-export interface DailyStreamingDefaultLayoutConfig {
+type DailyStreamingParticipantsSortMethod = 'active';
+
+export interface DailyStreamingParticipantsConfig {
+  video?: string[];
+  audio?: string[];
+  sort?: DailyStreamingParticipantsSortMethod;
+}
+
+export interface DailyStreamingDefaultLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'default';
   max_cam_streams?: number;
 }
@@ -879,7 +888,8 @@ export interface DailyStreamingSingleParticipantLayoutConfig {
   session_id: string;
 }
 
-export interface DailyStreamingActiveParticipantLayoutConfig {
+export interface DailyStreamingActiveParticipantLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'active-participant';
 }
 
@@ -889,13 +899,15 @@ export interface DailyStreamingAudioOnlyLayoutConfig {
 
 export type DailyStreamingPortraitLayoutVariant = 'vertical' | 'inset';
 
-export interface DailyStreamingPortraitLayoutConfig {
+export interface DailyStreamingPortraitLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'portrait';
   variant?: DailyStreamingPortraitLayoutVariant;
   max_cam_streams?: number;
 }
 
-export interface DailyUpdateStreamingCustomLayoutConfig {
+export interface DailyUpdateStreamingCustomLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'custom';
   composition_params?: {
     [key: string]: boolean | number | string;
@@ -903,7 +915,8 @@ export interface DailyUpdateStreamingCustomLayoutConfig {
 }
 
 export interface DailyStartStreamingCustomLayoutConfig
-  extends DailyUpdateStreamingCustomLayoutConfig {
+  extends DailyUpdateStreamingCustomLayoutConfig,
+    DailyStreamingParticipantsConfig {
   composition_id?: string;
   session_assets?: {
     [key: string]: string;
@@ -1088,6 +1101,12 @@ export interface DailyCall {
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
   getInputDevices(): Promise<DailyDeviceInfos>;
+  startRecording(options?: DailyStreamingOptions<'recording', 'start'>): void;
+  updateRecording(options: {
+    layout?: DailyStreamingLayoutConfig<'update'>;
+    instanceId?: string;
+  }): void;
+  stopRecording(options?: { instanceId: string }): void;
   startLiveStreaming(options: DailyLiveStreamingOptions<'start'>): void;
   updateLiveStreaming(options: {
     layout?: DailyLiveStreamingLayoutConfig<'update'>;
@@ -1113,17 +1132,9 @@ export interface DailyCall {
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
-  startRecording(options?: DailyStreamingOptions<'recording', 'start'>): void;
-  updateRecording(options: {
-    layout?: DailyStreamingLayoutConfig<'update'>;
-    instanceId?: string;
-  }): void;
-  stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   getCpuLoadStats(): Promise<DailyCpuLoadStats>;
-  updateSendSettings(
-    settings: DailySendSettings
-  ): Promise<DailySendSettings>;
+  updateSendSettings(settings: DailySendSettings): Promise<DailySendSettings>;
   getSendSettings(): DailySendSettings;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
