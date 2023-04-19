@@ -1091,12 +1091,9 @@ export interface DailyCall {
   stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   getCpuLoadStats(): Promise<DailyCpuLoadStats>;
-
-  //FIXME Filipi: leaving the method commented until we properly add support for RN
-  //We are going to do this in a follow up PR:https://github.com/daily-co/pluot-core/pull/8075
-  /*updateSendSettings(
+  updateSendSettings(
     settings: DailySendSettings
-  ): Promise<DailySendSettings>;*/
+  ): Promise<DailySendSettings>;
   getSendSettings(): DailySendSettings;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
