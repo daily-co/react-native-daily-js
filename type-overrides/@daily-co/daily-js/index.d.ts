@@ -681,7 +681,7 @@ export interface DailyEventObjectRecordingStarted {
   recordingId?: string;
   startedBy?: string;
   type?: string;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: DailyStreamingLayoutConfig<'start'>;
   instanceId?: string;
 }
 
@@ -749,7 +749,7 @@ export interface DailyEventObjectSendSettingsUpdated {
 
 export interface DailyEventObjectLiveStreamingStarted {
   action: Extract<DailyEvent, 'live-streaming-started'>;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: DailyLiveStreamingLayoutConfig<'start'>;
   instanceId?: string;
 }
 export interface DailyEventObjectLiveStreamingUpdated {
@@ -883,6 +883,10 @@ export interface DailyStreamingActiveParticipantLayoutConfig {
   preset: 'active-participant';
 }
 
+export interface DailyStreamingAudioOnlyLayoutConfig {
+  preset: 'audio-only';
+}
+
 export type DailyStreamingPortraitLayoutVariant = 'vertical' | 'inset';
 
 export interface DailyStreamingPortraitLayoutConfig {
@@ -891,23 +895,42 @@ export interface DailyStreamingPortraitLayoutConfig {
   max_cam_streams?: number;
 }
 
-export interface DailyStreamingCustomLayoutConfig {
+export interface DailyUpdateStreamingCustomLayoutConfig {
   preset: 'custom';
-  composition_id?: string;
   composition_params?: {
     [key: string]: boolean | number | string;
   };
+}
+
+export interface DailyStartStreamingCustomLayoutConfig
+  extends DailyUpdateStreamingCustomLayoutConfig {
+  composition_id?: string;
   session_assets?: {
     [key: string]: string;
   };
 }
 
-export type DailyStreamingLayoutConfig =
+type DailyStreamingLayoutConfigType = 'start' | 'update';
+type DailyStartStreamingMethod = 'liveStreaming' | 'recording';
+
+export type DailyStreamingLayoutConfig<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> =
   | DailyStreamingDefaultLayoutConfig
   | DailyStreamingSingleParticipantLayoutConfig
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig
-  | DailyStreamingCustomLayoutConfig;
+  | DailyStreamingAudioOnlyLayoutConfig
+  | (Type extends 'start'
+      ? DailyStartStreamingCustomLayoutConfig
+      : DailyUpdateStreamingCustomLayoutConfig);
+
+export type DailyLiveStreamingLayoutConfig<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> = Exclude<
+  DailyStreamingLayoutConfig<Type>,
+  DailyStreamingAudioOnlyLayoutConfig
+>;
 
 export type DailyStreamingState = 'connected' | 'interrupted';
 
@@ -939,7 +962,10 @@ export type DailyAccessRequest = {
   name: string;
 };
 
-export interface DailyStreamingOptions {
+export interface DailyStreamingOptions<
+  Method extends DailyStartStreamingMethod,
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> {
   width?: number;
   height?: number;
   fps?: number;
@@ -949,14 +975,18 @@ export interface DailyStreamingOptions {
   maxDuration?: number;
   backgroundColor?: string;
   instanceId?: string;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: Method extends 'recording'
+    ? DailyStreamingLayoutConfig<Type>
+    : DailyLiveStreamingLayoutConfig<Type>;
 }
 
 export interface DailyStreamingEndpoint {
   endpoint: string;
 }
 
-export interface DailyLiveStreamingOptions extends DailyStreamingOptions {
+export interface DailyLiveStreamingOptions<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> extends DailyStreamingOptions<'liveStreaming', Type> {
   rtmpUrl?: string | string[];
   endpoints?: DailyStreamingEndpoint[];
 }
@@ -1058,9 +1088,9 @@ export interface DailyCall {
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
   getInputDevices(): Promise<DailyDeviceInfos>;
-  startLiveStreaming(options: DailyLiveStreamingOptions): void;
+  startLiveStreaming(options: DailyLiveStreamingOptions<'start'>): void;
   updateLiveStreaming(options: {
-    layout?: DailyStreamingLayoutConfig;
+    layout?: DailyLiveStreamingLayoutConfig<'update'>;
     instanceId?: string;
   }): void;
   addLiveStreamingEndpoints(options: {
@@ -1083,9 +1113,9 @@ export interface DailyCall {
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
-  startRecording(options?: DailyStreamingOptions): void;
+  startRecording(options?: DailyStreamingOptions<'recording', 'start'>): void;
   updateRecording(options: {
-    layout?: DailyStreamingLayoutConfig;
+    layout?: DailyStreamingLayoutConfig<'update'>;
     instanceId?: string;
   }): void;
   stopRecording(options?: { instanceId: string }): void;
