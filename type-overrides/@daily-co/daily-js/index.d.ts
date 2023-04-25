@@ -12,6 +12,8 @@ import {
   MediaTrackConstraints,
 } from '@daily-co/react-native-webrtc';
 
+import RTCRtpEncodingParameters from '@daily-co/react-native-webrtc/lib/typescript/RTCRtpEncodingParameters';
+
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
  */
@@ -77,7 +79,8 @@ export type DailyEvent =
   | 'waiting-participant-updated'
   | 'waiting-participant-removed'
   | 'available-devices-updated'
-  | 'receive-settings-updated';
+  | 'receive-settings-updated'
+  | 'send-settings-updated';
 
 export type DailyMeetingState =
   | 'new'
@@ -361,6 +364,30 @@ export interface DailyCpuLoadStats {
         interFrameDelayStandardDeviation: number;
       }[];
     };
+  };
+}
+
+interface DailySendSettings {
+  video?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
+  customVideoDefaults?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
+  [customKey: string]:
+    | DailyVideoSendSettings
+    | DailyVideoSendSettingsPreset
+    | undefined;
+}
+
+export type DailyVideoSendSettingsPreset =
+  | 'default'
+  | 'bandwidth-optimized'
+  | 'quality-optimized';
+
+// Media Track Send Settings
+interface DailyVideoSendSettings {
+  maxQuality?: 'low' | 'medium' | 'high';
+  encodings?: {
+    low: RTCRtpEncodingParameters;
+    medium: RTCRtpEncodingParameters;
+    high: RTCRtpEncodingParameters;
   };
 }
 
@@ -654,7 +681,7 @@ export interface DailyEventObjectRecordingStarted {
   recordingId?: string;
   startedBy?: string;
   type?: string;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: DailyStreamingLayoutConfig<'start'>;
   instanceId?: string;
 }
 
@@ -715,9 +742,14 @@ export interface DailyEventObjectAvailableDevicesUpdated {
   availableDevices: MediaDeviceInfo[];
 }
 
+export interface DailyEventObjectSendSettingsUpdated {
+  action: Extract<DailyEvent, 'send-settings-updated'>;
+  sendSettings: DailySendSettings;
+}
+
 export interface DailyEventObjectLiveStreamingStarted {
   action: Extract<DailyEvent, 'live-streaming-started'>;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: DailyLiveStreamingLayoutConfig<'start'>;
   instanceId?: string;
 }
 export interface DailyEventObjectLiveStreamingUpdated {
@@ -820,6 +852,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectReceiveSettingsUpdated
     : T extends DailyEventObjectAvailableDevicesUpdated['action']
     ? DailyEventObjectAvailableDevicesUpdated
+    : T extends DailyEventObjectSendSettingsUpdated['action']
+    ? DailyEventObjectSendSettingsUpdated
     : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
@@ -835,7 +869,16 @@ export interface DailyCallStaticUtils {
 
 export type DailyCameraFacingMode = 'user' | 'environment';
 
-export interface DailyStreamingDefaultLayoutConfig {
+type DailyStreamingParticipantsSortMethod = 'active';
+
+export interface DailyStreamingParticipantsConfig {
+  video?: string[];
+  audio?: string[];
+  sort?: DailyStreamingParticipantsSortMethod;
+}
+
+export interface DailyStreamingDefaultLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'default';
   max_cam_streams?: number;
 }
@@ -845,35 +888,62 @@ export interface DailyStreamingSingleParticipantLayoutConfig {
   session_id: string;
 }
 
-export interface DailyStreamingActiveParticipantLayoutConfig {
+export interface DailyStreamingActiveParticipantLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'active-participant';
+}
+
+export interface DailyStreamingAudioOnlyLayoutConfig {
+  preset: 'audio-only';
 }
 
 export type DailyStreamingPortraitLayoutVariant = 'vertical' | 'inset';
 
-export interface DailyStreamingPortraitLayoutConfig {
+export interface DailyStreamingPortraitLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'portrait';
   variant?: DailyStreamingPortraitLayoutVariant;
   max_cam_streams?: number;
 }
 
-export interface DailyStreamingCustomLayoutConfig {
+export interface DailyUpdateStreamingCustomLayoutConfig
+  extends DailyStreamingParticipantsConfig {
   preset: 'custom';
-  composition_id?: string;
   composition_params?: {
     [key: string]: boolean | number | string;
   };
+}
+
+export interface DailyStartStreamingCustomLayoutConfig
+  extends DailyUpdateStreamingCustomLayoutConfig,
+    DailyStreamingParticipantsConfig {
+  composition_id?: string;
   session_assets?: {
     [key: string]: string;
   };
 }
 
-export type DailyStreamingLayoutConfig =
+type DailyStreamingLayoutConfigType = 'start' | 'update';
+type DailyStartStreamingMethod = 'liveStreaming' | 'recording';
+
+export type DailyStreamingLayoutConfig<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> =
   | DailyStreamingDefaultLayoutConfig
   | DailyStreamingSingleParticipantLayoutConfig
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig
-  | DailyStreamingCustomLayoutConfig;
+  | DailyStreamingAudioOnlyLayoutConfig
+  | (Type extends 'start'
+      ? DailyStartStreamingCustomLayoutConfig
+      : DailyUpdateStreamingCustomLayoutConfig);
+
+export type DailyLiveStreamingLayoutConfig<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> = Exclude<
+  DailyStreamingLayoutConfig<Type>,
+  DailyStreamingAudioOnlyLayoutConfig
+>;
 
 export type DailyStreamingState = 'connected' | 'interrupted';
 
@@ -905,7 +975,10 @@ export type DailyAccessRequest = {
   name: string;
 };
 
-export interface DailyStreamingOptions {
+export interface DailyStreamingOptions<
+  Method extends DailyStartStreamingMethod,
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> {
   width?: number;
   height?: number;
   fps?: number;
@@ -915,14 +988,18 @@ export interface DailyStreamingOptions {
   maxDuration?: number;
   backgroundColor?: string;
   instanceId?: string;
-  layout?: DailyStreamingLayoutConfig;
+  layout?: Method extends 'recording'
+    ? DailyStreamingLayoutConfig<Type>
+    : DailyLiveStreamingLayoutConfig<Type>;
 }
 
 export interface DailyStreamingEndpoint {
   endpoint: string;
 }
 
-export interface DailyLiveStreamingOptions extends DailyStreamingOptions {
+export interface DailyLiveStreamingOptions<
+  Type extends DailyStreamingLayoutConfigType = 'start'
+> extends DailyStreamingOptions<'liveStreaming', Type> {
   rtmpUrl?: string | string[];
   endpoints?: DailyStreamingEndpoint[];
 }
@@ -1024,9 +1101,15 @@ export interface DailyCall {
     inCallAudioMode: DailyNativeInCallAudioMode
   ): DailyCall;
   getInputDevices(): Promise<DailyDeviceInfos>;
-  startLiveStreaming(options: DailyLiveStreamingOptions): void;
+  startRecording(options?: DailyStreamingOptions<'recording', 'start'>): void;
+  updateRecording(options: {
+    layout?: DailyStreamingLayoutConfig<'update'>;
+    instanceId?: string;
+  }): void;
+  stopRecording(options?: { instanceId: string }): void;
+  startLiveStreaming(options: DailyLiveStreamingOptions<'start'>): void;
   updateLiveStreaming(options: {
-    layout?: DailyStreamingLayoutConfig;
+    layout?: DailyLiveStreamingLayoutConfig<'update'>;
     instanceId?: string;
   }): void;
   addLiveStreamingEndpoints(options: {
@@ -1049,14 +1132,10 @@ export interface DailyCall {
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
-  startRecording(options?: DailyStreamingOptions): void;
-  updateRecording(options: {
-    layout?: DailyStreamingLayoutConfig;
-    instanceId?: string;
-  }): void;
-  stopRecording(options?: { instanceId: string }): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   getCpuLoadStats(): Promise<DailyCpuLoadStats>;
+  updateSendSettings(settings: DailySendSettings): Promise<DailySendSettings>;
+  getSendSettings(): DailySendSettings;
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
