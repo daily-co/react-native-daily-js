@@ -142,6 +142,7 @@ export interface DailyCallOptions {
   videoSource?: string | MediaStreamTrack;
   audioSource?: string | MediaStreamTrack;
   receiveSettings?: DailyReceiveSettings;
+  sendSettings?: DailySendSettings;
   userName?: string;
   userData?: unknown;
   startVideoOff?: boolean;
