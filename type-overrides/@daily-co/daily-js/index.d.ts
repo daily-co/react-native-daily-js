@@ -46,6 +46,7 @@ export type DailyEvent =
   | 'joining-meeting'
   | 'joined-meeting'
   | 'left-meeting'
+  | 'call-instance-destroyed'
   | 'participant-joined'
   | 'participant-updated'
   | 'participant-left'
@@ -511,6 +512,7 @@ export interface DailyEventObjectNoPayload {
     | 'loaded'
     | 'joining-meeting'
     | 'left-meeting'
+    | 'call-instance-destroyed'
     | 'recording-stats'
   >;
 }
