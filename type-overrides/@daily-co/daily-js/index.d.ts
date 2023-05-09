@@ -139,8 +139,8 @@ export interface DailyCallOptions {
   dailyConfig?: DailyAdvancedConfig;
   subscribeToTracksAutomatically?: boolean;
   reactNativeConfig?: DailyReactNativeConfig;
-  videoSource?: string | MediaStreamTrack;
-  audioSource?: string | MediaStreamTrack;
+  videoSource?: string | MediaStreamTrack | boolean;
+  audioSource?: string | MediaStreamTrack | boolean;
   receiveSettings?: DailyReceiveSettings;
   userName?: string;
   userData?: unknown;
