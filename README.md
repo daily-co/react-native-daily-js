@@ -30,14 +30,6 @@ Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` o
 platform :ios, '11.0'
 ```
 
-If you plan on doing a release build with bitcode enabled, run:
-
-```
-./node_modules/@daily-co/react-native-webrtc/tools/downloadBitcode.sh
-```
-
-(But don't fret—you can always run it later, before you do your release build.)
-
 Then run:
 
 ```bash
