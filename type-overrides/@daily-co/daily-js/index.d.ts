@@ -208,7 +208,12 @@ export interface DailyTrackState {
     byCanSendPermission?: boolean;
     byServerLimit?: boolean;
   };
+  // guaranteed-playable reference to the track
+  // (it's only present when state === 'playable')
   track?: MediaStreamTrack;
+  // not-guaranteed-playable reference to the track
+  // (it may be present when state !== 'playable')
+  persistentTrack?: MediaStreamTrack;
 }
 
 export interface DailyParticipantPermissions {
