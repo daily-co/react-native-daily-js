@@ -16,12 +16,15 @@ const { DailyNativeUtils, WebRTCModule } = NativeModules;
 declare const global: any;
 
 const webRTCEventEmitter = new NativeEventEmitter(WebRTCModule);
+const dailyNativeUtilsEventEmitter = new NativeEventEmitter(DailyNativeUtils);
 
 let hasAudioFocus: boolean;
 let appState: AppStateStatus;
 const audioFocusChangeListeners: Set<(hasFocus: boolean) => void> = new Set();
 const appActiveStateChangeListeners: Set<(isActive: boolean) => void> =
   new Set();
+const systemScreenCaptureStopListeners: Set<() => void> = new Set();
+let systemScreenCaptureStartCallback: { (): void } | null;
 
 function setupEventListeners() {
   // audio focus: used by daily-js to auto-mute mic, for instance
@@ -52,6 +55,29 @@ function setupEventListeners() {
       appActiveStateChangeListeners.forEach((listener) => listener(isActive));
     }
   });
+
+  if (Platform.OS === 'ios') {
+    // screen capture stop: used to synchronize JS screen sharing state with iOS
+    // system screen capture state, which can be controlled outside the app via
+    // the control center or by tapping the notification in the corner.
+    dailyNativeUtilsEventEmitter.addListener(
+      'EventSystemScreenCaptureStop',
+      () => {
+        systemScreenCaptureStopListeners.forEach((listener) => listener());
+      }
+    );
+    // when we invoke to start the screen share, we first invoke to start the screen capture
+    // and add the listener, so we are only going to start the screen share if the capture has started
+    // that is why we just need a single callback
+    dailyNativeUtilsEventEmitter.addListener(
+      'EventSystemScreenCaptureStart',
+      () => {
+        if (systemScreenCaptureStartCallback) {
+          systemScreenCaptureStartCallback();
+        }
+      }
+    );
+  }
 }
 
 function setupGlobals(): void {
@@ -82,6 +108,8 @@ function setupGlobals(): void {
 
   global.DailyNativeUtils = {
     ...DailyNativeUtils,
+    isIOS: Platform.OS === 'ios',
+    isAndroid: Platform.OS === 'android',
     setAudioMode: WebRTCModule.setDailyAudioMode,
     setAudioDevice: WebRTCModule.setAudioDevice,
     getAudioDevice: WebRTCModule.getAudioDevice,
@@ -102,6 +130,15 @@ function setupGlobals(): void {
       listener: (isActive: boolean) => void
     ) => {
       appActiveStateChangeListeners.delete(listener);
+    },
+    addSystemScreenCaptureStopListener: (listener: () => void) => {
+      systemScreenCaptureStopListeners.add(listener);
+    },
+    removeSystemScreenCaptureStopListener: (listener: () => void) => {
+      systemScreenCaptureStopListeners.delete(listener);
+    },
+    setSystemScreenCaptureStartCallback: (listener: () => void) => {
+      systemScreenCaptureStartCallback = listener;
     },
     platform: Platform,
   };
