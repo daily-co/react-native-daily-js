@@ -6,7 +6,7 @@ The Daily JavaScript library for React Native.
 
 This package introduces some constraints on what OS/SDK versions your project can support:
 
-- **iOS**: Deployment target >= 11.0
+- **iOS**: Deployment target >= 12.0
 - **Android**: `minSdkVersion` >= 24
 
 ## Installation
@@ -24,11 +24,13 @@ Then, follow the below steps to set up your native project on each platform. **N
 
 ### iOS
 
-Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 11 and above:
+Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 12 and above:
 
 ```ruby
-platform :ios, '11.0'
+platform :ios, '12.0'
 ```
+
+> If you wish to **send screen share** from iOS, It only works on **iOS 14** and above. Therefore, in this case, please switch to using iOS 14.0 instead of iOS 12.0.
 
 Then run:
 
@@ -72,6 +74,12 @@ If you view the raw file contents of `Info.plist`, it should look like this:
 </dict>
 ```
 
+#### Screen sharing
+
+To use the screen sharing functionality for iOS, you need to create a Broadcast Upload Extension for your app. 
+
+For a more detailed walkthrough on creating a Broadcast Upload Extension, please refer to this [doc](https://github.com/daily-co/rn-screen-share-extension/).
+
 ### Android
 
 Add the following to `AndroidManifest.xml`:
@@ -90,9 +98,11 @@ Add the following to `AndroidManifest.xml`:
 
 <application>
   // ...
-  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService"/>
+  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService" android:foregroundServiceType="mediaProjection"/>
 </application>
 ```
+
+> You just need to add the `foregroundServiceType` If you wish to **send screen share** from Android.
 
 Update your `minSdkVersion` in your top-level `build.gradle` file:
 
