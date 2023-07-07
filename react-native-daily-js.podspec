@@ -15,13 +15,14 @@ Pod::Spec.new do |s|
   # optional - use expanded license entry instead:
   # s.license    = { :type => "MIT", :file => "LICENSE" }
   s.authors      = { "Paul Kompfner" => "paul@daily.co" }
-  s.platforms    = { :ios => "9.0" }
+  s.platforms    = { :ios => "12.0" }
   s.source       = { :git => "https://github.com/daily-co/react-native-daily-js.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,c,m,swift}"
   s.requires_arc = true
 
   s.dependency "React-Core"
+  s.dependency "ReactNativeDailyJSScreenShareExtension", "0.0.1"
   # ...
   # s.dependency "..."
 end
