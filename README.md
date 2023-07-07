@@ -30,7 +30,7 @@ Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` o
 platform :ios, '12.0'
 ```
 
-> If you wish to **send screen share** from iOS, It only works on **iOS 14** and above. Therefore, in this case, please switch to using iOS 14.0 instead of iOS 12.0.
+> If you wish to **send screen share** from iOS, it only works on **iOS 14** and above. Therefore, in this case, please switch to using iOS 14.0 instead of iOS 12.0.
 
 Then run:
 
@@ -74,11 +74,10 @@ If you view the raw file contents of `Info.plist`, it should look like this:
 </dict>
 ```
 
-#### Screen sharing
+#### Screen sharing on iOS
 
-To use the screen sharing functionality for iOS, you need to create a Broadcast Upload Extension for your app. 
-
-For a more detailed walkthrough on creating a Broadcast Upload Extension, please refer to this [doc](https://github.com/daily-co/rn-screen-share-extension/).
+To use the screen sharing functionality on iOS, you'll need to do a few manual steps to set up Daily's [React Native Screen Share Extension framework](https://github.com/daily-co/rn-screen-share-extension/) (already included in `react-native-daily-js`). 
+Please refer to its README for a detailed walkthrough.
 
 ### Android
 
@@ -102,7 +101,7 @@ Add the following to `AndroidManifest.xml`:
 </application>
 ```
 
-> You just need to add the `foregroundServiceType` If you wish to **send screen share** from Android.
+> Note: above, `foregroundServiceType` is only needed if you wish to do screen sharing.
 
 Update your `minSdkVersion` in your top-level `build.gradle` file:
 
