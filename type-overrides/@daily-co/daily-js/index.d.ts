@@ -10,6 +10,7 @@ import {
   MediaStreamTrack,
   MediaDeviceInfo,
   MediaTrackConstraints,
+  MediaStream,
 } from '@daily-co/react-native-webrtc';
 
 import RTCRtpEncodingParameters from '@daily-co/react-native-webrtc/lib/typescript/RTCRtpEncodingParameters';
@@ -61,6 +62,8 @@ export type DailyEvent =
   | 'transcription-stopped'
   | 'transcription-error'
   | 'app-message'
+  | 'local-screen-share-started'
+  | 'local-screen-share-stopped'
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
@@ -114,6 +117,7 @@ export type DailyFatalErrorType =
   | 'connection-error';
 
 export type DailyNonFatalErrorType =
+  | 'screen-share-error'
   | 'remote-media-player-error'
   | 'live-streaming-warning'
   | 'meeting-session-data-error';
@@ -229,6 +233,7 @@ export interface DailyParticipantPermissions {
         | 'customAudio'
       >
     | boolean;
+  canAdmin: Set<'participants' | 'streaming' | 'transcription'> | boolean;
 }
 
 export type DailyParticipantPermissionsUpdate = {
@@ -345,6 +350,13 @@ export interface DailyDeviceInfos {
   speaker: {} | MediaDeviceInfo;
 }
 
+export interface DailyStartScreenShare {
+  //RN does not support any displayMediaOptions, that is why we have not added the definition here
+  screenVideoSendSettings?:
+    | DailyVideoSendSettings
+    | DailyScreenVideoSendSettingsPreset;
+}
+
 export interface DailyNetworkStats {
   quality: number;
   stats: {
@@ -417,6 +429,12 @@ interface DailyVideoSendSettings {
     high: RTCRtpEncodingParameters;
   };
 }
+
+export type DailyScreenVideoSendSettingsPreset =
+  | 'default-screen-video'
+  | 'detail-optimized'
+  | 'motion-optimized'
+  | 'motion-and-detail-balanced';
 
 export interface DailyPendingRoomInfo {
   roomUrlPendingJoin: string;
@@ -1160,6 +1178,8 @@ export interface DailyCall {
   stopTranscription(): void;
   preAuth(properties?: DailyCallOptions): Promise<{ access: DailyAccess }>;
   load(properties?: DailyLoadOptions): Promise<void>;
+  startScreenShare(properties?: DailyStartScreenShare): void;
+  stopScreenShare(): void;
   getNetworkStats(): Promise<DailyNetworkStats>;
   getCpuLoadStats(): Promise<DailyCpuLoadStats>;
   updateSendSettings(settings: DailySendSettings): Promise<DailySendSettings>;

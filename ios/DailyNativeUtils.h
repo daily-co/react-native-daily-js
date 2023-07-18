@@ -1,5 +1,5 @@
-#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface DailyNativeUtils : NSObject <RCTBridgeModule>
+@interface DailyNativeUtils : RCTEventEmitter
 
 @end
