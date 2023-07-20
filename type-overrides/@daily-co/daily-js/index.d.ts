@@ -14,6 +14,8 @@ import {
 } from '@daily-co/react-native-webrtc';
 
 import RTCRtpEncodingParameters from '@daily-co/react-native-webrtc/lib/typescript/RTCRtpEncodingParameters';
+import RTCIceServer from '@daily-co/react-native-webrtc/lib/typescript/RTCIceServer';
+import RTCIceTransportPolicy from '@daily-co/react-native-webrtc/lib/typescript/RTCIceTransportPolicy';
 
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
@@ -168,6 +170,12 @@ export interface CamSimulcastEncoding {
   scaleResolutionDownBy?: number;
 }
 
+export interface DailyIceConfig {
+  iceServers?: RTCIceServer[];
+  placement?: 'front' | 'back' | 'replace';
+  iceTransportPolicy?: RTCIceTransportPolicy;
+}
+
 export interface DailyAdvancedConfig {
   camSimulcastEncodings?: CamSimulcastEncoding[];
   v2CamAndMic?: boolean;
@@ -177,6 +185,8 @@ export interface DailyAdvancedConfig {
   userMediaVideoConstraints?: MediaTrackConstraints;
   preferH264ForCam?: boolean;
   h264Profile?: string;
+  proxyUrl?: string;
+  iceConfig?: DailyIceConfig;
 }
 
 export interface DailyReactNativeConfig {
@@ -1188,6 +1198,8 @@ export interface DailyCall {
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
+  setProxyUrl(proxyUrl?: string): DailyCall;
+  setIceConfig(iceConfig?: DailyIceConfig): DailyCall;
   meetingSessionState(): DailyMeetingSessionState;
   setMeetingSessionData(
     data: unknown,
