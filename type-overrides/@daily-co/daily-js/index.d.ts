@@ -14,8 +14,6 @@ import {
 } from '@daily-co/react-native-webrtc';
 
 import RTCRtpEncodingParameters from '@daily-co/react-native-webrtc/lib/typescript/RTCRtpEncodingParameters';
-import RTCIceServer from '@daily-co/react-native-webrtc/lib/typescript/RTCIceServer';
-import RTCIceTransportPolicy from '@daily-co/react-native-webrtc/lib/typescript/RTCIceTransportPolicy';
 
 /**
  * --- DAILY-JS API EXPOSED VIA REACT-NATIVE-DAILY-JS ---
@@ -168,6 +166,16 @@ export interface CamSimulcastEncoding {
   maxBitrate: number;
   maxFramerate?: number;
   scaleResolutionDownBy?: number;
+}
+
+/* These types are not defined inside react-native-webrtc, so we need to define them here in order to use */
+type RTCIceTransportPolicy = 'all' | 'relay';
+type RTCIceCredentialType = 'password';
+interface RTCIceServer {
+  credential?: string;
+  credentialType?: RTCIceCredentialType;
+  urls: string | string[];
+  username?: string;
 }
 
 export interface DailyIceConfig {
