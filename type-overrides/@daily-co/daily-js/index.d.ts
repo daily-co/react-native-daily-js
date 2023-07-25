@@ -168,6 +168,22 @@ export interface CamSimulcastEncoding {
   scaleResolutionDownBy?: number;
 }
 
+/* These types are not defined inside react-native-webrtc, so we need to define them here in order to use */
+type RTCIceTransportPolicy = 'all' | 'relay';
+type RTCIceCredentialType = 'password';
+interface RTCIceServer {
+  credential?: string;
+  credentialType?: RTCIceCredentialType;
+  urls: string | string[];
+  username?: string;
+}
+
+export interface DailyIceConfig {
+  iceServers?: RTCIceServer[];
+  placement?: 'front' | 'back' | 'replace';
+  iceTransportPolicy?: RTCIceTransportPolicy;
+}
+
 export interface DailyAdvancedConfig {
   camSimulcastEncodings?: CamSimulcastEncoding[];
   v2CamAndMic?: boolean;
@@ -177,6 +193,8 @@ export interface DailyAdvancedConfig {
   userMediaVideoConstraints?: MediaTrackConstraints;
   preferH264ForCam?: boolean;
   h264Profile?: string;
+  proxyUrl?: string;
+  iceConfig?: DailyIceConfig;
 }
 
 export interface DailyReactNativeConfig {
@@ -1188,6 +1206,8 @@ export interface DailyCall {
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
   sendAppMessage(data: any, to?: string): DailyCall;
+  setProxyUrl(proxyUrl?: string): DailyCall;
+  setIceConfig(iceConfig?: DailyIceConfig): DailyCall;
   meetingSessionState(): DailyMeetingSessionState;
   setMeetingSessionData(
     data: unknown,
