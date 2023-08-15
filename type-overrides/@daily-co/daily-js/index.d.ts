@@ -239,23 +239,35 @@ export interface DailyTrackState {
   persistentTrack?: MediaStreamTrack;
 }
 
+export type DailyParticipantPermissionsCanSendValues =
+  | 'video'
+  | 'audio'
+  | 'screenVideo'
+  | 'screenAudio'
+  | 'customVideo'
+  | 'customAudio';
+
+export type DailyParticipantPermissionsCanAdminValues =
+  | 'participants'
+  | 'streaming'
+  | 'transcription';
+
 export interface DailyParticipantPermissions {
   hasPresence: boolean;
-  canSend:
-    | Set<
-        | 'video'
-        | 'audio'
-        | 'screenVideo'
-        | 'screenAudio'
-        | 'customVideo'
-        | 'customAudio'
-      >
-    | boolean;
-  canAdmin: Set<'participants' | 'streaming' | 'transcription'> | boolean;
+  canSend: Set<DailyParticipantPermissionsCanSendValues> | boolean;
+  canAdmin: Set<DailyParticipantPermissionsCanAdminValues> | boolean;
 }
 
 export type DailyParticipantPermissionsUpdate = {
-  [Property in keyof DailyParticipantPermissions]+?: DailyParticipantPermissions[Property];
+  hasPresence?: boolean;
+  canSend?:
+    | Array<DailyParticipantPermissionsCanSendValues>
+    | Set<DailyParticipantPermissionsCanSendValues>
+    | boolean;
+  canAdmin?:
+    | Array<DailyParticipantPermissionsCanAdminValues>
+    | Set<DailyParticipantPermissionsCanAdminValues>
+    | boolean;
 };
 
 export interface DailyParticipant {
@@ -310,7 +322,13 @@ export interface DailyParticipant {
   record: boolean;
 
   // video element info (iframe-based calls using standard UI only)
+  /**
+   * @deprecated This property will be removed. Refer to tracks.video instead.
+   */
   cam_info: {} | DailyVideoElementInfo;
+  /**
+   * @deprecated This property will be removed. Refer to tracks.screenVideo instead.
+   */
   screen_info: {} | DailyVideoElementInfo;
 }
 
@@ -353,6 +371,12 @@ export interface DailyWaitingParticipantUpdateOptions {
   grantRequestedAccess?: boolean;
 }
 
+/**
+ * @deprecated
+ * All properties will be removed as cam_info and screen_info are also deprecated.
+ * Use the participants() object's tracks property to retrieve track information instead.
+ * e.g. call.participants()['participant-id'].tracks.video.persistentTrack.getSettings()
+ */
 export interface DailyVideoElementInfo {
   width: number;
   height: number;
@@ -379,18 +403,24 @@ export interface DailyNetworkStats {
   quality: number;
   stats: {
     latest: {
-      recvBitsPerSecond: number;
-      sendBitsPerSecond: number;
       timestamp: number;
-      videoRecvBitsPerSecond: number;
-      videoRecvPacketLoss: number;
-      videoSendBitsPerSecond: number;
-      videoSendPacketLoss: number;
-      totalSendPacketLoss: number;
-      totalRecvPacketLoss: number;
+      recvBitsPerSecond: number | null;
+      sendBitsPerSecond: number | null;
+      videoRecvBitsPerSecond: number | null;
+      videoRecvPacketLoss: number | null;
+      videoSendBitsPerSecond: number | null;
+      videoSendPacketLoss: number | null;
+      audioRecvBitsPerSecond: number | null;
+      audioRecvPacketLoss: number | null;
+      audioSendBitsPerSecond: number | null;
+      audioSendPacketLoss: number | null;
+      totalSendPacketLoss: number | null;
+      totalRecvPacketLoss: number | null;
     };
     worstVideoRecvPacketLoss: number;
     worstVideoSendPacketLoss: number;
+    worstAudioRecvPacketLoss: number;
+    worstAudioSendPacketLoss: number;
   };
   threshold: 'good' | 'low' | 'very-low';
 }
@@ -515,7 +545,7 @@ export interface DailyRoomInfo {
   };
   tokenConfig: {
     eject_at_token_exp?: boolean;
-    eject_after_elapsed?: boolean;
+    eject_after_elapsed?: number;
     nbf?: number;
     exp?: number;
     is_owner?: boolean;
