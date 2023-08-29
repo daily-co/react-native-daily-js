@@ -15,7 +15,7 @@ Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
 npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1
-npm i --save-exact @daily-co/react-native-webrtc@111.0.0-daily.1
+npm i --save-exact @daily-co/react-native-webrtc@111.0.0-daily.2
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
@@ -76,7 +76,7 @@ If you view the raw file contents of `Info.plist`, it should look like this:
 
 #### Screen sharing on iOS
 
-To use the screen sharing functionality on iOS, you'll need to do a few manual steps to set up Daily's [React Native Screen Share Extension framework](https://github.com/daily-co/rn-screen-share-extension/) (already included in `react-native-daily-js`). 
+To use the screen sharing functionality on iOS, you'll need to do a few manual steps to set up Daily's [React Native Screen Share Extension framework](https://github.com/daily-co/rn-screen-share-extension/) (already included in `react-native-daily-js`).
 Please refer to its README for a detailed walkthrough.
 
 ### Android

@@ -1235,7 +1235,7 @@ export interface DailyCall {
   subscribeToTracksAutomatically(): boolean;
   setSubscribeToTracksAutomatically(enabled: boolean): DailyCall;
   enumerateDevices(): Promise<{ devices: MediaDeviceInfo[] }>;
-  sendAppMessage(data: any, to?: string): DailyCall;
+  sendAppMessage(data: any, to?: string | string[]): DailyCall;
   setProxyUrl(proxyUrl?: string): DailyCall;
   setIceConfig(iceConfig?: DailyIceConfig): DailyCall;
   meetingSessionState(): DailyMeetingSessionState;
