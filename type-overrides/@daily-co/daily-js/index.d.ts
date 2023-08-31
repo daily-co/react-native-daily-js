@@ -307,7 +307,7 @@ export interface DailyParticipant {
     video: DailyTrackState;
     screenAudio: DailyTrackState;
     screenVideo: DailyTrackState;
-    [customTrackKey: string]: DailyTrackState | undefined;
+    [customTrackKey: string]: DailyTrackState;
   };
 
   // user/session info
