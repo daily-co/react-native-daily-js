@@ -307,6 +307,7 @@ export interface DailyParticipant {
     video: DailyTrackState;
     screenAudio: DailyTrackState;
     screenVideo: DailyTrackState;
+    [customTrackKey: string]: DailyTrackState;
   };
 
   // user/session info
@@ -407,20 +408,28 @@ export interface DailyNetworkStats {
       recvBitsPerSecond: number | null;
       sendBitsPerSecond: number | null;
       videoRecvBitsPerSecond: number | null;
-      videoRecvPacketLoss: number | null;
       videoSendBitsPerSecond: number | null;
-      videoSendPacketLoss: number | null;
       audioRecvBitsPerSecond: number | null;
-      audioRecvPacketLoss: number | null;
       audioSendBitsPerSecond: number | null;
+      videoRecvPacketLoss: number | null;
+      videoSendPacketLoss: number | null;
+      audioRecvPacketLoss: number | null;
       audioSendPacketLoss: number | null;
       totalSendPacketLoss: number | null;
       totalRecvPacketLoss: number | null;
+      videoRecvJitter: number | null;
+      videoSendJitter: number | null;
+      audioRecvJitter: number | null;
+      audioSendJitter: number | null;
     };
     worstVideoRecvPacketLoss: number;
     worstVideoSendPacketLoss: number;
     worstAudioRecvPacketLoss: number;
     worstAudioSendPacketLoss: number;
+    worstVideoRecvJitter: number;
+    worstVideoSendJitter: number;
+    worstAudioRecvJitter: number;
+    worstAudioSendJitter: number;
   };
   threshold: 'good' | 'low' | 'very-low';
 }
