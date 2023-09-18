@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.51.0",
+    "@types/base-64": "^1.0.0",
     "@types/react-native-background-timer": "^2.0.0",
+    "base-64": "^1.0.0",
     "react-native-url-polyfill": "^1.1.2"
   },
   "///": "WHEN ONE OF THESE CHANGE, PLEASE UPDATE README.md INSTALL SNIPPET ACCORDINGLY",

@@ -4,6 +4,7 @@ import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
+import { encode as btoa, decode as atob } from "base-64";
 import {
   Platform,
   NativeModules,
@@ -86,6 +87,8 @@ function setupGlobals(): void {
 
   // A shim to prevent errors in call machine bundle (not ideal)
   global.window.addEventListener = () => {};
+  global.btoa = btoa;
+  global.atob = atob;
 
   // A workaround for iOS HTTP cache not caching call object bundle due to size
   if (Platform.OS === 'ios') {
