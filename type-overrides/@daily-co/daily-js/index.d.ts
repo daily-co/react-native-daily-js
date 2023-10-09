@@ -185,6 +185,9 @@ export interface DailyIceConfig {
 }
 
 export interface DailyAdvancedConfig {
+  /**
+   * @deprecated This property will be removed. Instead, use sendSettings, which is found in DailyCallOptions.
+   */
   camSimulcastEncodings?: CamSimulcastEncoding[];
   v2CamAndMic?: boolean;
   experimentalGetUserMediaConstraintsModify?: (constraints: any) => void;
