@@ -273,6 +273,13 @@ export type DailyParticipantPermissionsUpdate = {
     | boolean;
 };
 
+export interface DailyParticipantTracks {
+  audio: DailyTrackState;
+  video: DailyTrackState;
+  screenAudio: DailyTrackState;
+  screenVideo: DailyTrackState;
+}
+
 export interface DailyParticipant {
   /**
    * @deprecated This property will be removed. Use tracks.audio.persistentTrack instead.
@@ -305,11 +312,7 @@ export interface DailyParticipant {
   screen: boolean;
 
   // track state
-  tracks: {
-    audio: DailyTrackState;
-    video: DailyTrackState;
-    screenAudio: DailyTrackState;
-    screenVideo: DailyTrackState;
+  tracks: DailyParticipantTracks & {
     [customTrackKey: string]: DailyTrackState;
   };
 
