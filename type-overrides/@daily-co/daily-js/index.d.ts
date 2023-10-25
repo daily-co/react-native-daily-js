@@ -411,6 +411,7 @@ export interface DailyNetworkStats {
       timestamp: number;
       recvBitsPerSecond: number | null;
       sendBitsPerSecond: number | null;
+      networkRoundTripTime: number | null;
       videoRecvBitsPerSecond: number | null;
       videoSendBitsPerSecond: number | null;
       audioRecvBitsPerSecond: number | null;
@@ -434,6 +435,7 @@ export interface DailyNetworkStats {
     worstVideoSendJitter: number;
     worstAudioRecvJitter: number;
     worstAudioSendJitter: number;
+    averageNetworkRoundTripTime: number | null;
   };
   threshold: 'good' | 'low' | 'very-low';
 }
