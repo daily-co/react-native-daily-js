@@ -1,10 +1,10 @@
-import DailyIframe from '@daily-co/daily-js';
+import Daily from '@daily-co/daily-js';
 import { registerGlobals } from '@daily-co/react-native-webrtc';
 import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
-import { encode as btoa, decode as atob } from "base-64";
+import { encode as btoa, decode as atob } from 'base-64';
 import {
   Platform,
   NativeModules,
@@ -150,7 +150,7 @@ function setupGlobals(): void {
 setupEventListeners();
 setupGlobals();
 
-export default DailyIframe;
+export default Daily;
 export * from '@daily-co/daily-js';
 export { DailyMediaView };
 export * from '@daily-co/react-native-webrtc';
