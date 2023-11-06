@@ -972,7 +972,7 @@ export type DailyNativeInCallAudioMode = 'video' | 'voice';
 
 export interface DailyCallFactory {
   createCallObject(properties?: DailyFactoryOptions): DailyCall;
-  getCallInstance(): DailyCall;
+  getCallInstance(): DailyCall | undefined;
 }
 
 export interface DailyCallStaticUtils {
