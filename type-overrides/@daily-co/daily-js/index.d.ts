@@ -1284,6 +1284,6 @@ export interface DailyCall {
   };
 }
 
-declare const DailyIframe: DailyCallFactory & DailyCallStaticUtils;
+declare const Daily: DailyCallFactory & DailyCallStaticUtils;
 
-export default DailyIframe;
+export default Daily;
