@@ -878,8 +878,13 @@ export interface DailyEventObjectLiveStreamingStopped {
 
 export interface DailyEventObjectTranscriptionStarted {
   action: Extract<DailyEvent, 'transcription-started'>;
+  transcriptionId?: string;
   language: string;
   model: string;
+  tier?: string;
+  detect_language?: boolean;
+  profanity_filter?: boolean;
+  redact?: Array<string> | boolean;
   startedBy: string;
 }
 
