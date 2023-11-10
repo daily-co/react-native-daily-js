@@ -697,6 +697,8 @@ export interface DailyFatalConnectionError extends DailyFatalError {
     on: 'join' | 'reconnect';
     sourceError: Error;
     uri?: string;
+    workerGroup?: string;
+    geoGroup?: string;
   };
 }
 
