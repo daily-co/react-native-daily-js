@@ -694,11 +694,12 @@ export type DailyFatalError = {
 export interface DailyFatalConnectionError extends DailyFatalError {
   type: Extract<DailyFatalErrorType, 'connection-error'>;
   details: {
-    on: 'join' | 'reconnect';
+    on: 'load' | 'join' | 'reconnect' | 'move';
     sourceError: Error;
     uri?: string;
     workerGroup?: string;
     geoGroup?: string;
+    bundleUrl?: string;
   };
 }
 
