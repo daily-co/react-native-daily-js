@@ -111,6 +111,7 @@ export type DailyFatalErrorType =
   | 'nbf-token'
   | 'exp-room'
   | 'exp-token'
+  | 'no-room'
   | 'meeting-full'
   | 'end-of-life'
   | 'not-allowed'
