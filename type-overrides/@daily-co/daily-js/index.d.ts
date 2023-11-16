@@ -582,6 +582,10 @@ export interface DailyRoomInfo {
   dialInPIN?: string;
 }
 
+export interface DailyMeetingSessionSummary {
+  id: string;
+}
+
 export interface DailyMeetingSessionState {
   data: unknown;
 }
@@ -770,6 +774,11 @@ export interface DailyEventObjectWaitingParticipant {
 
 export interface DailyEventObjectAccessState extends DailyAccessState {
   action: Extract<DailyEvent, 'access-state-updated'>;
+}
+
+export interface DailyEventObjectMeetingSessionSummaryUpdated {
+  action: Extract<DailyEvent, 'meeting-session-summary-updated'>;
+  meetingSession: DailyMeetingSessionSummary;
 }
 
 export interface DailyEventObjectMeetingSessionStateUpdated {
@@ -1265,6 +1274,7 @@ export interface DailyCall {
   sendAppMessage(data: any, to?: string | string[]): DailyCall;
   setProxyUrl(proxyUrl?: string): DailyCall;
   setIceConfig(iceConfig?: DailyIceConfig): DailyCall;
+  meetingSessionSummary(): DailyMeetingSessionSummary;
   meetingSessionState(): DailyMeetingSessionState;
   setMeetingSessionData(
     data: unknown,
