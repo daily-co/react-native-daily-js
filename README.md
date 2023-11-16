@@ -14,7 +14,7 @@ This package introduces some constraints on what OS/SDK versions your project ca
 Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
-npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1
+npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1 react-native-get-random-values@^1.9.0
 npm i --save-exact @daily-co/react-native-webrtc@111.0.0-daily.2
 ```
 
