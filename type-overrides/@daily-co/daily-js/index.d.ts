@@ -78,6 +78,7 @@ export type DailyEvent =
   | 'remote-media-player-stopped'
   | 'remote-media-player-updated'
   | 'access-state-updated'
+  | 'meeting-session-summary-updated'
   | 'meeting-session-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
