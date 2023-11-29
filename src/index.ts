@@ -1,10 +1,10 @@
-import DailyIframe from '@daily-co/daily-js';
+import Daily from '@daily-co/daily-js';
 import { registerGlobals } from '@daily-co/react-native-webrtc';
 import DailyMediaView from './DailyMediaView';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
-import { encode as btoa, decode as atob } from "base-64";
+import { encode as btoa, decode as atob } from 'base-64';
 import {
   Platform,
   NativeModules,
@@ -12,6 +12,9 @@ import {
   AppState,
   AppStateStatus,
 } from 'react-native';
+// Preventing RN issue getrandomvalues not supported
+// https://github.com/uuidjs/uuid#getrandomvalues-not-supported
+import 'react-native-get-random-values';
 const { DailyNativeUtils, WebRTCModule } = NativeModules;
 
 declare const global: any;
@@ -147,10 +150,41 @@ function setupGlobals(): void {
   };
 }
 
+function maybeCreatePromiseAnyPolyfill() {
+  // Support to Promise.any has only been introduced on RN 0.70.6
+  // https://github.com/facebook/react-native/releases/tag/v0.70.6
+  // As spec: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any
+  // The Promise.any() static method takes an iterable of promises as input and returns a single Promise.
+  // This returned promise fulfills when any of the input's promises fulfills, with this first fulfillment value.
+  // It rejects when all of the input's promises reject (including when an empty iterable is passed)
+  if (!Promise.any) {
+    Promise.any = function <T extends readonly unknown[] | []>(
+      promises: T
+    ): Promise<Awaited<T[number]>> {
+      return new Promise((resolve, reject) => {
+        let errors: any[] = [];
+        promises.forEach((promise) =>
+          Promise.resolve(promise)
+            .then((value: any) => {
+              resolve(value);
+            })
+            .catch((error) => {
+              errors.push(error);
+              if (errors.length === promises.length) {
+                reject(errors);
+              }
+            })
+        );
+      });
+    };
+  }
+}
+
 setupEventListeners();
 setupGlobals();
+maybeCreatePromiseAnyPolyfill();
 
-export default DailyIframe;
+export default Daily;
 export * from '@daily-co/daily-js';
 export { DailyMediaView };
 export * from '@daily-co/react-native-webrtc';

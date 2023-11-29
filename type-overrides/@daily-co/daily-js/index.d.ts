@@ -78,6 +78,7 @@ export type DailyEvent =
   | 'remote-media-player-stopped'
   | 'remote-media-player-updated'
   | 'access-state-updated'
+  | 'meeting-session-summary-updated'
   | 'meeting-session-state-updated'
   | 'waiting-participant-added'
   | 'waiting-participant-updated'
@@ -111,6 +112,7 @@ export type DailyFatalErrorType =
   | 'nbf-token'
   | 'exp-room'
   | 'exp-token'
+  | 'no-room'
   | 'meeting-full'
   | 'end-of-life'
   | 'not-allowed'
@@ -581,6 +583,10 @@ export interface DailyRoomInfo {
   dialInPIN?: string;
 }
 
+export interface DailyMeetingSessionSummary {
+  id: string;
+}
+
 export interface DailyMeetingSessionState {
   data: unknown;
 }
@@ -694,9 +700,12 @@ export type DailyFatalError = {
 export interface DailyFatalConnectionError extends DailyFatalError {
   type: Extract<DailyFatalErrorType, 'connection-error'>;
   details: {
-    on: 'join' | 'reconnect';
+    on: 'load' | 'join' | 'reconnect' | 'move';
     sourceError: Error;
     uri?: string;
+    workerGroup?: string;
+    geoGroup?: string;
+    bundleUrl?: string;
   };
 }
 
@@ -766,6 +775,11 @@ export interface DailyEventObjectWaitingParticipant {
 
 export interface DailyEventObjectAccessState extends DailyAccessState {
   action: Extract<DailyEvent, 'access-state-updated'>;
+}
+
+export interface DailyEventObjectMeetingSessionSummaryUpdated {
+  action: Extract<DailyEvent, 'meeting-session-summary-updated'>;
+  meetingSession: DailyMeetingSessionSummary;
 }
 
 export interface DailyEventObjectMeetingSessionStateUpdated {
@@ -878,8 +892,13 @@ export interface DailyEventObjectLiveStreamingStopped {
 
 export interface DailyEventObjectTranscriptionStarted {
   action: Extract<DailyEvent, 'transcription-started'>;
+  transcriptId?: string;
   language: string;
   model: string;
+  tier?: string;
+  detect_language?: boolean;
+  profanity_filter?: boolean;
+  redact?: Array<string> | Array<boolean> | boolean;
   startedBy: string;
 }
 
@@ -1155,7 +1174,7 @@ export interface DailyTranscriptionDeepgramOptions {
   model?: string;
   tier?: string;
   profanity_filter?: boolean;
-  redact?: Array<string> | boolean;
+  redact?: Array<string> | Array<boolean> | boolean;
 }
 
 export interface DailyCall {
@@ -1256,6 +1275,7 @@ export interface DailyCall {
   sendAppMessage(data: any, to?: string | string[]): DailyCall;
   setProxyUrl(proxyUrl?: string): DailyCall;
   setIceConfig(iceConfig?: DailyIceConfig): DailyCall;
+  meetingSessionSummary(): DailyMeetingSessionSummary;
   meetingSessionState(): DailyMeetingSessionState;
   setMeetingSessionData(
     data: unknown,
@@ -1284,6 +1304,6 @@ export interface DailyCall {
   };
 }
 
-declare const DailyIframe: DailyCallFactory & DailyCallStaticUtils;
+declare const Daily: DailyCallFactory & DailyCallStaticUtils;
 
-export default DailyIframe;
+export default Daily;
