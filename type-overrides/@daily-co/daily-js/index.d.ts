@@ -896,7 +896,6 @@ export interface DailyEventObjectTranscriptionStarted {
   language: string;
   model: string;
   tier?: string;
-  detect_language?: boolean;
   profanity_filter?: boolean;
   redact?: Array<string> | Array<boolean> | boolean;
   startedBy: string;
