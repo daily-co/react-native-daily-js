@@ -62,6 +62,7 @@ export type DailyEvent =
   | 'transcription-stopped'
   | 'transcription-error'
   | 'app-message'
+  | 'transcription-message'
   | 'local-screen-share-started'
   | 'local-screen-share-stopped'
   | 'active-speaker-change'
@@ -858,6 +859,13 @@ export interface DailyEventObjectAppMessage {
   fromId: string;
 }
 
+export interface DailyEventObjectTranscriptionMessage {
+  action: Extract<DailyEvent, 'transcription-message'>;
+  participantId: string;
+  text: string;
+  timestamp: Date;
+}
+
 export interface DailyEventObjectReceiveSettingsUpdated {
   action: Extract<DailyEvent, 'receive-settings-updated'>;
   receiveSettings: DailyReceiveSettings;
@@ -896,9 +904,11 @@ export interface DailyEventObjectTranscriptionStarted {
   language: string;
   model: string;
   tier?: string;
-  detect_language?: boolean;
   profanity_filter?: boolean;
   redact?: Array<string> | Array<boolean> | boolean;
+  endpointing?: number | boolean;
+  punctuate?: boolean;
+  extra?: Record<string, any>;
   startedBy: string;
 }
 
@@ -927,6 +937,8 @@ export interface DailyEventObjectRemoteMediaPlayerStopped {
 export type DailyEventObject<T extends DailyEvent = any> =
   T extends DailyEventObjectAppMessage['action']
     ? DailyEventObjectAppMessage
+    : T extends DailyEventObjectTranscriptionMessage['action']
+    ? DailyEventObjectTranscriptionMessage
     : T extends DailyEventObjectNoPayload['action']
     ? DailyEventObjectNoPayload
     : T extends DailyEventObjectCameraError['action']
@@ -1175,6 +1187,9 @@ export interface DailyTranscriptionDeepgramOptions {
   tier?: string;
   profanity_filter?: boolean;
   redact?: Array<string> | Array<boolean> | boolean;
+  endpointing?: number | boolean;
+  punctuate?: boolean;
+  extra?: Record<string, any>;
 }
 
 export interface DailyCall {
