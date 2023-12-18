@@ -12,7 +12,9 @@
     "android",
     "ios",
     "react-native-daily-js.podspec",
-    "react-native.config.js"
+    "react-native.config.js",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
@@ -21,7 +23,7 @@
     "tag": "scripts/tag",
     "prepublishOnly": "npm run tag"
   },
-  "license": "ISC",
+  "license": "BSD-2-Clause",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/daily-co/react-native-daily-js.git",
