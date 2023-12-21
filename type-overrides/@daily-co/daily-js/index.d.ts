@@ -65,6 +65,7 @@ export type DailyEvent =
   | 'transcription-message'
   | 'local-screen-share-started'
   | 'local-screen-share-stopped'
+  | 'local-screen-share-canceled'
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
