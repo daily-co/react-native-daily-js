@@ -65,6 +65,7 @@ export type DailyEvent =
   | 'transcription-message'
   | 'local-screen-share-started'
   | 'local-screen-share-stopped'
+  | 'local-screen-share-canceled'
   | 'active-speaker-change'
   | 'network-quality-change'
   | 'network-connection'
@@ -417,6 +418,7 @@ export interface DailyNetworkStats {
       timestamp: number;
       recvBitsPerSecond: number | null;
       sendBitsPerSecond: number | null;
+      availableOutgoingBitrate: number | null;
       networkRoundTripTime: number | null;
       videoRecvBitsPerSecond: number | null;
       videoSendBitsPerSecond: number | null;
@@ -534,11 +536,19 @@ export interface DailyRoomInfo {
     audio_only?: boolean;
     enable_recording?: string;
     enable_dialin?: boolean;
+    /**
+     * @deprecated This property will be removed.
+     * All calls are treated as autojoin.
+     */
     autojoin?: boolean;
     eject_at_room_exp?: boolean;
     eject_after_elapsed?: number;
     lang?: '' | DailyLanguageSetting;
     sfu_switchover?: number;
+    /**
+     * @deprecated This property will be removed.
+     * All calls use websocket signaling ('ws').
+     */
     signaling_impl?: string;
     geo?: string;
   };
@@ -701,8 +711,14 @@ export type DailyFatalError = {
 export interface DailyFatalConnectionError extends DailyFatalError {
   type: Extract<DailyFatalErrorType, 'connection-error'>;
   details: {
-    on: 'load' | 'join' | 'reconnect' | 'move';
-    sourceError: Error;
+    on:
+      | 'load'
+      | 'join'
+      | 'reconnect'
+      | 'move'
+      | 'rtc-connection'
+      | 'room-lookup';
+    sourceError: Record<string, any>;
     uri?: string;
     workerGroup?: string;
     geoGroup?: string;
@@ -1020,10 +1036,10 @@ export interface DailyStreamingParticipantsConfig {
   sort?: DailyStreamingParticipantsSortMethod;
 }
 
-export interface DailyStreamingDefaultLayoutConfig
-  extends DailyStreamingParticipantsConfig {
+export interface DailyStreamingDefaultLayoutConfig {
   preset: 'default';
   max_cam_streams?: number;
+  participants?: DailyStreamingParticipantsConfig;
 }
 
 export interface DailyStreamingSingleParticipantLayoutConfig {
@@ -1031,35 +1047,35 @@ export interface DailyStreamingSingleParticipantLayoutConfig {
   session_id: string;
 }
 
-export interface DailyStreamingActiveParticipantLayoutConfig
-  extends DailyStreamingParticipantsConfig {
+export interface DailyStreamingActiveParticipantLayoutConfig {
   preset: 'active-participant';
+  participants?: DailyStreamingParticipantsConfig;
 }
 
 export interface DailyStreamingAudioOnlyLayoutConfig {
   preset: 'audio-only';
+  participants?: DailyStreamingParticipantsConfig;
 }
 
 export type DailyStreamingPortraitLayoutVariant = 'vertical' | 'inset';
 
-export interface DailyStreamingPortraitLayoutConfig
-  extends DailyStreamingParticipantsConfig {
+export interface DailyStreamingPortraitLayoutConfig {
   preset: 'portrait';
   variant?: DailyStreamingPortraitLayoutVariant;
   max_cam_streams?: number;
+  participants?: DailyStreamingParticipantsConfig;
 }
 
-export interface DailyUpdateStreamingCustomLayoutConfig
-  extends DailyStreamingParticipantsConfig {
+export interface DailyUpdateStreamingCustomLayoutConfig {
   preset: 'custom';
+  participants?: DailyStreamingParticipantsConfig;
   composition_params?: {
     [key: string]: boolean | number | string;
   };
 }
 
 export interface DailyStartStreamingCustomLayoutConfig
-  extends DailyUpdateStreamingCustomLayoutConfig,
-    DailyStreamingParticipantsConfig {
+  extends DailyUpdateStreamingCustomLayoutConfig {
   composition_id?: string;
   session_assets?: {
     [key: string]: string;
