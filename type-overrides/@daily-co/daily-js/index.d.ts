@@ -87,6 +87,14 @@ export type DailyEvent =
   | 'waiting-participant-removed'
   | 'available-devices-updated'
   | 'receive-settings-updated'
+  | 'dialin-connected'
+  | 'dialin-error'
+  | 'dialin-stopped'
+  | 'dialin-warning'
+  | 'dialout-connected'
+  | 'dialout-error'
+  | 'dialout-stopped'
+  | 'dialout-warning'
   | 'send-settings-updated';
 
 export type DailyMeetingState =
@@ -951,6 +959,53 @@ export interface DailyEventObjectRemoteMediaPlayerStopped {
   updatedBy: string;
   reason: DailyRemoteMediaPlayerStopReason;
 }
+export interface DailyEventObjectDialinConnected {
+  action: Extract<DailyEvent, 'dialin-connected'>;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialinError {
+  action: Extract<DailyEvent, 'dialin-error'>;
+  errorMsg: string;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialinStopped {
+  action: Extract<DailyEvent, 'dialin-stopped'>;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialinWarning {
+  action: Extract<DailyEvent, 'dialin-warning'>;
+  errorMsg: string;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialOutConnected {
+  action: Extract<DailyEvent, 'dialout-connected'>;
+  sessionId?: string;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialOutError {
+  action: Extract<DailyEvent, 'dialout-error'>;
+  errorMsg: string;
+  sessionId?: string;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialOutStopped {
+  action: Extract<DailyEvent, 'dialout-stopped'>;
+  sessionId?: string;
+  actionTraceId?: string;
+}
+
+export interface DailyEventObjectDialOutWarning {
+  action: Extract<DailyEvent, 'dialout-warning'>;
+  errorMsg: string;
+  sessionId?: string;
+  actionTraceId?: string;
+}
 
 export type DailyEventObject<T extends DailyEvent = any> =
   T extends DailyEventObjectAppMessage['action']
@@ -1015,6 +1070,22 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectAvailableDevicesUpdated
     : T extends DailyEventObjectSendSettingsUpdated['action']
     ? DailyEventObjectSendSettingsUpdated
+    : T extends DailyEventObjectDialinConnected['action']
+    ? DailyEventObjectDialinConnected
+    : T extends DailyEventObjectDialinError['action']
+    ? DailyEventObjectDialinError
+    : T extends DailyEventObjectDialinStopped['action']
+    ? DailyEventObjectDialinStopped
+    : T extends DailyEventObjectDialinWarning['action']
+    ? DailyEventObjectDialinWarning
+    : T extends DailyEventObjectDialOutConnected['action']
+    ? DailyEventObjectDialOutConnected
+    : T extends DailyEventObjectDialOutError['action']
+    ? DailyEventObjectDialOutError
+    : T extends DailyEventObjectDialOutStopped['action']
+    ? DailyEventObjectDialOutStopped
+    : T extends DailyEventObjectDialOutWarning['action']
+    ? DailyEventObjectDialOutWarning
     : any;
 
 export type DailyNativeInCallAudioMode = 'video' | 'voice';
@@ -1211,6 +1282,36 @@ export interface DailyTranscriptionDeepgramOptions {
   includeRawResponse?: boolean;
 }
 
+export type DailyDialOutAudioCodecs = 'PCMU' | 'OPUS' | 'G722' | 'PCMA';
+
+export type DailyDialOutVideoCodecs = 'H264' | 'VP8';
+
+export interface DailyDialOutCodecs {
+  audio?: Array<DailyDialOutAudioCodecs>;
+  video?: Array<DailyDialOutVideoCodecs>;
+}
+
+export interface DailyDialOutSession {
+  sessionId: string;
+}
+
+export interface DailyStartDialoutSipOptions {
+  sipUri?: string;
+  displayName?: string;
+  video?: boolean;
+  codecs?: DailyDialOutCodecs;
+}
+
+export interface DailyStartDialoutPhoneOptions {
+  phoneNumber?: string;
+  displayName?: string;
+  codecs?: DailyDialOutCodecs;
+}
+
+export type DailyStartDialoutOptions =
+  | DailyStartDialoutSipOptions
+  | DailyStartDialoutPhoneOptions;
+
 export interface DailyCall {
   join(properties?: DailyCallOptions): Promise<DailyParticipantsObject | void>;
   leave(): Promise<void>;
@@ -1336,6 +1437,11 @@ export interface DailyCall {
   properties: {
     dailyConfig?: DailyAdvancedConfig;
   };
+  startDialOut(
+    options: DailyStartDialoutOptions
+  ): Promise<{ session?: DailyDialOutSession }>;
+  stopDialOut(options: { sessionId: string }): Promise<void>;
+  sendDTMF(options: { sessionId: string; tones: string }): Promise<void>;
 }
 
 declare const Daily: DailyCallFactory & DailyCallStaticUtils;
