@@ -37,13 +37,13 @@
   },
   "///": "WHEN ONE OF THESE CHANGE, PLEASE UPDATE README.md INSTALL SNIPPET ACCORDINGLY",
   "peerDependencies": {
-    "@daily-co/react-native-webrtc": "^111.0.0-daily.2",
+    "@daily-co/react-native-webrtc": "^118.0.3-daily.1",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "react-native-background-timer": "^2.3.1",
     "react-native-get-random-values": "^1.9.0"
   },
   "devDependencies": {
-    "@daily-co/react-native-webrtc": "^111.0.0-daily.2",
+    "@daily-co/react-native-webrtc": "^118.0.3-daily.1",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "@types/base-64": "^1.0.0",
     "react-native-background-timer": "^2.3.1",
