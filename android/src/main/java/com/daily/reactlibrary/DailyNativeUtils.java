@@ -153,9 +153,12 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule implements Perm
     }
 
     private void initializeOngoingMeetingForegroundService(){
-        Activity currentActivity = this.reactContext.getCurrentActivity();
-        assert currentActivity != null;
-        DailyOngoingMeetingForegroundService.start(currentActivity.getClass(), title, subtitle, iconName, reactContext);
+        Activity activity = getCurrentActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                DailyOngoingMeetingForegroundService.start(activity.getClass(), title, subtitle, iconName, reactContext);
+            });
+        }
     }
 
     private void updateOngoingMeetingForegroundService() {
