@@ -15,7 +15,7 @@ Install `react-native-daily-js` along with its peer dependencies:
 
 ```bash
 npm i @daily-co/react-native-daily-js @react-native-async-storage/async-storage@^1.15.7 react-native-background-timer@^2.3.1 react-native-get-random-values@^1.9.0
-npm i --save-exact @daily-co/react-native-webrtc@111.0.0-daily.2
+npm i --save-exact @daily-co/react-native-webrtc@118.0.3-daily.1
 ```
 
 Then, follow the below steps to set up your native project on each platform. **Note that these steps assume you're using a version of React Native that supports autolinking (>= 60).**
@@ -93,15 +93,20 @@ Add the following to `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
 <application>
   // ...
-  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService" android:foregroundServiceType="mediaProjection"/>
+  <service android:name="com.daily.reactlibrary.DailyOngoingMeetingForegroundService" android:foregroundServiceType="camera|microphone"/>
 </application>
 ```
 
-> Note: above, `foregroundServiceType` is only needed if you wish to do screen sharing.
+> Note: above, `android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION` is only needed if you wish to do screen sharing.
 
 Update your `minSdkVersion` in your top-level `build.gradle` file:
 

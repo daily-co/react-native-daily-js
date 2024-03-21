@@ -21,7 +21,9 @@ export default function DailyMediaView(props: Props) {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    const tracks = [props.videoTrack, props.audioTrack].filter((t) => t);
+    const tracks = [props.videoTrack, props.audioTrack].filter(
+      (t) => t
+    ) as MediaStreamTrack[];
     const stream = tracks.length > 0 ? new MediaStream(tracks) : null;
     setStream(stream);
   }, [props.videoTrack, props.audioTrack]);
