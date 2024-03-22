@@ -2,7 +2,7 @@
   "name": "@daily-co/react-native-daily-js",
   "private": true,
   "//": "^ COMMENT OUT 'private: true' BEFORE RUNNING NPM PUBLISH",
-  "version": "0.58.0",
+  "version": "0.59.0",
   "description": "React Native library for making video calls using Daily",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,7 +30,7 @@
     "baseUrl": "https://github.com/daily-co/react-native-daily-js"
   },
   "dependencies": {
-    "@daily-co/daily-js": "^0.60.0",
+    "@daily-co/daily-js": "^0.61.1",
     "@types/react-native-background-timer": "^2.0.0",
     "base-64": "^1.0.0",
     "react-native-url-polyfill": "^1.1.2"
