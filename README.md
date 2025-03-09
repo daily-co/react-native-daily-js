@@ -22,6 +22,12 @@ Then, follow the below steps to set up your native project on each platform. **N
 
 > If your project uses [Expo](https://expo.dev/), use the [`config-plugin-rn-daily-js` configuration package](https://www.npmjs.com/package/@daily-co/config-plugin-rn-daily-js) instead of the following steps.
 
+## React Native New Architecture Support
+
+This library supports React Native's new architecture (TurboModules) starting from version X.Y.Z. If you're using React Native with the new architecture enabled (such as Expo v52+), the library will automatically use TurboModules for better performance and reliability.
+
+No additional configuration is required to use this library with the new architecture.
+
 ### iOS
 
 Update the `platform` in your `Podfile`, since `@daily-co/react-native-webrtc` only works on iOS 12 and above:

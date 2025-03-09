@@ -9,6 +9,10 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
+/**
+ * Package for registering the DailyNativeUtils module with the legacy React Native bridge.
+ * For new architecture, see DailyNativeUtilsTurboPackage.
+ */
 public class DailyNativeUtilsPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {

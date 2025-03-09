@@ -41,6 +41,11 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    
+    // Add support for React Native New Architecture
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 repositories {
@@ -61,4 +66,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
+    
+    // Add TurboModule dependencies
+    implementation "com.facebook.react:react-native-turbomodule-core:+"
 }

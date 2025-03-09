@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -25,6 +26,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+import com.facebook.react.turbomodule.core.interfaces.TurboModule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DailyNativeUtils extends ReactContextBaseJavaModule implements PermissionListener {
+// Note: We're implementing both ReactContextBaseJavaModule (for backwards compatibility)
+// and the new DailyNativeUtilsSpec interface (for TurboModule support)
+public class DailyNativeUtils extends ReactContextBaseJavaModule 
+        implements DailyNativeUtilsSpec, PermissionListener {
 
     private static final String TAG = DailyNativeUtils.class.getName();
     private static int PERMISSION_REQUEST_CODE = 666;
@@ -73,6 +78,7 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule implements Perm
     }
 
     @Override
+    @NonNull
     public String getName() {
         return "DailyNativeUtils";
     }
