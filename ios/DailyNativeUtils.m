@@ -5,6 +5,11 @@
 #import <React/RCTUtils.h>
 #import <React/RCTLog.h>
 
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <React/RCTConversions.h>
+#import <RCTTypeSafety/RCTConvertHelpers.h>
+#endif
+
 // Notification from extension
 static NSString *const NotificationScreenCaptureStoppedBySystemUIOrError = @"ScreenCaptureStoppedBySystemUIOrError";
 static NSString *const NotificationScreenCaptureExtensionStarted = @"ScreenCaptureExtensionStarted";
@@ -22,6 +27,13 @@ static NSString *const EventOnHostDestroy = @"EventOnHostDestroy";
 
 @implementation DailyNativeUtils
 
+// Required for New Architecture
+#ifdef RCT_NEW_ARCH_ENABLED
++ (NSString *)moduleName {
+  return @"DailyNativeUtils";
+}
+#endif
+
 RCT_EXPORT_MODULE()
 
 - (instancetype)init
@@ -29,7 +41,7 @@ RCT_EXPORT_MODULE()
   if (self = [super init]) {
     _requestersKeepingDeviceAwake = [NSMutableSet set];
 
-    // The “Darwin” notification center distributes notifications across the whole system!
+    // The "Darwin" notification center distributes notifications across the whole system!
     // This means you can send and receive notifications between different apps, and/or an app and its extensions.
     // Register for screen capture stopped notification.
     CFNotificationCenterRef notificationCenter = CFNotificationCenterGetDarwinNotifyCenter();
@@ -148,7 +160,7 @@ RCT_EXPORT_METHOD(presentSystemScreenCapturePrompt)
 RCT_EXPORT_METHOD(requestStopSystemScreenCapture)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-      // The “Darwin” notification center distributes notifications across the whole system!
+      // The "Darwin" notification center distributes notifications across the whole system!
       // This means you can send and receive notifications between different apps, and/or an app and its extensions.
       // Register for screen capture stopped notification.
       CFNotificationCenterRef notification = CFNotificationCenterGetDarwinNotifyCenter ();
@@ -209,5 +221,14 @@ void handleDarwinNotification(CFNotificationCenterRef center,
 - (void)handleNotificationScreenCaptureExtensionStarted {
   [self sendEventWithName:EventSystemScreenCaptureStart body:nil];
 }
+
+// Required for TurboModule
+#ifdef RCT_NEW_ARCH_ENABLED
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react::NativeDailyNativeUtilsSpecJSI>(params);
+}
+#endif
 
 @end

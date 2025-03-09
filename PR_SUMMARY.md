@@ -10,24 +10,30 @@ This PR adds support for React Native's new architecture (TurboModules) while ma
 
 ### Changes Made:
 
-1. **Created a TurboModule interface specification**:
+1. **Android: Created a TurboModule interface specification**:
    - Added `DailyNativeUtilsSpec.java` that extends the TurboModule interface
    - Defined the methods that should be exposed to JavaScript
 
-2. **Updated the native module implementation**:
+2. **Android: Updated the native module implementation**:
    - Modified `DailyNativeUtils.java` to implement the TurboModule interface
    - Maintained backward compatibility by keeping the ReactContextBaseJavaModule implementation
 
-3. **Added TurboModule support classes**:
+3. **Android: Added TurboModule support classes**:
    - Created `DailyNativeUtilsTurboModuleFactory.java` for creating TurboModule instances
    - Added `DailyNativeUtilsTurboPackage.java` to register the module with the TurboModule system
    - Created `DailyNativeUtilsNewArchitectureProvider.java` as a helper for registration
 
-4. **Updated build configuration**:
+4. **Android: Updated build configuration**:
    - Modified `build.gradle` to include TurboModule dependencies
    - Added necessary build features for supporting the new architecture
 
-5. **Updated documentation**:
+5. **iOS: Created TurboModule support**:
+   - Added `DailyNativeUtilsSpec.h` protocol defining the module's interface
+   - Modified `DailyNativeUtils.h` and `DailyNativeUtils.m` to support TurboModules
+   - Added C++ bridging in `DailyNativeUtilsBinding.mm` and `DailyNativeUtilsSpec.mm`
+   - Updated podspec to include the necessary dependencies and compiler flags
+
+6. **Updated documentation**:
    - Added a section in the README about New Architecture support
 
 ## Testing
@@ -38,9 +44,8 @@ This PR has been tested with Expo v52 (which uses the new architecture) and conf
 
 Additional work needed:
 
-1. Update the iOS native module with similar TurboModule support
-2. Add automated tests specifically for the new architecture
-3. Update other methods if necessary to ensure full compatibility
+1. Add automated tests specifically for the new architecture
+2. Update other methods if necessary to ensure full compatibility
 
 ## References
 
