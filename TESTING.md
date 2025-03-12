@@ -105,29 +105,11 @@ npx react-native run-ios  # or run-android
 
 ## Automated Testing
 
-The library includes unit tests and integration tests for both architectures:
+The library includes unit tests:
 
 ```bash
-# Setup the testing environment
-./scripts/setup-testing.sh
-
 # Run unit tests
 npm test
-
-# Run integration tests on legacy architecture
-npm run test:e2e:legacy
-
-# Run integration tests on new architecture
-npm run test:e2e:new
-```
-
-# Build E2E test apps for specific architectures
-```bash
-# Build for legacy architecture
-npm run test:e2e:build:legacy
-
-# Build for new architecture
-npm run test:e2e:build:new
 ```
 
 ## Known Issues

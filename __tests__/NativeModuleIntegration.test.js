@@ -2,12 +2,7 @@
  * This file contains integration tests to verify DailyNativeUtils functionality
  * on both legacy and new architecture builds.
  * 
- * To run these tests:
- * 1. For legacy architecture: REACT_NATIVE_ARCH=legacy npm run test:e2e
- * 2. For new architecture: REACT_NATIVE_ARCH=new npm run test:e2e
- * 
- * These tests require a properly set up React Native testing environment with Detox
- * or a similar E2E testing framework.
+ * These tests use mock implementations to verify functionality.
  */
 
 import { NativeModules } from 'react-native';

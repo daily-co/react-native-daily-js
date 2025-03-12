@@ -22,12 +22,7 @@
     "prepare": "npm run build",
     "tag": "scripts/tag",
     "prepublishOnly": "npm run tag",
-    "test": "jest",
-    "test:e2e": "detox test --configuration ${DETOX_CONFIGURATION:-ios.legacy}",
-    "test:e2e:build:legacy": "REACT_NATIVE_ARCH=legacy detox build --configuration ${DETOX_CONFIGURATION:-ios.legacy}",
-    "test:e2e:build:new": "REACT_NATIVE_ARCH=new detox build --configuration ${DETOX_CONFIGURATION:-ios.new}",
-    "test:e2e:legacy": "REACT_NATIVE_ARCH=legacy npm run test:e2e",
-    "test:e2e:new": "REACT_NATIVE_ARCH=new npm run test:e2e"
+    "test": "jest"
   },
   "license": "BSD-2-Clause",
   "repository": {
@@ -55,7 +50,6 @@
     "@react-native-async-storage/async-storage": "^1.15.7",
     "@types/base-64": "^1.0.0",
     "babel-jest": "^29.7.0",
-    "detox": "^20.9.0",
     "jest": "^29.6.0",
     "react-native": "^0.78.0",
     "react-native-background-timer": "^2.3.1",
