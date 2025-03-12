@@ -10,8 +10,13 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "declaration": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./type-overrides"
+    ],
     "paths": {
-      "@daily-co/daily-js": ["type-overrides/@daily-co/daily-js"]
+      "@daily-co/*": ["type-overrides/@daily-co/*"]
     }
   }
 }

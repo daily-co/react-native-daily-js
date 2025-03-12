@@ -5,6 +5,10 @@
 #import <React/RCTUtils.h>
 #import <RCTTypeSafety/RCTConvertHelpers.h>
 #import <string>
+#import "../cpp-adapter.h"
+#include <tuple>
+#include <optional>
+#include <functional>
 
 #import <react/renderer/components/RNDailyNativeUtilsSpecs/ComponentDescriptors.h>
 #import <react/renderer/components/RNDailyNativeUtilsSpecs/EventEmitters.h>

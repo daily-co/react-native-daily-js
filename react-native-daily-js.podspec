@@ -24,14 +24,23 @@ Pod::Spec.new do |s|
   s.dependency "React-Core"
   s.dependency "ReactNativeDailyJSScreenShareExtension", "0.0.1"
   
+  # Common C++ settings for both architectures
+  s.pod_target_xcconfig = {
+    "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+    "CLANG_CXX_LIBRARY" => "libc++",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "FOLLY_NO_CONFIG FOLLY_MOBILE=1 FOLLY_USE_LIBCPP=1",
+    "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/RCT-Folly\" \"$(PODS_ROOT)/DoubleConversion\""
+  }
+  
   # New Architecture Support
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
     folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
     s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
     s.pod_target_xcconfig = {
-        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/RCT-Folly\" \"$(PODS_ROOT)/DoubleConversion\"", 
         "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
-        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
+        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+        "CLANG_CXX_LIBRARY" => "libc++"
     }
     s.dependency "React-Codegen"
     s.dependency "RCT-Folly"
