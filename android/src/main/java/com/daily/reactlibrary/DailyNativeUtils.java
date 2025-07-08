@@ -62,7 +62,9 @@ public class DailyNativeUtils extends ReactContextBaseJavaModule implements Perm
 
             @Override
             public void onHostDestroy() {
-                eventEmitter.emit("EventOnHostDestroy", Arguments.createMap());
+                if (eventEmitter != null) {
+                    eventEmitter.emit("EventOnHostDestroy", Arguments.createMap());
+                }
                 DailyOngoingMeetingForegroundService.stop(reactContext);
             }
         });
