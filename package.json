@@ -46,7 +46,7 @@
     "react-native-get-random-values": "^1.11.0"
   },
   "devDependencies": {
-    "@daily-co/react-native-webrtc": "118.0.3-daily.3",
+    "@daily-co/react-native-webrtc": "^124.0.6-daily.1",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@types/base-64": "^1.0.0",
     "@types/react": "18.3.21",
