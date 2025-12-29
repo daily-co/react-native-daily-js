@@ -1598,6 +1598,19 @@ export interface DailySipCallTransferOptions {
   waitBeforeExtensionDialSec?: number;
 }
 
+export type DTMF_METHOD_SIP_INFO = 'sip-info';
+export type DTMF_METHOD_TELEPHONE_EVENT = 'telephone-event';
+export type DTMF_METHOD_AUTO = 'auto';
+
+export interface DailySendDtmfOptions {
+  sessionId: string;
+  tones: string;
+  method?:
+    | DTMF_METHOD_SIP_INFO
+    | DTMF_METHOD_TELEPHONE_EVENT
+    | DTMF_METHOD_AUTO;
+}
+
 export interface DailySipReferOptions {
   sessionId: string;
   toEndPoint: string;
@@ -1759,7 +1772,7 @@ export interface DailyCall {
     options: DailyStartDialoutOptions
   ): Promise<{ session?: DailyDialOutSession }>;
   stopDialOut(options: { sessionId: string }): Promise<void>;
-  sendDTMF(options: { sessionId: string; tones: string }): Promise<void>;
+  sendDTMF(options: DailySendDtmfOptions): Promise<void>;
   sipCallTransfer(options: DailySipCallTransferOptions): Promise<void>;
   sipRefer(options: DailySipReferOptions): Promise<void>;
 }
