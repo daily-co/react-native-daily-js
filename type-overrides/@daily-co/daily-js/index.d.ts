@@ -1473,7 +1473,7 @@ export interface DailyStreamingOptions<
     ? DailyStreamingLayoutConfig<Type>
     : DailyLiveStreamingLayoutConfig<Type>;
   type?: Method extends 'recording'
-    ? 'cloud' | 'raw-tracks' | 'local' | 'cloud-audio-only'
+    ? 'cloud' | 'raw-tracks' | 'cloud-audio-only'
     : never;
 }
 
