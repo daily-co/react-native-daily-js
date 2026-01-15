@@ -22,19 +22,20 @@ export type DailyLanguage =
   | 'da'
   | 'de'
   | 'en'
+  | 'es'
   | 'fi'
   | 'fr'
+  | 'it'
+  | 'jp'
+  | 'ka'
   | 'nl'
   | 'no'
-  | 'pt'
   | 'pl'
+  | 'pt'
+  | 'pt-BR'
   | 'ru'
   | 'sv'
-  | 'es'
-  | 'tr'
-  | 'it'
-  | 'ka'
-  | 'jp';
+  | 'tr';
 
 export type DailyLanguageSetting = DailyLanguage | 'user';
 
@@ -337,6 +338,8 @@ export interface DailyParticipantTracks {
   video: DailyTrackState;
   screenAudio: DailyTrackState;
   screenVideo: DailyTrackState;
+  rmpAudio?: DailyTrackState;
+  rmpVideo?: DailyTrackState;
   [customTrackKey: string]: DailyTrackState | undefined;
 }
 
@@ -609,7 +612,7 @@ export interface DailyCpuLoadStats {
   };
 }
 
-interface DailySendSettings {
+export interface DailySendSettings {
   video?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
   customVideoDefaults?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
   [customKey: string]:
@@ -1469,6 +1472,9 @@ export interface DailyStreamingOptions<
   layout?: Method extends 'recording'
     ? DailyStreamingLayoutConfig<Type>
     : DailyLiveStreamingLayoutConfig<Type>;
+  type?: Method extends 'recording'
+    ? 'cloud' | 'raw-tracks' | 'local' | 'cloud-audio-only'
+    : never;
 }
 
 export interface DailyStreamingEndpoint {
@@ -1489,7 +1495,10 @@ export interface RemoteMediaPlayerSimulcastEncoding {
 }
 
 export interface DailyRemoteMediaPlayerSettings {
-  state: DailyRemoteMediaPlayerSettingPlay | DailyRemoteMediaPlayerSettingPause;
+  state?:
+    | DailyRemoteMediaPlayerSettingPlay
+    | DailyRemoteMediaPlayerSettingPause;
+  volume?: number;
   simulcastEncodings?: RemoteMediaPlayerSimulcastEncoding[];
 }
 
