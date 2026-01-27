@@ -22,19 +22,20 @@ export type DailyLanguage =
   | 'da'
   | 'de'
   | 'en'
+  | 'es'
   | 'fi'
   | 'fr'
+  | 'it'
+  | 'jp'
+  | 'ka'
   | 'nl'
   | 'no'
-  | 'pt'
   | 'pl'
+  | 'pt'
+  | 'pt-BR'
   | 'ru'
   | 'sv'
-  | 'es'
-  | 'tr'
-  | 'it'
-  | 'ka'
-  | 'jp';
+  | 'tr';
 
 export type DailyLanguageSetting = DailyLanguage | 'user';
 
@@ -337,6 +338,8 @@ export interface DailyParticipantTracks {
   video: DailyTrackState;
   screenAudio: DailyTrackState;
   screenVideo: DailyTrackState;
+  rmpAudio?: DailyTrackState;
+  rmpVideo?: DailyTrackState;
   [customTrackKey: string]: DailyTrackState | undefined;
 }
 
@@ -609,7 +612,7 @@ export interface DailyCpuLoadStats {
   };
 }
 
-interface DailySendSettings {
+export interface DailySendSettings {
   video?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
   customVideoDefaults?: DailyVideoSendSettings | DailyVideoSendSettingsPreset;
   [customKey: string]:
@@ -702,6 +705,7 @@ export interface DailyRoomInfo {
     webhook_meeting_end?: any;
     max_live_streams?: number;
     max_streaming_instances_per_room?: number;
+    max_app_message_size?: number;
     enable_breakout_rooms?: boolean;
     enable_emoji_reactions?: boolean;
     enable_network_ui?: boolean;
@@ -1465,9 +1469,13 @@ export interface DailyStreamingOptions<
   maxDuration?: number;
   backgroundColor?: string;
   instanceId?: string;
+  dataOutputs?: Array<string>;
   layout?: Method extends 'recording'
     ? DailyStreamingLayoutConfig<Type>
     : DailyLiveStreamingLayoutConfig<Type>;
+  type?: Method extends 'recording'
+    ? 'cloud' | 'raw-tracks' | 'cloud-audio-only'
+    : never;
 }
 
 export interface DailyStreamingEndpoint {
@@ -1488,7 +1496,10 @@ export interface RemoteMediaPlayerSimulcastEncoding {
 }
 
 export interface DailyRemoteMediaPlayerSettings {
-  state: DailyRemoteMediaPlayerSettingPlay | DailyRemoteMediaPlayerSettingPause;
+  state?:
+    | DailyRemoteMediaPlayerSettingPlay
+    | DailyRemoteMediaPlayerSettingPause;
+  volume?: number;
   simulcastEncodings?: RemoteMediaPlayerSimulcastEncoding[];
 }
 
