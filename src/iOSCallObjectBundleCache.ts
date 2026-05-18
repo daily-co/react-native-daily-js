@@ -101,7 +101,7 @@ export default class iOSCallObjectBundleCache {
     }
 
     // Get cache expiry from cache-control header (or use a default value)
-    let expiry = DEFAULT_EXPIRY_MS;
+    let expiry = Date.now() + DEFAULT_EXPIRY_MS;
     const cacheControlHeader = headers.get('cache-control');
     if (cacheControlHeader) {
       const expiryMatch = cacheControlHeader.match(/max-age=([0-9]+)/i);
