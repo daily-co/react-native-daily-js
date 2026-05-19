@@ -1,6 +1,7 @@
 import Daily from '@daily-co/daily-js';
 import { registerGlobals } from '@daily-co/react-native-webrtc';
 import DailyMediaView from './DailyMediaView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import iOSCallObjectBundleCache from './iOSCallObjectBundleCache';
 import 'react-native-url-polyfill/auto'; // Applies global URL polyfill
 import BackgroundTimer from 'react-native-background-timer';
@@ -106,6 +107,7 @@ function setupGlobals(): void {
 
   // A workaround for iOS HTTP cache not caching call object bundle due to size
   if (Platform.OS === 'ios') {
+    iOSCallObjectBundleCache.initialize(AsyncStorage);
     global.iOSCallObjectBundleCache = iOSCallObjectBundleCache;
   }
 
