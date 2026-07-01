@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const FIELD_CACHE_EXPIRY = 'expiry';
 const FIELD_BUNDLE_CODE = 'code';
 const FIELD_BUNDLE_LAST_MODIFIED = 'last-modified';
@@ -18,22 +16,37 @@ type CacheResponse = {
   refetchHeaders?: Headers;
 };
 
+export interface AsyncStorageInterface {
+  getItem(key: string): Promise<string | null>;
+  setItem(key: string, value: string): Promise<void>;
+  removeItem(key: string): Promise<void>;
+}
+
 /**
  * A workaround for the fact that the iOS HTTP cache won't cache the call
  * object bundle due to size.
  */
 export default class iOSCallObjectBundleCache {
+  private static _storage: AsyncStorageInterface | null = null;
+
+  static initialize(storage: AsyncStorageInterface): void {
+    this._storage = storage;
+  }
+
   static async get(
     url: string,
     ignoreExpiry = false
   ): Promise<CacheResponse | null> {
     // console.log("[iOSCallObjectBundleCache] get", url);
+    if (!this._storage) {
+      return null;
+    }
 
     const now = Date.now();
 
     try {
       // Get bundle code + metadata from cache
-      const cacheItemString = await AsyncStorage.getItem(cacheKeyForUrl(url));
+      const cacheItemString = await this._storage.getItem(cacheKeyForUrl(url));
 
       // If cache miss, return null
       if (!cacheItemString) {
@@ -55,7 +68,7 @@ export default class iOSCallObjectBundleCache {
       // bundle again
       if (!ignoreExpiry && now > cacheItem[FIELD_CACHE_EXPIRY]) {
         // console.log("[iOSCallObjectBundleCache] cache item expired");
-        let headers: { [key: string]: string } = {};
+        const headers: { [key: string]: string } = {};
         // Only set headers for validators (ETag, Last-Modified) that exist in
         // the cache item
         cacheItem[FIELD_BUNDLE_ETAG] &&
@@ -72,7 +85,7 @@ export default class iOSCallObjectBundleCache {
       // console.log("[iOSCallObjectBundleCache] error in get", url, e);
 
       // Clear potentially problematic cache entry and return null
-      AsyncStorage.removeItem(cacheKeyForUrl(url));
+      this._storage.removeItem(cacheKeyForUrl(url));
       return null;
     }
   }
@@ -95,13 +108,12 @@ export default class iOSCallObjectBundleCache {
 
   static async set(url: string, code: string, headers: Headers): Promise<void> {
     // console.log("[iOSCallObjectBundleCache] set", url, headers);
-
-    if (!code) {
+    if (!code || !this._storage) {
       return;
     }
 
     // Get cache expiry from cache-control header (or use a default value)
-    let expiry = DEFAULT_EXPIRY_MS;
+    let expiry = Date.now() + DEFAULT_EXPIRY_MS;
     const cacheControlHeader = headers.get('cache-control');
     if (cacheControlHeader) {
       const expiryMatch = cacheControlHeader.match(/max-age=([0-9]+)/i);
@@ -114,12 +126,15 @@ export default class iOSCallObjectBundleCache {
     const etag = headers.get('etag');
     const lastModified = headers.get('last-modified');
 
-    let cacheItem: { [key: string]: any } = {};
+    const cacheItem: { [key: string]: any } = {};
     cacheItem[FIELD_BUNDLE_CODE] = code;
     cacheItem[FIELD_CACHE_EXPIRY] = expiry;
     cacheItem[FIELD_BUNDLE_ETAG] = etag;
     cacheItem[FIELD_BUNDLE_LAST_MODIFIED] = lastModified;
 
-    return AsyncStorage.setItem(cacheKeyForUrl(url), JSON.stringify(cacheItem));
+    return this._storage.setItem(
+      cacheKeyForUrl(url),
+      JSON.stringify(cacheItem)
+    );
   }
 }

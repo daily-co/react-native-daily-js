@@ -97,6 +97,7 @@ export type DailyEvent =
   | 'dialin-stopped'
   | 'dialin-warning'
   | 'dialout-connected'
+  | 'dialout-answered'
   | 'dialout-error'
   | 'dialout-stopped'
   | 'dialout-warning'
@@ -170,6 +171,11 @@ export interface DailyCallOptions {
   userData?: unknown;
   startVideoOff?: boolean;
   startAudioOff?: boolean;
+  /**
+   * Optional key-value map of client info to include in call logs (e.g. SDK name and version).
+   * Max 10 entries; keys max 64 chars (a-z, 0-9, _, -); values max 256 chars.
+   */
+  aboutClient?: Record<string, string>;
 }
 
 export interface DailyLoadOptions extends DailyCallOptions {
@@ -650,6 +656,14 @@ export interface DailyPendingRoomInfo {
   roomUrlPendingJoin: string;
 }
 
+export interface DailyRecordingsBucket {
+  allow_api_access: boolean;
+  allow_streaming_from_bucket: boolean;
+  assume_role_arn: string;
+  bucket_name: string;
+  bucket_region: string;
+}
+
 export interface DailyRoomInfo {
   id: string;
   name: string;
@@ -692,6 +706,7 @@ export interface DailyRoomInfo {
      */
     signaling_impl?: string;
     geo?: string;
+    recordings_bucket?: DailyRecordingsBucket | boolean;
   };
   domainConfig: {
     hide_daily_branding?: boolean;
@@ -714,7 +729,9 @@ export interface DailyRoomInfo {
     enable_pip_ui?: boolean;
     enable_hand_raising?: boolean;
     enable_prejoin_ui?: boolean;
+    enable_transcription?: boolean;
     enable_video_processing_ui?: boolean;
+    recordings_bucket?: DailyRecordingsBucket | boolean;
   };
   tokenConfig: {
     eject_at_token_exp?: boolean;
@@ -728,6 +745,7 @@ export interface DailyRoomInfo {
     start_video_off?: boolean;
     start_audio_off?: boolean;
     enable_recording?: string;
+    start_cloud_recording_opts?: DailyStreamingOptions<'recording', 'start'>;
     start_cloud_recording?: boolean;
     close_tab_on_exit?: boolean;
     redirect_on_meeting_exit?: string;
@@ -1148,6 +1166,11 @@ export interface DailyEventObjectTranscriptionError
   instanceId: string;
   errorMsg?: string;
 }
+
+export type DailyRemoteMediaPlayerStopReason =
+  | DailyRemoteMediaPlayerEOS
+  | DailyRemoteMediaPlayerPeerStopped;
+
 export interface DailyEventObjectRemoteMediaPlayerUpdate
   extends DailyEventObjectBase {
   action: Extract<
@@ -1170,42 +1193,79 @@ export interface DailyEventObjectRemoteMediaPlayerStopped
 export interface DailyEventObjectDialinReady extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialin-ready'>;
   sipEndpoint: string;
+  provider: string;
 }
 
 export interface DailyEventObjectDialinConnected extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialin-connected'>;
+  sessionId: string;
+  userId?: string;
   sipHeaders?: Record<string, any>;
   sipFrom?: string;
+  sipEndpoint?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId: string;
 }
 
 export interface DailyEventObjectDialinError extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialin-error'>;
   errorMsg: string;
   sessionId: string;
+  userId?: string;
   type?: 'start-failed' | null;
   details?: { sipEndpoint?: string };
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDialinStopped extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialin-stopped'>;
+  sessionId: string;
+  userId?: string;
   sipHeaders?: Record<string, any>;
   sipFrom?: string;
+  sipEndpoint?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDialinWarning extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialin-warning'>;
   errorMsg: string;
+  sessionId: string;
+  userId?: string;
+  sipFrom?: string;
+  sipEndpoint?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDialOutConnected extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialout-connected'>;
-  sessionId?: string;
+  sessionId: string;
   userId?: string;
+  origin?: string;
+  destination?: string;
+  callerId?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId: string;
+}
+
+export interface DailyEventObjectDialOutAnswered extends DailyEventObjectBase {
+  action: Extract<DailyEvent, 'dialout-answered'>;
+  sessionId: string;
+  userId?: string;
+  origin?: string;
+  destination?: string;
+  callerId?: string;
+  actionTraceId?: string;
+  provider: string;
+  sipCallId: string;
 }
 
 export interface DailyEventObjectDialOutError extends DailyEventObjectBase {
@@ -1213,14 +1273,22 @@ export interface DailyEventObjectDialOutError extends DailyEventObjectBase {
   errorMsg: string;
   sessionId?: string;
   userId?: string;
+  details?: { destination?: string; sipHeaders?: { [key: string]: string } };
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDialOutStopped extends DailyEventObjectBase {
   action: Extract<DailyEvent, 'dialout-stopped'>;
-  sessionId?: string;
+  sessionId: string;
   userId?: string;
+  origin?: string;
+  destination?: string;
+  callerId?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDialOutWarning extends DailyEventObjectBase {
@@ -1228,7 +1296,12 @@ export interface DailyEventObjectDialOutWarning extends DailyEventObjectBase {
   errorMsg: string;
   sessionId?: string;
   userId?: string;
+  origin?: string;
+  destination?: string;
+  callerId?: string;
   actionTraceId?: string;
+  provider: string;
+  sipCallId?: string;
 }
 
 export interface DailyEventObjectDtmfEvent extends DailyEventObjectBase {
@@ -1322,6 +1395,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectDialinWarning
     : T extends DailyEventObjectDialOutConnected['action']
     ? DailyEventObjectDialOutConnected
+    : T extends DailyEventObjectDialOutAnswered['action']
+    ? DailyEventObjectDialOutAnswered
     : T extends DailyEventObjectDialOutError['action']
     ? DailyEventObjectDialOutError
     : T extends DailyEventObjectDialOutStopped['action']
@@ -1389,6 +1464,10 @@ export interface DailyStreamingAudioOnlyLayoutConfig {
   participants?: DailyStreamingParticipantsConfig;
 }
 
+export interface DailyStreamingRawTracksAudioOnlyLayoutConfig {
+  preset: 'raw-tracks-audio-only';
+}
+
 export type DailyStreamingPortraitLayoutVariant = 'vertical' | 'inset';
 
 export interface DailyStreamingPortraitLayoutConfig {
@@ -1425,6 +1504,7 @@ export type DailyStreamingLayoutConfig<
   | DailyStreamingActiveParticipantLayoutConfig
   | DailyStreamingPortraitLayoutConfig
   | DailyStreamingAudioOnlyLayoutConfig
+  | DailyStreamingRawTracksAudioOnlyLayoutConfig
   | (Type extends 'start'
       ? DailyStartStreamingCustomLayoutConfig
       : DailyUpdateStreamingCustomLayoutConfig);
@@ -1447,10 +1527,6 @@ export type DailyRemoteMediaPlayerStateBuffering = 'buffering';
 
 export type DailyRemoteMediaPlayerEOS = 'EOS';
 export type DailyRemoteMediaPlayerPeerStopped = 'stopped-by-peer';
-
-export type DailyRemoteMediaPlayerStopReason =
-  | DailyRemoteMediaPlayerEOS
-  | DailyRemoteMediaPlayerPeerStopped;
 
 export type DailyAccess = 'unknown' | SpecifiedDailyAccess;
 
@@ -1548,6 +1624,7 @@ export interface DailyTranscriptionDeepgramOptions {
   includeRawResponse?: boolean;
   instanceId?: string;
   participants?: Array<string>;
+  transcription_geo?: 'global' | 'eu';
 }
 
 export interface DailyTranscriptionUpdateOptions {
@@ -1576,13 +1653,28 @@ export interface DailySipPstnParticipantPermissions {
   canReceive: Partial<DailyParticipantCanReceivePermission>;
 }
 
+/** Video encoding settings for SIP dial-out. Only applicable when `video` is `true`. */
+export interface DailySipVideoSettings {
+  /** Video width in pixels. Default: 1280. Maximum: 1280. */
+  width?: number;
+  /** Video height in pixels. Default: 720. Maximum: 720. */
+  height?: number;
+  /** Video frame rate. Default: 15. Maximum: 30. */
+  fps?: number;
+  /** Video bitrate in kbps. Default: 900. Maximum: 1000. */
+  videoBitrate?: number;
+}
+
+export type DailySipServiceProvider = 'daily' | 'signalwire';
 export interface DailyStartDialoutSipOptions {
   sipUri?: string;
   displayName?: string;
   userId?: string;
   video?: boolean;
+  videoSettings?: DailySipVideoSettings;
   codecs?: DailyDialOutCodecs;
   permissions?: DailySipPstnParticipantPermissions;
+  provider?: DailySipServiceProvider;
 }
 
 export interface DailyStartDialoutPhoneOptions {
@@ -1599,6 +1691,16 @@ export interface DailyStartDialoutPhoneOptions {
 export type DailyStartDialoutOptions =
   | DailyStartDialoutSipOptions
   | DailyStartDialoutPhoneOptions;
+
+export interface DailyStartDialinOptions {
+  displayName: string;
+  sipEndpoint?: string;
+  userId?: string;
+  video?: boolean;
+  codecs?: DailyDialOutCodecs;
+  permissions?: DailySipPstnParticipantPermissions;
+  provider?: DailySipServiceProvider;
+}
 
 export interface DailySipCallTransferOptions {
   sessionId: string;
@@ -1619,6 +1721,7 @@ export interface DailySendDtmfOptions {
     | DTMF_METHOD_SIP_INFO
     | DTMF_METHOD_TELEPHONE_EVENT
     | DTMF_METHOD_AUTO;
+  digitDurationMs?: number;
 }
 
 export interface DailySipReferOptions {
@@ -1781,6 +1884,7 @@ export interface DailyCall {
   startDialOut(
     options: DailyStartDialoutOptions
   ): Promise<{ session?: DailyDialOutSession }>;
+  startDialIn(options: DailyStartDialinOptions): Promise<void>;
   stopDialOut(options: { sessionId: string }): Promise<void>;
   sendDTMF(options: DailySendDtmfOptions): Promise<void>;
   sipCallTransfer(options: DailySipCallTransferOptions): Promise<void>;
