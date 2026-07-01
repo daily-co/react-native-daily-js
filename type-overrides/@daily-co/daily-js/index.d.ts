@@ -1353,6 +1353,8 @@ export type DailyEventObject<T extends DailyEvent = any> =
     ? DailyEventObjectWaitingParticipant
     : T extends DailyEventObjectAccessState['action']
     ? DailyEventObjectAccessState
+    : T extends DailyEventObjectMeetingSessionSummaryUpdated['action']
+    ? DailyEventObjectMeetingSessionSummaryUpdated
     : T extends DailyEventObjectMeetingSessionStateUpdated['action']
     ? DailyEventObjectMeetingSessionStateUpdated
     : T extends DailyEventObjectTrack['action']
