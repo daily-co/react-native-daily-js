@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -38,7 +39,11 @@ public class DailyOngoingMeetingForegroundService extends Service {
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_SUBTITLE, subtitle);
         intent.putExtra(EXTRA_ICON_NAME, iconName);
-        ContextCompat.startForegroundService(context, intent);
+        try {
+            ContextCompat.startForegroundService(context, intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start foreground service: " + e.getMessage(), e);
+        }
     }
 
     public static void stop(Context context) {
@@ -86,7 +91,12 @@ public class DailyOngoingMeetingForegroundService extends Service {
                 .setOnlyAlertOnce(true)
                 .build();
 
-        startForeground(NOTIFICATION_ID, notification);
+        try {
+            startForeground(NOTIFICATION_ID, notification);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to promote service to foreground: " + e.getMessage(), e);
+            stopSelf();
+        }
 
         return START_NOT_STICKY;
     }
