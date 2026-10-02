@@ -1216,7 +1216,11 @@ export interface DailyEventObjectDialinError extends DailyEventObjectBase {
   sessionId: string;
   userId?: string;
   type?: 'start-failed' | null;
-  details?: { sipEndpoint?: string };
+  details?: {
+    sipEndpoint?: string;
+    sipStatusCode?: number;
+    sipReasonPhrase?: string;
+  };
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
@@ -1275,7 +1279,12 @@ export interface DailyEventObjectDialOutError extends DailyEventObjectBase {
   errorMsg: string;
   sessionId?: string;
   userId?: string;
-  details?: { destination?: string; sipHeaders?: { [key: string]: string } };
+  details?: {
+    destination?: string;
+    sipHeaders?: { [key: string]: string };
+    sipStatusCode?: number;
+    sipReasonPhrase?: string;
+  };
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
