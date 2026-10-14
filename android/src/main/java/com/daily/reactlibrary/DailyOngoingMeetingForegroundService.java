@@ -27,6 +27,7 @@ public class DailyOngoingMeetingForegroundService extends Service {
     private static final String EXTRA_TITLE = "title";
     private static final String EXTRA_SUBTITLE = "subtitle";
     private static final String EXTRA_ICON_NAME = "icon_name";
+    private static final String EXTRA_ACTIVITY_CLASS_NAME = "activity_class_name";
 
     public static Class<? extends Activity> activityClassToOpenFromNotification;
 
@@ -39,9 +40,12 @@ public class DailyOngoingMeetingForegroundService extends Service {
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_SUBTITLE, subtitle);
         intent.putExtra(EXTRA_ICON_NAME, iconName);
+        intent.putExtra(EXTRA_ACTIVITY_CLASS_NAME, activityClass.getName());
         try {
             ContextCompat.startForegroundService(context, intent);
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalStateException e) {
+            // IllegalStateException covers ForegroundServiceStartNotAllowedException (Android 12+),
+            // thrown when the app is in the background at the time of the call.
             Log.e(TAG, "Failed to start foreground service: " + e.getMessage(), e);
         }
     }
@@ -76,24 +80,44 @@ public class DailyOngoingMeetingForegroundService extends Service {
                 "drawable",
                 getPackageName());
 
-        Intent notificationIntent = new Intent(this, activityClassToOpenFromNotification);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-
-        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(subtitle)
                 .setSmallIcon(icon)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
                 .setCategory(NotificationCompat.CATEGORY_CALL)
                 .setOngoing(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setOnlyAlertOnce(true)
-                .build();
+                .setOnlyAlertOnce(true);
+
+        // The static field is null when Android restarts this service in a fresh process, so fall
+        // back to the class name carried in the intent. Without either, show the notification with
+        // no tap target rather than crashing.
+        Class<?> activityClass = activityClassToOpenFromNotification;
+        String activityClassName = intent.getStringExtra(EXTRA_ACTIVITY_CLASS_NAME);
+        if (activityClass == null && activityClassName != null) {
+            try {
+                activityClass = Class.forName(activityClassName);
+            } catch (ClassNotFoundException e) {
+                Log.w(TAG, "Activity class to open from notification not found: " + activityClassName);
+            }
+        }
+        if (activityClass != null) {
+            Intent notificationIntent = new Intent(this, activityClass);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+            builder.setContentIntent(pendingIntent);
+        } else {
+            Log.w(TAG, "No activity class to open from notification; the notification will not open the app when tapped.");
+        }
+
+        Notification notification = builder.build();
 
         try {
             startForeground(NOTIFICATION_ID, notification);
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalStateException e) {
+            // SecurityException: Android 14+ rejects the camera/microphone service types when the
+            // app is not in the foreground (while-in-use rule) or lacks the FOREGROUND_SERVICE_*
+            // permission. stopSelf() keeps the call running without the notification.
             Log.e(TAG, "Failed to promote service to foreground: " + e.getMessage(), e);
             stopSelf();
         }
