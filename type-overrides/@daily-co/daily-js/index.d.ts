@@ -1785,9 +1785,6 @@ export interface DailyCall {
   updateReceiveSettings(
     receiveSettings: DailyReceiveSettingsUpdates
   ): Promise<DailyReceiveSettings>;
-  updateInputSettings(
-    inputSettings: DailyInputSettings
-  ): Promise<{ inputSettings: DailyInputSettings }>;
   startCamera(properties?: DailyCallOptions): Promise<void>;
   startLocalAudioLevelObserver(interval?: number): Promise<void>;
   isLocalAudioLevelObserverRunning(): boolean;
