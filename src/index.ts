@@ -141,6 +141,10 @@ function setupGlobals(): void {
     setAudioMode: WebRTCModule.setDailyAudioMode,
     setAudioDevice: WebRTCModule.setAudioDevice,
     getAudioDevice: WebRTCModule.getAudioDevice,
+    setCameraTorch: WebRTCModule.setCameraTorch,
+    isCameraTorchAvailable: WebRTCModule.isCameraTorchAvailable,
+    setCameraZoom: WebRTCModule.setCameraZoom,
+    getCameraZoom: WebRTCModule.getCameraZoom,
     enableNoOpRecordingEnsuringBackgroundContinuity:
       WebRTCModule.enableNoOpRecordingEnsuringBackgroundContinuity,
     addAudioFocusChangeListener: (listener: (hasFocus: boolean) => void) => {
