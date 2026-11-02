@@ -1257,6 +1257,7 @@ export interface DailyEventObjectDialOutConnected extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId: string;
@@ -1269,6 +1270,7 @@ export interface DailyEventObjectDialOutAnswered extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId: string;
@@ -1297,6 +1299,7 @@ export interface DailyEventObjectDialOutStopped extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
@@ -1314,6 +1317,7 @@ export interface DailyEventObjectDialOutWarning extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
@@ -1686,6 +1690,8 @@ export type DailySipServiceProvider = 'daily' | 'signalwire';
 export interface DailyStartDialoutSipOptions {
   sipUri?: string;
   displayName?: string;
+  /** SIP From display name shown on the called device. Max 70 characters. */
+  callerName?: string;
   userId?: string;
   video?: boolean;
   videoSettings?: DailySipVideoSettings;
