@@ -1257,6 +1257,7 @@ export interface DailyEventObjectDialOutConnected extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId: string;
@@ -1269,6 +1270,7 @@ export interface DailyEventObjectDialOutAnswered extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId: string;
@@ -1297,9 +1299,14 @@ export interface DailyEventObjectDialOutStopped extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
+  // SignalWire only: SIP result of the callee leg when the call ended unanswered.
+  // Top level like the event's other fields; dialout-error keeps the pair in details.
+  sipStatusCode?: number;
+  sipReasonPhrase?: string;
 }
 
 export interface DailyEventObjectDialOutWarning extends DailyEventObjectBase {
@@ -1310,6 +1317,7 @@ export interface DailyEventObjectDialOutWarning extends DailyEventObjectBase {
   origin?: string;
   destination?: string;
   callerId?: string;
+  callerName?: string;
   actionTraceId?: string;
   provider: string;
   sipCallId?: string;
@@ -1682,6 +1690,8 @@ export type DailySipServiceProvider = 'daily' | 'signalwire';
 export interface DailyStartDialoutSipOptions {
   sipUri?: string;
   displayName?: string;
+  /** SIP From display name shown on the called device. Max 70 characters. */
+  callerName?: string;
   userId?: string;
   video?: boolean;
   videoSettings?: DailySipVideoSettings;
@@ -1719,6 +1729,8 @@ export interface DailySipCallTransferOptions {
   sessionId: string;
   toEndPoint: string;
   callerId?: string;
+  /** SIP From display name shown on the transfer target. SIP targets only, not with sipRefer. */
+  callerName?: string;
   extension?: string;
   waitBeforeExtensionDialSec?: number;
 }
